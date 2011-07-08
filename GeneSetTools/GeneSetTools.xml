@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="gmtanalyzer" default="all">
+  
+  
+  <property file="gmtanalyzer.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="128m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/SCCS/**"/>
+    <exclude name="**/RCS/**"/>
+    <exclude name="**/rcs/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/.pyc/**"/>
+    <exclude name="**/.pyo/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/*.lib/**"/>
+    <exclude name="**/*~/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.zip"/>
+    <include name="*.war"/>
+    <include name="*.egg"/>
+    <include name="*.ear"/>
+    <include name="*.swc"/>
+    <include name="*.jar"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <include name="**/?*.properties"/>
+    <include name="**/?*.xml"/>
+    <include name="**/?*.gif"/>
+    <include name="**/?*.png"/>
+    <include name="**/?*.jpeg"/>
+    <include name="**/?*.jpg"/>
+    <include name="**/?*.html"/>
+    <include name="**/?*.dtd"/>
+    <include name="**/?*.tld"/>
+  </patternset>
+  
+  
+  <!-- Project Libraries -->
+  
+  <path id="library.cytoscape.classpath">
+    <fileset dir="${basedir}/lib">
+      <patternset refid="library.patterns"/>
+    </fileset>
+  </path>
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module GMTAnalyzer -->
+  
+  <dirname property="module.gmtanalyzer.basedir" file="${ant.file}"/>
+  
+  
+  
+  <property name="compiler.args.gmtanalyzer" value="${compiler.args}"/>
+  
+  <property name="gmtanalyzer.output.dir" value="${module.gmtanalyzer.basedir}/classes"/>
+  <property name="gmtanalyzer.testoutput.dir" value="${module.gmtanalyzer.basedir}/classes"/>
+  
+  <path id="gmtanalyzer.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="gmtanalyzer.module.production.classpath">
+    <path refid="library.cytoscape.classpath"/>
+  </path>
+  
+  <path id="gmtanalyzer.runtime.production.module.classpath">
+    <pathelement location="${gmtanalyzer.output.dir}"/>
+    <path refid="library.cytoscape.classpath"/>
+  </path>
+  
+  <path id="gmtanalyzer.module.classpath">
+    <pathelement location="${gmtanalyzer.output.dir}"/>
+    <path refid="library.cytoscape.classpath"/>
+  </path>
+  
+  <path id="gmtanalyzer.runtime.module.classpath">
+    <pathelement location="${gmtanalyzer.output.dir}"/>
+    <path refid="library.cytoscape.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.gmtanalyzer">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.gmtanalyzer">
+    <patternset refid="excluded.from.module.gmtanalyzer"/>
+  </patternset>
+  
+  <path id="gmtanalyzer.module.sourcepath">
+    <dirset dir="${module.gmtanalyzer.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.gmtanalyzer" depends="compile.module.gmtanalyzer.production,compile.module.gmtanalyzer.tests" description="Compile module GMTAnalyzer"/>
+  
+  <target name="compile.module.gmtanalyzer.production" description="Compile module GMTAnalyzer; production classes">
+    <mkdir dir="${gmtanalyzer.output.dir}"/>
+    <javac destdir="${gmtanalyzer.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.gmtanalyzer}"/>
+      <bootclasspath refid="gmtanalyzer.module.bootclasspath"/>
+      <classpath refid="gmtanalyzer.module.production.classpath"/>
+      <src refid="gmtanalyzer.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.gmtanalyzer"/>
+    </javac>
+    
+    <copy todir="${gmtanalyzer.output.dir}">
+      <fileset dir="${module.gmtanalyzer.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.gmtanalyzer.tests" depends="compile.module.gmtanalyzer.production" description="compile module GMTAnalyzer; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.gmtanalyzer" description="cleanup module">
+    <delete dir="${gmtanalyzer.output.dir}"/>
+    <delete dir="${gmtanalyzer.testoutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+
+      <target name="jars" depends="compile.module.gmtanalyzer.production" description="Creates jar file for gmt_analyzer">
+                <jar jarfile="./GMTAnalyzer.jar" basedir="." >
+                        <manifest>
+                                <attribute name="Main-Class" value="GenesetTools"/>
+                                <attribute name="Class-Path" value="gmtanalyzer.module.classpath" />
+                        </manifest>
+                </jar>
+        </target>
+
+  
+  <target name="clean" depends="clean.module.gmtanalyzer" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.gmtanalyzer" description="build all modules"/>
+  
+  <target name="all" depends="build.modules" description="build all"/>
+</project>
