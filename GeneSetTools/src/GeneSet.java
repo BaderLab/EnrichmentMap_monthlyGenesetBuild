@@ -42,6 +42,7 @@
 // $HeadURL: svn+ssh://risserlin@server1.baderlab.med.utoronto.ca/svn/EnrichmentMap/trunk/EnrichmentMapPlugin/src/org/baderlab/csplugins/enrichmentmap/GeneSet.java $
 
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -123,6 +124,45 @@ public class GeneSet {
         }
     }
 
+    public void addGeneList(String[] genelist, GMTParameters params){
+
+        HashMap<String, Integer> CurrentMappings = params.getGenes();
+        HashMap<Integer, String> OppositeMappings = params.getHashkey2gene();
+
+        //only go through the lines that have at least a gene set name and description.
+        if(genelist.length >= 1){
+
+
+        //All subsequent fields in the list are the geneset associated with this geneset.
+            for (int j = 0; j < genelist.length; j++) {
+
+                //Check to see if the gene is already in the hashmap of genes
+                //if it is already in the hash then get its associated key and put it
+                //into the set of genes
+                if (CurrentMappings.containsKey(genelist[j])) {
+                    this.addGene(CurrentMappings.get(genelist[j]));
+                }
+
+                //If the gene is not in the list then get the next value to be used and put it in the list
+                else{
+                    //add the gene to the master list of genes
+                    int value = params.getNumberOfGenes();
+                    CurrentMappings.put(genelist[j].toUpperCase(), value);
+                    OppositeMappings.put(value,genelist[j].toUpperCase());
+                    params.setNumberOfGenes(value+1);
+
+                    //add the gene to the genelist
+                    this.addGene(CurrentMappings.get(genelist[j].toUpperCase()));
+                }
+            }
+
+
+        }
+
+
+    }
+
+
     //Getters and Setters
 
     public String getName() {
@@ -149,6 +189,19 @@ public class GeneSet {
         this.genes = genes;
     }
 
+
+    public String toStringNames(GMTParameters params){
+       StringBuffer geneset = new StringBuffer();
+       HashMap<Integer,String> mappings = params.getHashkey2gene();
+        geneset.append(Name + "\t" + Description + "\t");
+
+        for(Iterator i = genes.iterator(); i.hasNext();){
+            Integer currentkey = (Integer)i.next();
+            if(mappings.containsKey(currentkey))
+                geneset.append( mappings.get(currentkey) + "\t");
+        }
+        return geneset.toString();
+    }
 
     public String toString(){
         StringBuffer geneset = new StringBuffer();

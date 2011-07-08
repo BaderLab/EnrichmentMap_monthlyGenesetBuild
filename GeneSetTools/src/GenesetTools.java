@@ -1,9 +1,9 @@
 
+import org.json.JSONException;
+import synergizer.SynergizerClient;
+
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.io.File;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -144,16 +144,126 @@ public class GenesetTools {
      }
 
     /**
-     *
-     * @param args - array of command line arguments
+     * Given a gmt file, the current species, current identifier type, the desired identifier type
+     * This Method translates all identifiers in each geneset to the new identifier using synergizer Java Api
+     * @param args - array of command line arguments,
+     *  First argument = command (compare/translate...)
+     *  second argument = path to gmt file
+     *  third argument  = species
+     *  fourth argument = original identifier ("Entrez gene", "Uniprot",...)
+     *  Fifth argument - new identifier
      * @throws IOException
      */
     public static void translate(String args[]) throws IOException {
+        String gmt_filename,outputfile, species, oldID, newID;
+        //Get the Filenames from the args, order is important
+        //second argument is the gmt file
+        //
+        if(args.length == 6){
+            gmt_filename = args[1];
+            outputfile = args[2];
+            species = args[3];
+            oldID = args[4];
+            newID = args[5];
+        }
+        else{
+            help();
+            System.out.println("USAGE: Command (GMT_filename(path to geneset file) FileOut species oldID newID");
+            return;
+        }
+        //create parameters
+        GMTParameters params = new GMTParameters();
 
+        //set file names
+        params.setGMTFileName(gmt_filename);
+
+        //parse gmt
+        //Load in the GMT file
+        try{
+            //Load the geneset file
+            GMTFileReaderTask gmtFile = new GMTFileReaderTask(params);
+            gmtFile.run();
+
+        } catch (OutOfMemoryError e) {
+            System.out.println("Out of Memory. Please increase memory allotement for cytoscape.");
+            return;
+        }  catch(Exception e){
+            System.out.println("unable to load GMT file");
+            return;
+        }
+
+        //get the Genesets
+        HashMap<String,GeneSet> genesets = params.getGenesets();
+        //create a new set of Geneset with the converted identifiers
+        HashMap<String, GeneSet> translated_genesets = new HashMap<String, GeneSet>();
+
+        //get the gene to hash key conversions
+        HashMap<Integer, String> hash2gene = params.getHashkey2gene();
+
+        //create synergizer connection
+        SynergizerClient client = new synergizer.SynergizerClient();
+
+        //Go through each geneset and translate the ids.
+         for(Iterator k = genesets.keySet().iterator(); k.hasNext(); ){
+            String geneset_name = k.next().toString();
+            GeneSet current_set =  genesets.get(geneset_name);
+
+            //get the genes in this geneset
+            HashSet<Integer> geneset_genes = current_set.getGenes();
+
+            Set GeneQuerySet = new HashSet<String>();
+
+            for(Iterator j = geneset_genes.iterator();j.hasNext();){
+                //get corresponding Gene from hash key
+                Integer current_key = (Integer)j.next();
+                if(hash2gene.containsKey(current_key)){
+                    String current_id = hash2gene.get(current_key);
+                    GeneQuerySet.add(current_id);
+                }
+            }
+             try{
+             SynergizerClient.TranslateResult res =
+                client.translate("ensembl", "Homo sapiens", "entrezgene",
+                   "hgnc_symbol", GeneQuerySet);
+
+                 //get the translation map
+                 Map<String, Set<String>> translation = res.translationMap();
+                 HashSet<String> new_genes = new HashSet<String>();
+                 for(Iterator b = translation.keySet().iterator();b.hasNext();)
+                     new_genes.addAll(translation.get(b.next()));
+                 String[] new_genes_string = new String[new_genes.size()];
+                 new_genes.toArray(new_genes_string);
+
+                 GeneSet new_set = new GeneSet(current_set.getName(), current_set.getDescription());
+                 new_set.addGeneList(new_genes_string,params);
+
+                 translated_genesets.put(new_set.getName(), new_set);
+
+                 System.out.println(new_set.toStringNames(params));
+
+                //System.out.println(res.translationMap());
+;
+                //System.out.println(res.unfoundSourceIDs());
+                //System.out.println(res.foundSourceIDsWithUnfoundTargetIDs());
+                //System.out.println(res.foundSourceIDsWithFoundTargetIDs());
+
+             } catch(JSONException e){
+
+             }
+         }
+
+        //open output file
+        File newgsfile = new File(outputfile);
+        BufferedWriter newgs = new BufferedWriter(new FileWriter(newgsfile));
+        for(Iterator c = translated_genesets.keySet().iterator();c.hasNext();){
+            newgs.write(translated_genesets.get(c.next()).toStringNames(params));
+            newgs.flush();
+        }
+        newgs.close();
     }
 
      enum Command {
-        translate("file1 currentID newID\t\ttakes gmt file and translates all of it ids to new id", 3)
+        translate("fileIn fileOut species currentID newID\t\ttakes gmt file and translates all of it ids to new id", 3)
 		        {public void run(String[] argv) throws IOException{translate(argv);} },
         compare("GMTfile GCTfile2 outputFile Diretory\t\t\tcompares gmt file to given gct (expression file) to generate stats relating to how many genesets each gene is found in", 2)
 		        {public void run(String[] argv) throws IOException{compare(argv);} },

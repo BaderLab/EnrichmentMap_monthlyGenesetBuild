@@ -4,8 +4,8 @@
     <defaultAnt bundledAnt="true" />
   </component>
   <component name="ArtifactManager">
-    <artifact type="jar" name="GMTAnalyzer:jar">
-      <output-path>$PROJECT_DIR$/out/artifacts/GMTAnalyzer_jar</output-path>
+    <artifact type="jar" name="GeneSetTools:jar">
+      <output-path>$PROJECT_DIR$/out/artifacts/GeneSetTools_jar</output-path>
       <root id="archive" name="GMTAnalyzer.jar">
         <element id="directory" name="META-INF">
           <element id="file-copy" path="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" />
@@ -194,17 +194,30 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/GMTAnalyzer.iml" filepath="$PROJECT_DIR$/GMTAnalyzer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/GeneSetTools.iml" filepath="$PROJECT_DIR$/GeneSetTools.iml" />
     </modules>
   </component>
   <component name="ProjectResources">
     <default-html-doctype>http://www.w3.org/1999/xhtml</default-html-doctype>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK" />
+  <component name="SvnBranchConfigurationManager">
+    <option name="mySupportsUserInfoFilter" value="true" />
+  </component>
   <component name="VcsDirectoryMappings">
-    <mapping directory="" vcs="" />
+    <mapping directory="$PROJECT_DIR$" vcs="svn" />
   </component>
   <component name="libraryTable">
     <library name="cytoscape">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/lib" />
+        <root url="file://$PROJECT_DIR$/lib" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/lib" recursive="false" />
+    </library>
+    <library name="synergizer">
       <CLASSES>
         <root url="file://$PROJECT_DIR$/lib" />
         <root url="file://$PROJECT_DIR$/lib" />
