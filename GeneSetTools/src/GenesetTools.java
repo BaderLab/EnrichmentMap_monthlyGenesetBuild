@@ -223,8 +223,8 @@ public class GenesetTools {
             }
              try{
              SynergizerClient.TranslateResult res =
-                client.translate("ensembl", "Homo sapiens", "entrezgene",
-                   "hgnc_symbol", GeneQuerySet);
+                client.translate("ensembl", species, oldID,
+                   newID, GeneQuerySet);
 
                  //get the translation map
                  Map<String, Set<String>> translation = res.translationMap();
@@ -236,6 +236,9 @@ public class GenesetTools {
 
                  GeneSet new_set = new GeneSet(current_set.getName(), current_set.getDescription());
                  new_set.addGeneList(new_genes_string,params);
+
+                 //output the stats for this geneset
+                 System.out.println(current_set.getName() + " " + GeneQuerySet.size()  + " " + res.foundSourceIDsWithUnfoundTargetIDs().size());
 
                  translated_genesets.put(new_set.getName(), new_set);
 
@@ -262,13 +265,39 @@ public class GenesetTools {
         newgs.close();
     }
 
+    public static void createGo(String args[]) throws IOException {
+        String outputfile, branch;
+        Integer species;
+        //Get the Filenames from the args, order is important
+        //second argument is the gmt file
+        //
+        if(args.length == 4){
+            branch = args[2];
+            outputfile = args[3];
+            species = Integer.parseInt(args[1]);
+
+        }
+        else{
+            help();
+            System.out.println("USAGE: Command species branch(bp,mf,cc,or all) outputfile");
+            return;
+        }
+
+        GOGeneSetFileMaker maker = new GOGeneSetFileMaker(species,branch,outputfile);
+
+        maker.makeQuery();
+    }
+
      enum Command {
         translate("fileIn fileOut species currentID newID\t\ttakes gmt file and translates all of it ids to new id", 3)
 		        {public void run(String[] argv) throws IOException{translate(argv);} },
         compare("GMTfile GCTfile2 outputFile Diretory\t\t\tcompares gmt file to given gct (expression file) to generate stats relating to how many genesets each gene is found in", 2)
 		        {public void run(String[] argv) throws IOException{compare(argv);} },
-        help("\t\t\t\t\t\tprints this screen and exits", Integer.MAX_VALUE)
+        createGo("Species Branch File", 3)
+                {public void run(String[] argv) throws IOException{createGo(argv);} },
+         help("\t\t\t\t\t\tprints this screen and exits", Integer.MAX_VALUE)
 		        {public void run(String[] argv) throws IOException{help();} };
+
 
         String description;
         int params;
