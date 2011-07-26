@@ -32,11 +32,17 @@ public class GOGeneSetFileMaker {
 	String fConnectionString = "jdbc:mysql://mysql.ebi.ac.uk:4085/go_latest?user=go_select&password=amigo"; //$NON-NLS-1$
     String fQueryFilename;
     String fBranch = "all"; //$NON-NLS-1$
+    int id_type=0;  //if id is zero then output the symbol, otherwise use the uniprots
 
-    public GOGeneSetFileMaker(int fTaxonomyId, String fBranch,String fQueryFilename) {
+    public GOGeneSetFileMaker(int fTaxonomyId, String fBranch,String fQueryFilename,int id_type) {
         this.fTaxonomyId = fTaxonomyId;
         this.fQueryFilename = fQueryFilename;
         this.fBranch = fBranch;
+        this.id_type = id_type;
+    }
+
+    String createVersionQuery(){
+        return "select I.release_name, I.release_type from instance_data as I";
     }
 
     String createGoQuery(long taxId) {
@@ -92,7 +98,7 @@ public class GOGeneSetFileMaker {
 	            System.err.printf("Unrecognized GO branch: %s\n", fBranch);
 	            return;
 	        }
-
+            String versionquery = createVersionQuery();
 	        String query = createGoQuery(fTaxonomyId);
 
 	        try {
@@ -100,14 +106,27 @@ public class GOGeneSetFileMaker {
 
 	            System.out.println("Connecting...");
 	            Connection connection = DriverManager.getConnection(fConnectionString);
-	            Statement statement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-	            statement.setFetchSize(Integer.MIN_VALUE);
+
 
 	            long start = System.currentTimeMillis();
 	            System.out.println("Executing query...");
-	            ResultSet results = statement.executeQuery(query);
+                Statement statement_ver = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+	            ResultSet versionRes = statement_ver.executeQuery(versionquery);
 
 	            PrintWriter writer = new PrintWriter(new File(fQueryFilename));
+
+                //write out the source and release at the top of the GMT file
+                //comments are not supported by GMT files so put the Release and Source as if it
+                //was a name and description of the GeneSet.
+                //% will indicate to EM that this is a EM compatible file.
+                if(versionRes.next())
+                    writer.print("%RELEASE:" + versionRes.getString("release_name") + "\t%SOURCE:" + fConnectionString + "\n");
+                statement_ver.close();
+
+                Statement statement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+	            statement.setFetchSize(Integer.MIN_VALUE);
+                ResultSet results = statement.executeQuery(query);
+
 	            try {
 	                long annotationsFetched = 0;
 	                Map<String, Set<String>> allCategories = new HashMap<String, Set<String>>();
@@ -119,18 +138,24 @@ public class GOGeneSetFileMaker {
 	                        }
 	                        String branch = results.getString("ancestor_term_type");
 	                        String id = results.getString("ancestor_acc");
+                            String name = results.getString("term_name");
+                            String name_descr = id + "\t" + name;
 	                        String gene = results.getString("symbol");
+                            String uniprot = results.getString("xref_key");
 
 	                        if (!(targetBranch.equals("all") || targetBranch.equals(branch))) {
 	                            continue;
 	                        }
 
-	                        Set<String> category = allCategories.get(id);
+	                        Set<String> category = allCategories.get(name_descr);
 	                        if (category == null) {
 	                            category = new HashSet<String>();
-	                            allCategories.put(id, category);
+	                            allCategories.put(name_descr, category);
 	                        }
-	                        category.add(gene);
+                            if(id_type == 0)
+	                            category.add(gene);
+                            else
+                                category.add(uniprot);
 	                    }
 
 	                    ArrayList<String> terms = new ArrayList<String>(allCategories.keySet());
@@ -140,8 +165,6 @@ public class GOGeneSetFileMaker {
 	                        Set<String> genes = allCategories.get(term);
 	                        totalCategories++;
 	                        writer.print(term);
-	                        writer.print("\t");
-	                        writer.print("+");
 	                        for (String gene : genes) {
 	                            writer.print("\t");
 	                            writer.print(gene);

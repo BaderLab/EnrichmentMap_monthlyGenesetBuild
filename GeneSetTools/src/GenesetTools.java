@@ -283,7 +283,7 @@ public class GenesetTools {
             return;
         }
 
-        GOGeneSetFileMaker maker = new GOGeneSetFileMaker(species,branch,outputfile);
+        GOGeneSetFileMaker maker = new GOGeneSetFileMaker(species,branch,outputfile,1);
 
         maker.makeQuery();
     }
