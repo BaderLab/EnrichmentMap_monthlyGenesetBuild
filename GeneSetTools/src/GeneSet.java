@@ -42,9 +42,7 @@
 // $HeadURL: svn+ssh://risserlin@server1.baderlab.med.utoronto.ca/svn/EnrichmentMap/trunk/EnrichmentMapPlugin/src/org/baderlab/csplugins/enrichmentmap/GeneSet.java $
 
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 
 
 /**
@@ -71,6 +69,11 @@ public class GeneSet {
     //genes associated with this gene set
     private HashSet<Integer> genes = null;
 
+    //used by paxtools gmt creation
+    private String taxID;
+    private String datasource;
+    private Map<String,String> rdfToGenes;
+
 
     /**
      * Class Constructor - creates gene set with a specified name and description with an empty
@@ -84,6 +87,11 @@ public class GeneSet {
         this.Description = descrip;
 
         genes = new HashSet<Integer>();
+
+    }
+
+    //blank constructor needed for paxtools GSEA converter
+    public GeneSet(){
 
     }
 
@@ -212,6 +220,49 @@ public class GeneSet {
             geneset.append( i.next().toString() + "\t");
 
         return geneset.toString();
+    }
+
+    //functions needed by paxtools implementation of Genesets
+    public String getTaxID() {
+    	return taxID;
+    }
+
+    public void setTaxID(String taxID) {
+    	this.taxID = taxID;
+    }
+
+    public String getDataSource() {
+        return datasource;
+    }
+
+    public void setDataSource(String datasource) {
+        this.datasource = datasource;
+    }
+
+    public Map<String, String> getRDFToGeneMap() {
+        return rdfToGenes;
+    }
+
+    public void setRDFToGeneMap(Map<String, String> rdfToGenes) {
+    	this.rdfToGenes = rdfToGenes;
+    }
+
+    public Collection<String> getrdfGenes() {
+    	return (rdfToGenes != null) ? rdfToGenes.values() : new HashSet<String>();
+    }
+
+    public String rdftoString() {
+
+    	String toReturn = "";
+    	if (Name != null && datasource != null && rdfToGenes != null) {
+    		toReturn = Name + "\t" + datasource;
+    		for (String gene : rdfToGenes.values()) {
+    			toReturn += "\t" + gene;
+    		}
+    	}
+
+    	// outta here
+        return toReturn;
     }
 
 

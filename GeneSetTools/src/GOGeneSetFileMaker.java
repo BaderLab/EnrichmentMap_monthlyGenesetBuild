@@ -14,6 +14,9 @@ import java.util.Map;
 import java.util.Set;
 import com.mysql.jdbc.Driver;
 
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.Option;
 /**
  * Created by IntelliJ IDEA.
  * User: risserlin
@@ -27,14 +30,21 @@ import com.mysql.jdbc.Driver;
     // and modified the output gmt file.
 public class GOGeneSetFileMaker {
 
+    @Option(name = "--organism", usage = "taxonomy id of organism", required = true)
     private int fTaxonomyId;
+    @Option(name = "--outfile", usage = "name of output file", required = true)
+    private String fQueryFilename;
+    @Option(name = "--branch", usage = "Branch of GO to use (one of: bp, mf, cc, all) - defaults to all")
+    private String fBranch = "all"; //$NON-NLS-1$
+    @Option(name = "--idtype", usage = "type of id to use (one of: uniprot or symbol) - Defaults to symbol")
+    private String id_type="symbol";
 
 	String fConnectionString = "jdbc:mysql://mysql.ebi.ac.uk:4085/go_latest?user=go_select&password=amigo"; //$NON-NLS-1$
-    String fQueryFilename;
-    String fBranch = "all"; //$NON-NLS-1$
-    int id_type=0;  //if id is zero then output the symbol, otherwise use the uniprots
 
-    public GOGeneSetFileMaker(int fTaxonomyId, String fBranch,String fQueryFilename,int id_type) {
+    public GOGeneSetFileMaker() {
+    }
+
+    public GOGeneSetFileMaker(int fTaxonomyId, String fBranch,String fQueryFilename,String id_type) {
         this.fTaxonomyId = fTaxonomyId;
         this.fQueryFilename = fQueryFilename;
         this.fBranch = fBranch;
@@ -152,10 +162,10 @@ public class GOGeneSetFileMaker {
 	                            category = new HashSet<String>();
 	                            allCategories.put(name_descr, category);
 	                        }
-                            if(id_type == 0)
-	                            category.add(gene);
+                            if(id_type.equalsIgnoreCase("uniprot"))
+	                            category.add(uniprot);
                             else
-                                category.add(uniprot);
+                                category.add(gene);
 	                    }
 
 	                    ArrayList<String> terms = new ArrayList<String>(allCategories.keySet());
