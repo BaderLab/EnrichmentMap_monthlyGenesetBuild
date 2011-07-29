@@ -127,6 +127,13 @@ public class GMTFileReaderTask implements Task {
 
                 String[] tokens = line.split("\t");
 
+                //if the first line starts with "%" extract the version and the source
+                if(i ==1 && line.startsWith("%")){
+                    params.setVersion(tokens[0]);
+                    if(tokens.length > 1)
+                        params.setSource(tokens[1]);
+                }
+
                 //only go through the lines that have at least a gene set name and description.
                 if(tokens.length >= 2){
                     //The first column of the file is the name of the geneset

@@ -16,17 +16,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="1aa66b2a-6deb-4621-b183-e56ae32051be" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/args4j-2.0.17.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/paxtools-4.0.0-20110628.jar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/BulkGSEAConverter.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/CompareGMT.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/GSEAConverter.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/GeneSetTranslator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GeneSetTools.ipr" afterPath="$PROJECT_DIR$/GeneSetTools.ipr" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GeneSetTools.iws" afterPath="$PROJECT_DIR$/GeneSetTools.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/GOGeneSetFileMaker.java" afterPath="$PROJECT_DIR$/src/GOGeneSetFileMaker.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/GeneSet.java" afterPath="$PROJECT_DIR$/src/GeneSet.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/GenesetTools.java" afterPath="$PROJECT_DIR$/src/GenesetTools.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BulkGSEAConverter.java" afterPath="$PROJECT_DIR$/src/BulkGSEAConverter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/GMTFileReaderTask.java" afterPath="$PROJECT_DIR$/src/GMTFileReaderTask.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/GMTParameters.java" afterPath="$PROJECT_DIR$/src/GMTParameters.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/GeneSetTranslator.java" afterPath="$PROJECT_DIR$/src/GeneSetTranslator.java" />
     </list>
     <ignored path="GMTAnalyzer.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -101,7 +95,59 @@
   </component>
   <component name="DebuggerManager">
     <line_breakpoints>
+      <breakpoint url="file://$PROJECT_DIR$/src/GeneSetTranslator.java" line="245" class="GeneSetTranslator" package="">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="false" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/src/GeneSetTranslator.java" line="86" class="GeneSetTranslator" package="">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="false" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/src/GeneSetTranslator.java" line="152" class="GeneSetTranslator" package="">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="false" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
       <breakpoint url="file://$PROJECT_DIR$/src/GeneSetTranslator.java" line="174" class="GeneSetTranslator" package="">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="false" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/src/GeneSetTranslator.java" line="262" class="GeneSetTranslator" package="">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -171,19 +217,17 @@
       <file leaf-file-name="GenesetTools.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/GenesetTools.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="30" column="0" selection-start="721" selection-end="721" vertical-scroll-proportion="0.0">
+            <state line="83" column="61" selection-start="2679" selection-end="2679" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BulkGSEAConverter.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="BulkGSEAConverter.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/BulkGSEAConverter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="57" column="41" selection-start="2586" selection-end="2586" vertical-scroll-proportion="1.8293918">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state line="150" column="85" selection-start="6608" selection-end="6608" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -192,29 +236,18 @@
         <entry file="file://$PROJECT_DIR$/src/CompareGMT.java">
           <provider selected="true" editor-type-id="text-editor">
             <state line="18" column="14" selection-start="415" selection-end="415" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GeneSetTranslator.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="GeneSetTranslator.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/GeneSetTranslator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="173" column="66" selection-start="7111" selection-end="7111" vertical-scroll-proportion="0.0">
+            <state line="216" column="64" selection-start="8939" selection-end="8939" vertical-scroll-proportion="0.0317757">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="HashMap.class" pinned="false" current="false" current-in-tab="false">
-        <entry file="jar:///System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/classes.jar!/java/util/HashMap.class">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="200" column="0" selection-start="7351" selection-end="7351" vertical-scroll-proportion="0.0">
-              <folding />
             </state>
           </provider>
         </entry>
@@ -222,10 +255,8 @@
       <file leaf-file-name="GSEAConverter.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/GSEAConverter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="194" column="0" selection-start="6105" selection-end="6105" vertical-scroll-proportion="-4.1923075">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state line="194" column="0" selection-start="6105" selection-end="6105" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -233,10 +264,8 @@
       <file leaf-file-name="GOGeneSetFileMaker.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/GOGeneSetFileMaker.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="33" column="31" selection-start="971" selection-end="1081" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state line="39" column="51" selection-start="1498" selection-end="1498" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -244,7 +273,7 @@
       <file leaf-file-name="GMTFileReaderTask.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/GMTFileReaderTask.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="113" column="0" selection-start="3665" selection-end="3665" vertical-scroll-proportion="0.0">
+            <state line="133" column="52" selection-start="4378" selection-end="4378" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -253,7 +282,7 @@
       <file leaf-file-name="GMTParameters.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/GMTParameters.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="9" column="13" selection-start="125" selection-end="125" vertical-scroll-proportion="0.0">
+            <state line="126" column="32" selection-start="3572" selection-end="3572" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -287,7 +316,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/GMTParameters.java" />
         <option value="$PROJECT_DIR$/src/ExpressionFileReaderTask.java" />
         <option value="$PROJECT_DIR$/src/Analyze.java" />
         <option value="$PROJECT_DIR$/src/GOGeneSetFileMaker.java" />
@@ -299,6 +327,8 @@
         <option value="$PROJECT_DIR$/src/GSEAConverter.java" />
         <option value="$PROJECT_DIR$/src/GenesetTools.java" />
         <option value="$PROJECT_DIR$/src/BulkGSEAConverter.java" />
+        <option value="$PROJECT_DIR$/src/GMTParameters.java" />
+        <option value="$PROJECT_DIR$/src/GMTFileReaderTask.java" />
         <option value="$PROJECT_DIR$/src/GeneSetTranslator.java" />
       </list>
     </option>
@@ -442,7 +472,6 @@
     </navigator>
     <panes>
       <pane id="PackagesPane" />
-      <pane id="Favorites" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -461,37 +490,10 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="GeneSetTools" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="GeneSetTools" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="GeneSetTools" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="GeneSetTools" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="lib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
       <pane id="Scope" />
+      <pane id="Favorites" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -520,120 +522,7 @@
     <property name="options.searchVisible" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
   </component>
-  <component name="RestoreUpdateTree">
-    <UpdateInfo date="Moments ago" ActionInfo="_Update">
-      <UpdatedFiles>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Updated from server" />
-          <option name="myStatusName" value="Changed on server" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="CHANGED_ON_SERVER" />
-          <FILE-GROUP>
-            <option name="myUpdateName" value="Updated" />
-            <option name="myStatusName" value="Changed" />
-            <option name="mySupportsDeletion" value="false" />
-            <option name="myCanBeAbsent" value="false" />
-            <option name="myId" value="UPDATED" />
-            <PATH vcs="svn" revision="2004">$PROJECT_DIR$/src/GenesetTools.java</PATH>
-            <PATH vcs="svn" revision="2004">$PROJECT_DIR$/src/GOGeneSetFileMaker.java</PATH>
-          </FILE-GROUP>
-          <FILE-GROUP>
-            <option name="myUpdateName" value="Created" />
-            <option name="myStatusName" value="Created" />
-            <option name="mySupportsDeletion" value="false" />
-            <option name="myCanBeAbsent" value="false" />
-            <option name="myId" value="CREATED" />
-          </FILE-GROUP>
-          <FILE-GROUP>
-            <option name="myUpdateName" value="Deleted" />
-            <option name="myStatusName" value="Deleted" />
-            <option name="mySupportsDeletion" value="false" />
-            <option name="myCanBeAbsent" value="true" />
-            <option name="myId" value="REMOVED_FROM_REPOSITORY" />
-          </FILE-GROUP>
-          <FILE-GROUP>
-            <option name="myUpdateName" value="Restored" />
-            <option name="myStatusName" value="Will be restored" />
-            <option name="mySupportsDeletion" value="false" />
-            <option name="myCanBeAbsent" value="false" />
-            <option name="myId" value="RESTORED" />
-          </FILE-GROUP>
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Modified" />
-          <option name="myStatusName" value="Modified" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="MODIFIED" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Skipped" />
-          <option name="myStatusName" value="Skipped" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="SKIPPED" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Merged with conflicts" />
-          <option name="myStatusName" value="Will be merged with conflicts" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="MERGED_WITH_CONFLICTS" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Merged with tree conflicts" />
-          <option name="myStatusName" value="Merged with tree conflicts" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Merged" />
-          <option name="myStatusName" value="Will be merged" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="MERGED" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Not in repository" />
-          <option name="myStatusName" value="Not in repository" />
-          <option name="mySupportsDeletion" value="true" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="UNKNOWN" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Locally added" />
-          <option name="myStatusName" value="Locally added" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="LOCALLY_ADDED" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Locally removed" />
-          <option name="myStatusName" value="Locally removed" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="LOCALLY_REMOVED" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Switched" />
-          <option name="myStatusName" value="Switched" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="SWITCHED" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Merged with property conflicts" />
-          <option name="myStatusName" value="Will be merged with property conflicts" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
-        </FILE-GROUP>
-      </UpdatedFiles>
-    </UpdateInfo>
-  </component>
-  <component name="RunManager" selected="Application.bulk">
+  <component name="RunManager" selected="Application.translateGeneSet">
     <configuration default="true" type="Remote" factoryName="Remote">
       <option name="USE_SOCKET_TRANSPORT" value="true" />
       <option name="SERVER_MODE" value="false" />
@@ -711,7 +600,7 @@
     <configuration default="false" name="translateGeneSet" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="GenesetTools" />
       <option name="VM_PARAMETERS" value="-Xmx1000M" />
-      <option name="PROGRAM_PARAMETERS" value="translate --gmt ../GeneSetUpdater/GO/GOBP_human_symbol.gmt --outfile ../GeneSetUpdater/GO/GOBP_human_eg.gmt --organism &quot;Homo Sapiens&quot; --oldID &quot;hgnc_symbol&quot; --newID &quot;entrezgene&quot;" />
+      <option name="PROGRAM_PARAMETERS" value="translate --gmt testfiles/GOMF_human_symbol.gmt  --organism 9606 --oldID &quot;symbol&quot; " />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
@@ -781,8 +670,8 @@
     </configuration>
     <configuration default="false" name="bulk" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="GenesetTools" />
-      <option name="VM_PARAMETERS" value="-Xmx2G" />
-      <option name="PROGRAM_PARAMETERS" value="bulk --biopax ../GeneSetUpdater/validatedBiopax/IOB --out ../GeneSetUpdater/gmtfiles/IOB --id &quot;Entrez gene&quot; --speciescheck FALSE" />
+      <option name="VM_PARAMETERS" value="-Xmx1G" />
+      <option name="PROGRAM_PARAMETERS" value="bulk --biopax testfiles --out testfiles/GO --id &quot;Entrez gene&quot; --speciescheck FALSE" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
@@ -833,8 +722,6 @@
   <component name="SvnConfiguration" maxAnnotateRevisions="500">
     <option name="USER" value="" />
     <option name="PASSWORD" value="" />
-    <option name="mySSHConnectionTimeout" value="30000" />
-    <option name="mySSHReadTimeout" value="30000" />
     <option name="LAST_MERGED_REVISION" />
     <option name="MERGE_DRY_RUN" value="false" />
     <option name="MERGE_DIFF_USE_ANCESTRY" value="true" />
@@ -845,7 +732,7 @@
     <option name="IGNORE_SPACES_IN_ANNOTATE" value="true" />
     <option name="SHOW_MERGE_SOURCES_IN_ANNOTATE" value="true" />
     <option name="FORCE_UPDATE" value="false" />
-    <configuration useDefault="true">$USER_HOME$/.subversion_IDEA</configuration>
+    <configuration useDefault="true">C:\Documents and Settings\User\Application Data\Subversion</configuration>
     <myIsUseDefaultProxy>false</myIsUseDefaultProxy>
     <supportedVersion>125</supportedVersion>
   </component>
@@ -853,16 +740,16 @@
     <option name="myMappingRoots">
       <list>
         <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="$PROJECT_DIR$" />
-          <option name="myCopyRoot" value="$PROJECT_DIR$" />
+          <option name="myVcsRoot" value="C:\Documents and Settings\User\Desktop\Lab work\GenesetUpdater\GeneSetTools" />
+          <option name="myCopyRoot" value="C:\Documents and Settings\User\Desktop\Lab work\GenesetUpdater\GeneSetTools" />
         </SvnCopyRootSimple>
       </list>
     </option>
     <option name="myMoreRealMappingRoots">
       <list>
         <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="$PROJECT_DIR$" />
-          <option name="myCopyRoot" value="$PROJECT_DIR$" />
+          <option name="myVcsRoot" value="C:\Documents and Settings\User\Desktop\Lab work\GenesetUpdater\GeneSetTools" />
+          <option name="myCopyRoot" value="C:\Documents and Settings\User\Desktop\Lab work\GenesetUpdater\GeneSetTools" />
         </SvnCopyRootSimple>
       </list>
     </option>
@@ -890,28 +777,28 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="22" width="1920" height="1076" extended-state="0" />
+    <frame x="-4" y="-4" width="1032" height="742" extended-state="6" />
     <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32881" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5647182" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32985386" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32672232" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18546233" sideWeight="0.68267226" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.31732777" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.185261" sideWeight="0.54974705" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5632378" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.44878048" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32985386" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="File View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32881" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32546374" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="EJB" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="JProfiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
@@ -930,15 +817,6 @@
   <component name="VcsManagerConfiguration">
     <option name="OFFER_MOVE_TO_ANOTHER_CHANGELIST_ON_PARTIAL_COMMIT" value="true" />
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="true" />
-    <option name="CHECK_NEW_TODO" value="true" />
-    <option name="myTodoPanelSettings">
-      <value>
-        <are-packages-shown value="false" />
-        <are-modules-shown value="false" />
-        <flatten-packages value="false" />
-        <is-autoscroll-to-source value="false" />
-      </value>
-    </option>
     <option name="PERFORM_UPDATE_IN_BACKGROUND" value="true" />
     <option name="PERFORM_COMMIT_IN_BACKGROUND" value="true" />
     <option name="PERFORM_EDIT_IN_BACKGROUND" value="true" />
@@ -950,7 +828,6 @@
     <option name="CHANGED_ON_SERVER_INTERVAL" value="60" />
     <option name="SHOW_ONLY_CHANGED_IN_SELECTION_DIFF" value="true" />
     <option name="CHECK_COMMIT_MESSAGE_SPELLING" value="true" />
-    <option name="DEFAULT_PATCH_EXTENSION" value="patch" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="LAST_COMMIT_MESSAGE" value="add needed mysql library" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
@@ -1022,108 +899,63 @@
     </entry>
     <entry file="jar://$PROJECT_DIR$/lib/args4j-2.0.17.jar!/org/kohsuke/args4j/CmdLineParser.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="46" column="16" selection-start="2623" selection-end="2623" vertical-scroll-proportion="-4.72">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/classes.jar!/java/util/Arrays.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="242" column="26" selection-start="11339" selection-end="11339" vertical-scroll-proportion="0.13169643">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/GOGeneSetFileMaker.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="33" column="31" selection-start="971" selection-end="1081" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/classes.jar!/java/util/AbstractCollection.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="38" column="0" selection-start="1375" selection-end="1375" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/GeneSet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="92" column="0" selection-start="3212" selection-end="3212" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/GMTParameters.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="13" selection-start="125" selection-end="125" vertical-scroll-proportion="0.0" />
+        <state line="46" column="16" selection-start="2623" selection-end="2623" vertical-scroll-proportion="-4.72" />
       </provider>
     </entry>
     <entry file="jar://$PROJECT_DIR$/lib/paxtools-4.0.0-20110628.jar!/org/biopax/paxtools/controller/Traverser.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="16" selection-start="933" selection-end="933" vertical-scroll-proportion="-6.36">
+        <state line="17" column="16" selection-start="933" selection-end="933" vertical-scroll-proportion="-6.36" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/GenesetTools.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="83" column="61" selection-start="2679" selection-end="2679" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/BulkGSEAConverter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="150" column="85" selection-start="6608" selection-end="6608" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/CompareGMT.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="14" selection-start="415" selection-end="415" vertical-scroll-proportion="0.0">
+        <state line="18" column="14" selection-start="415" selection-end="415" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/GeneSetTranslator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="216" column="64" selection-start="8939" selection-end="8939" vertical-scroll-proportion="0.0317757">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/GMTFileReaderTask.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="113" column="0" selection-start="3665" selection-end="3665" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/classes.jar!/java/util/HashMap.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="200" column="0" selection-start="7351" selection-end="7351" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/GenesetTools.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="0" selection-start="721" selection-end="721" vertical-scroll-proportion="0.0">
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/GSEAConverter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="194" column="0" selection-start="6105" selection-end="6105" vertical-scroll-proportion="-4.1923075">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
+        <state line="194" column="0" selection-start="6105" selection-end="6105" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/GeneSetTranslator.java">
+    <entry file="file://$PROJECT_DIR$/src/GOGeneSetFileMaker.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="173" column="66" selection-start="7111" selection-end="7111" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
+        <state line="39" column="51" selection-start="1498" selection-end="1498" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/BulkGSEAConverter.java">
+    <entry file="file://$PROJECT_DIR$/src/GMTFileReaderTask.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="57" column="41" selection-start="2586" selection-end="2586" vertical-scroll-proportion="1.8293918">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
+        <state line="133" column="52" selection-start="4378" selection-end="4378" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/GMTParameters.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="126" column="32" selection-start="3572" selection-end="3572" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/GeneSet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="92" column="0" selection-start="3212" selection-end="3212" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
   </component>

@@ -13,6 +13,11 @@ public class GMTParameters {
     //Input File names
     //GMT - gene set definition file
     private String GMTFileName;
+
+    //if there is a header, track this info.
+    private String version;
+    private String source;
+
     //Expression files
     private String expressionFileName1;
 
@@ -119,5 +124,19 @@ public class GMTParameters {
         this.expression = expression;
     }
 
+    public String getVersion() {
+        return version;
+    }
 
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
 }

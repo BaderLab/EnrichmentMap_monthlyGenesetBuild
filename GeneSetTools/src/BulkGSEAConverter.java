@@ -50,11 +50,103 @@ public class BulkGSEAConverter {
 
                     //convert entrez gene file to symbols
                     String translated_filename = outdir.getAbsolutePath() + File.separator + children[k].split(".owl")[0] +"_symbol.gmt";
-                    GeneSetTranslator translator = new GeneSetTranslator(current_outfilename,translated_filename,"Homo Sapiens", "entrezgene","hgnc_symbol");
+                    GeneSetTranslator translator = new GeneSetTranslator(current_outfilename,9606, "entrezgene");
                     translator.translate();
 
                 }
             }
         }
+
+        //create all the GO subsets
+        //human - mf
+        current_outfilename = outdir.getAbsolutePath() + File.separator +"GOMF_human_uniprot.gmt";
+        GOGeneSetFileMaker gomaker = new GOGeneSetFileMaker(9606,"mf",current_outfilename,"uniprot");
+        gomaker.makeQuery();
+
+        current_outfilename = outdir.getAbsolutePath() + File.separator +"GOMF_human_symbol.gmt";
+        gomaker = new GOGeneSetFileMaker(9606,"mf",current_outfilename,"symbol");
+        gomaker.makeQuery();
+
+        //translate
+        //convert symbols to entrez gene ids
+        String translated_filename = outdir.getAbsolutePath() + File.separator +"GOMF_human_eg.gmt";
+        GeneSetTranslator translator = new GeneSetTranslator(current_outfilename,9606, "symbol");
+        translator.translate();
+
+        //try convert the uniprots
+        translator = new GeneSetTranslator(current_outfilename,9606, "uniprot");
+        translator.translate();
+
+        //human - bp
+        current_outfilename = outdir.getAbsolutePath() + File.separator +"GOBP_human_uniprot.gmt";
+        gomaker = new GOGeneSetFileMaker(9606,"bp",current_outfilename,"uniprot");
+        gomaker.makeQuery();
+
+        current_outfilename = outdir.getAbsolutePath() + File.separator +"GOBP_human_symbol.gmt";
+        gomaker = new GOGeneSetFileMaker(9606,"bp",current_outfilename,"symbol");
+        gomaker.makeQuery();
+
+        //translate
+        //convert symbols to entrez gene ids
+        translator = new GeneSetTranslator(current_outfilename,9606, "symbol");
+        translator.translate();
+
+        //human - cc
+        current_outfilename = outdir.getAbsolutePath() + File.separator +"GOCC_human_uniprot.gmt";
+        gomaker = new GOGeneSetFileMaker(9606,"cc",current_outfilename,"uniprot");
+        gomaker.makeQuery();
+
+        current_outfilename = outdir.getAbsolutePath() + File.separator +"GOCC_human_symbol.gmt";
+        gomaker = new GOGeneSetFileMaker(9606,"cc",current_outfilename,"symbol");
+        gomaker.makeQuery();
+
+        //translate
+        //convert symbols to entrez gene ids
+        translator = new GeneSetTranslator(current_outfilename,9606, "symbol");
+        translator.translate();
+
+
+        //mouse - mf
+        current_outfilename = outdir.getAbsolutePath() + File.separator +"GOMF_mouse_uniprot.gmt";
+        gomaker = new GOGeneSetFileMaker(10090,"mf",current_outfilename,"uniprot");
+        gomaker.makeQuery();
+
+        current_outfilename = outdir.getAbsolutePath() + File.separator +"GOMF_mouse_symbol.gmt";
+        gomaker = new GOGeneSetFileMaker(10090,"mf",current_outfilename,"symbol");
+        gomaker.makeQuery();
+
+        //translate
+        //convert symbols to entrez gene ids
+        translator = new GeneSetTranslator(current_outfilename,10090, "symbol");
+        translator.translate();
+
+        //mouse - bp
+        current_outfilename = outdir.getAbsolutePath() + File.separator +"GOBP_mouse_uniprot.gmt";
+        gomaker = new GOGeneSetFileMaker(10090,"bp",current_outfilename,"uniprot");
+        gomaker.makeQuery();
+
+        current_outfilename = outdir.getAbsolutePath() + File.separator +"GOBP_mouse_symbol.gmt";
+        gomaker = new GOGeneSetFileMaker(10090,"bp",current_outfilename,"symbol");
+        gomaker.makeQuery();
+
+        //translate
+        //convert symbols to entrez gene ids
+        translator = new GeneSetTranslator(current_outfilename,10090, "symbol");
+        translator.translate();
+
+        //mouse - cc
+        current_outfilename = outdir.getAbsolutePath() + File.separator +"GOCC_mouse_uniprot.gmt";
+        gomaker = new GOGeneSetFileMaker(10090,"cc",current_outfilename,"uniprot");
+        gomaker.makeQuery();
+
+        current_outfilename = outdir.getAbsolutePath() + File.separator +"GOCC_mouse_symbol.gmt";
+        gomaker = new GOGeneSetFileMaker(10090,"cc",current_outfilename,"symbol");
+        gomaker.makeQuery();
+
+        //translate
+        //convert symbols to entrez gene ids
+        translator = new GeneSetTranslator(current_outfilename,10090, "symbol");
+        translator.translate();
+
     }
 }
