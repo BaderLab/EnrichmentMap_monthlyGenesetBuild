@@ -58,6 +58,33 @@ public class GenesetTools {
 
      }
 
+
+    /**
+     * Method to compare two gmt files.  You can either compare the exact contents of two files
+     * by comparing the genes in each genesets or just the counts in each genesets (if the identifiers)
+     * don;t mathc)
+     *
+     * Output: for each geneset that doesn't match in the two files there is the number of and a list of unique
+     * genes in gmt1 and the number of and list of genes in gmt2 followed by the number shared genes
+     */
+    public static void compare2gmt(String args[]) throws IOException {
+
+            Compare2GMT comparator = new Compare2GMT();
+            CmdLineParser parser = new CmdLineParser(comparator);
+            try {
+               parser.parseArgument(args);
+                } catch (CmdLineException e) {
+                System.err.println(e.getMessage());
+                help();
+                parser.printUsage(System.err);
+                return;
+            }
+            comparator.compare();
+
+         }
+
+
+
     /**
      * Given a gmt file, the current species, current identifier type, the desired identifier type
      * This Method translates all identifiers in each geneset to the new identifier using synergizer Java Api
@@ -159,6 +186,8 @@ public class GenesetTools {
                 {public void run(String[] argv) throws IOException{toGSEA(Arrays.copyOfRange(argv,1,argv.length));} },
         bulk("owldir outdir id speciescheck\t\t\t converts all biopax files in a directory to gmt files",4)
                 { public void run(String[] argv) throws IOException{bulk(Arrays.copyOfRange(argv,1,argv.length));} },
+        compare2gmt("gmt1 gmt2 dir cmd \t\t\t compares the contents or counts of two gmt files",4)
+                { public void run(String[] argv) throws IOException{compare2gmt(Arrays.copyOfRange(argv,1,argv.length));} },
         help("\t\t\t\t\t\tprints this screen and exits", Integer.MAX_VALUE)
 		        {public void run(String[] argv) throws IOException{help();} };
 

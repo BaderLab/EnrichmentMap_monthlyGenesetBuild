@@ -14,6 +14,9 @@ public class GMTParameters {
     //GMT - gene set definition file
     private String GMTFileName;
 
+    //when comparing to gmt files there is another gmt file name
+    private String GMTFileName2;
+
     //if there is a header, track this info.
     private String version;
     private String source;
@@ -35,6 +38,8 @@ public class GMTParameters {
 
     //Hashmap of all genesets in the geneset file (gmt file)
     private HashMap<String, GeneSet> genesets;
+    //Hashmap of all genesets in the geneset file (gmt file)
+    private HashMap<String, GeneSet> genesets_2;
     //Hashmap of the filtered Genesets.  After loading in the expression file the genesets are restricted
     //to contain only the proteins specified in the expression file.
     private HashMap<String, GeneSet> filteredGenesets;
@@ -49,6 +54,7 @@ public class GMTParameters {
         this.hashkey2gene = new HashMap<Integer, String>();
         this.datasetGenes = new HashMap<String, Integer>();
         this.genesets = new HashMap<String, GeneSet>();
+        this.genesets_2 = new HashMap<String, GeneSet>();
         this.filteredGenesets = new HashMap<String, GeneSet>();
     }
 
@@ -138,5 +144,21 @@ public class GMTParameters {
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public String getGMTFileName2() {
+        return GMTFileName2;
+    }
+
+    public void setGMTFileName2(String GMTFileName2) {
+        this.GMTFileName2 = GMTFileName2;
+    }
+
+    public HashMap<String, GeneSet> getGenesets_2() {
+        return genesets_2;
+    }
+
+    public void setGenesets_2(HashMap<String, GeneSet> genesets_2) {
+        this.genesets_2 = genesets_2;
     }
 }

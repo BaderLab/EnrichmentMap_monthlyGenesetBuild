@@ -102,7 +102,25 @@ public class GMTFileReaderTask implements Task {
         this.genesets = params.getGenesets();
 
     }
+    /**
+     * Class constructor
+     *
+     * @param params - enrichment map parameters of current map
+     */
+    public GMTFileReaderTask(GMTParameters params, int datafile)   {
+        this.params = params;
 
+        this.GMTFileName = params.getGMTFileName();
+        this.genes = params.getGenes();
+        this.hashkey2gene = params.getHashkey2gene();
+
+        if(datafile == 1 )
+            this.genesets = params.getGenesets();
+        else if(datafile == 2){
+            this.genesets = params.getGenesets_2();
+            this.GMTFileName = params.getGMTFileName2();
+        }
+    }
 
     /**
      * parse GMT (gene set) file

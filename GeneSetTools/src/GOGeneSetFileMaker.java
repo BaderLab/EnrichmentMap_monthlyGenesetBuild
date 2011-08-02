@@ -76,6 +76,43 @@ public class GOGeneSetFileMaker {
               return "select" +
                       " ancestor_term.term_type as ancestor_term_type," +
                       " ancestor_term.name as term_name , ancestor_term.acc as ancestor_acc," +
+                       " gene_product.symbol " +
+                      " from association, term as ancestor_term, term as descendent_term," +
+                      " gene_product, species, evidence, graph_path " +
+                       "  where species.ncbi_taxa_id = " + taxId +
+	                   " and species.id = gene_product.species_id  " +
+	                      " and association.gene_product_id = gene_product.id " +
+	                      " and ancestor_term.id = graph_path.term1_id   " +
+	                      " and descendent_term.id = graph_path.term2_id  " +
+	                      " and evidence.association_id = association.id  " +
+	                     // ignoreClause +
+	                      " and association.term_id = descendent_term.id  " +
+	                      " and association.is_not = 0   " +
+	                      " and descendent_term.is_obsolete = 0;";
+	    }
+
+
+    String createGoQuery_uniprot(long taxId) {
+	        String ignoreClause = "and evidence.code not in ('IEA', 'ND', 'RCA')";
+	        /*return "select" +
+	            " ancestor_term.term_type as ancestor_term_type, ancestor_term.acc as ancestor_acc," +
+	            " gene_product.symbol" +
+	            " from association, term as ancestor_term, term as descendent_term, gene_product, species, evidence, graph_path, dbxref" +
+	            " where species.ncbi_taxa_id = " +
+	            taxId +
+	            " and species.id = gene_product.species_id" +
+	            " and association.gene_product_id = gene_product.id" +
+	            " and ancestor_term.id = graph_path.term1_id" +
+	            " and descendent_term.id = graph_path.term2_id" +
+	            " and evidence.association_id = association.id " +
+	            ignoreClause +
+	            " and association.term_id = descendent_term.id" +
+	            " and gene_product.dbxref_id = dbxref.id" +
+	            " and association.is_not = 0" +
+	            " and descendent_term.is_obsolete = 0;"; */
+              return "select" +
+                      " ancestor_term.term_type as ancestor_term_type," +
+                      " ancestor_term.name as term_name , ancestor_term.acc as ancestor_acc," +
                        " gene_product.symbol,dbxref.xref_key" +
                       " from association, term as ancestor_term, term as descendent_term," +
                       " gene_product, species, evidence, graph_path, dbxref " +
@@ -92,7 +129,6 @@ public class GOGeneSetFileMaker {
 	                      " and association.is_not = 0   " +
 	                      " and descendent_term.is_obsolete = 0;";
 	    }
-
 	    @SuppressWarnings("nls")
 	    void makeQuery() throws IOException {
 	        //checkWritable(fQueryFilename);
@@ -109,7 +145,11 @@ public class GOGeneSetFileMaker {
 	            return;
 	        }
             String versionquery = createVersionQuery();
-	        String query = createGoQuery(fTaxonomyId);
+	        String query ;
+            if(id_type.equalsIgnoreCase("uniprot"))
+                    query = createGoQuery_uniprot(fTaxonomyId);
+            else
+                query = createGoQuery(fTaxonomyId);
 
 	        try {
 	            new Driver();
@@ -151,7 +191,9 @@ public class GOGeneSetFileMaker {
                             String name = results.getString("term_name");
                             String name_descr = id + "\t" + name;
 	                        String gene = results.getString("symbol");
-                            String uniprot = results.getString("xref_key");
+                            String uniprot = "";
+                            if(id_type.equalsIgnoreCase("uniprot"))
+                                uniprot = results.getString("xref_key");
 
 	                        if (!(targetBranch.equals("all") || targetBranch.equals(branch))) {
 	                            continue;
