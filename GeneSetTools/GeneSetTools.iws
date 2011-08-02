@@ -16,13 +16,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="1aa66b2a-6deb-4621-b183-e56ae32051be" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Compare2GMT.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GeneSetTools.iws" afterPath="$PROJECT_DIR$/GeneSetTools.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BulkGSEAConverter.java" afterPath="$PROJECT_DIR$/src/BulkGSEAConverter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/GMTFileReaderTask.java" afterPath="$PROJECT_DIR$/src/GMTFileReaderTask.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/GMTParameters.java" afterPath="$PROJECT_DIR$/src/GMTParameters.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/GOGeneSetFileMaker.java" afterPath="$PROJECT_DIR$/src/GOGeneSetFileMaker.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/GenesetTools.java" afterPath="$PROJECT_DIR$/src/GenesetTools.java" />
     </list>
     <ignored path="GMTAnalyzer.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -288,7 +282,7 @@
       <file leaf-file-name="Compare2GMT.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Compare2GMT.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="162" column="55" selection-start="6591" selection-end="6591" vertical-scroll-proportion="0.39285713">
+            <state line="162" column="55" selection-start="6591" selection-end="6591" vertical-scroll-proportion="0.116883114">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -842,8 +836,8 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-4" y="-4" width="1032" height="742" extended-state="7" />
-    <editor active="true" />
+    <frame x="-4" y="-4" width="1032" height="742" extended-state="6" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -857,7 +851,7 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2661208" sideWeight="0.6475548" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3524452" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3524452" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="File View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -1037,7 +1031,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Compare2GMT.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="162" column="55" selection-start="6591" selection-end="6591" vertical-scroll-proportion="0.39285713">
+        <state line="162" column="55" selection-start="6591" selection-end="6591" vertical-scroll-proportion="0.116883114">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
