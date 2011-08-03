@@ -59,49 +59,48 @@ public class BulkGSEAConverter {
 
         //create all the GO subsets
         //human - mf
-        current_outfilename = outdir.getAbsolutePath() + File.separator +"GOMF_human_uniprot.gmt";
-        GOGeneSetFileMaker gomaker = new GOGeneSetFileMaker(9606,"mf",current_outfilename,"uniprot");
-//        gomaker.makeQuery();
-
         current_outfilename = outdir.getAbsolutePath() + File.separator +"GOMF_human_symbol.gmt";
-/*        gomaker = new GOGeneSetFileMaker(9606,"mf",current_outfilename,"symbol");
-        gomaker.makeQuery();
+        GOGeneSetFileMaker gomaker = new GOGeneSetFileMaker(9606,"mf",current_outfilename,"symbol");
+        gomaker.queryEBI();
 
         //translate
         //convert symbols to entrez gene ids
-*/         GeneSetTranslator translator = new GeneSetTranslator(current_outfilename,9606, "symbol");
+         GeneSetTranslator translator = new GeneSetTranslator(current_outfilename,9606, "symbol");
         translator.translate();
 
         //try convert the uniprots
         current_outfilename = outdir.getAbsolutePath() + File.separator +"GOMF_human_uniprot.gmt";
+        gomaker = new GOGeneSetFileMaker(9606,"mf",current_outfilename,"uniprot");
+        gomaker.queryEBI();
+
         translator = new GeneSetTranslator(current_outfilename,9606, "uniprot");
         translator.translate();
 
-        //human - bp
+        //human - bp uniprot
         current_outfilename = outdir.getAbsolutePath() + File.separator +"GOBP_human_uniprot.gmt";
-/*        gomaker = new GOGeneSetFileMaker(9606,"bp",current_outfilename,"uniprot");
-        gomaker.makeQuery();
+        gomaker = new GOGeneSetFileMaker(9606,"bp",current_outfilename,"uniprot");
+        gomaker.queryEBI();
+        translator = new GeneSetTranslator(current_outfilename,9606, "uniprot");
+        translator.translate();
 
+        //human - bp symbols
         current_outfilename = outdir.getAbsolutePath() + File.separator +"GOBP_human_symbol.gmt";
         gomaker = new GOGeneSetFileMaker(9606,"bp",current_outfilename,"symbol");
-        gomaker.makeQuery();
-*/
-        //translate
-        //convert symbols to entrez gene ids
+        gomaker.queryEBI();
         translator = new GeneSetTranslator(current_outfilename,9606, "symbol");
         translator.translate();
 
-        //human - cc
-/*        current_outfilename = outdir.getAbsolutePath() + File.separator +"GOCC_human_uniprot.gmt";
+        //human - cc uniprots
+        current_outfilename = outdir.getAbsolutePath() + File.separator +"GOCC_human_uniprot.gmt";
         gomaker = new GOGeneSetFileMaker(9606,"cc",current_outfilename,"uniprot");
-        gomaker.makeQuery();
+        gomaker.queryEBI();
+        translator = new GeneSetTranslator(current_outfilename,9606, "uniprot");
+        translator.translate();
 
+        //human - cc symbol
         current_outfilename = outdir.getAbsolutePath() + File.separator +"GOCC_human_symbol.gmt";
         gomaker = new GOGeneSetFileMaker(9606,"cc",current_outfilename,"symbol");
-        gomaker.makeQuery();
-*/
-        //translate
-        //convert symbols to entrez gene ids
+        gomaker.queryEBI();
         translator = new GeneSetTranslator(current_outfilename,9606, "symbol");
         translator.translate();
 
@@ -109,7 +108,7 @@ public class BulkGSEAConverter {
         //mouse - mf
         current_outfilename = outdir.getAbsolutePath() + File.separator +"GOMF_mouse_symbol.gmt";
         gomaker = new GOGeneSetFileMaker(10090,"mf",current_outfilename,"symbol");
-        gomaker.makeQuery();
+        gomaker.queryEBI();
 
         //translate
         //convert symbols to entrez gene ids
@@ -119,7 +118,7 @@ public class BulkGSEAConverter {
         //mouse - bp
         current_outfilename = outdir.getAbsolutePath() + File.separator +"GOBP_mouse_symbol.gmt";
         gomaker = new GOGeneSetFileMaker(10090,"bp",current_outfilename,"symbol");
-        gomaker.makeQuery();
+        gomaker.queryEBI();
 
         //translate
         //convert symbols to entrez gene ids
@@ -129,7 +128,7 @@ public class BulkGSEAConverter {
         //mouse - cc
         current_outfilename = outdir.getAbsolutePath() + File.separator +"GOCC_mouse_symbol.gmt";
         gomaker = new GOGeneSetFileMaker(10090,"cc",current_outfilename,"symbol");
-        gomaker.makeQuery();
+        gomaker.queryEBI();
 
         //translate
         //convert symbols to entrez gene ids

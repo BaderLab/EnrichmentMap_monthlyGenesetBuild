@@ -10,6 +10,7 @@ import synergizer.SynergizerClient;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -22,7 +23,7 @@ public class GenesetTools {
 
 
      public static void main(String[] argv) throws IOException,
-             InvocationTargetException, IllegalAccessException
+             InvocationTargetException, IllegalAccessException,SQLException
     {
 
         if (argv.length == 0) {
@@ -158,7 +159,7 @@ public class GenesetTools {
      * @throws IOException
      */
 
-    public static void createGo(String args[]) throws IOException {
+    public static void createGo(String args[]) throws IOException,SQLException {
 
         GOGeneSetFileMaker maker = new GOGeneSetFileMaker();
 
@@ -171,7 +172,11 @@ public class GenesetTools {
             parser.printUsage(System.err);
             return;
         }
-        maker.makeQuery();
+
+        if(maker.isInfile())
+            maker.parseGAF2();
+        else
+            maker.queryEBI();
 
     }
 
@@ -181,7 +186,7 @@ public class GenesetTools {
         compare("GMTfile GCTfile2 outputFile Diretory\t\t\tcompares gmt file to given gct (expression file) to generate stats relating to how many genesets each gene is found in", 2)
 		        {public void run(String[] argv) throws IOException{compare(Arrays.copyOfRange(argv,1,argv.length));} },
         createGo("Species Branch File", 3)
-                {public void run(String[] argv) throws IOException{createGo(Arrays.copyOfRange(argv,1,argv.length));} },
+                {public void run(String[] argv) throws IOException,SQLException{createGo(Arrays.copyOfRange(argv,1,argv.length));} },
         toGSEA("owl_filename outfile id speciescheck\t\t\t convert biopax file to gmt file",4)
                 {public void run(String[] argv) throws IOException{toGSEA(Arrays.copyOfRange(argv,1,argv.length));} },
         bulk("owldir outdir id speciescheck\t\t\t converts all biopax files in a directory to gmt files",4)
@@ -200,7 +205,7 @@ public class GenesetTools {
             this.params = params;
         }
 
-        public abstract void run(String[] argv) throws IOException;
+        public abstract void run(String[] argv) throws IOException,SQLException;
     }
 
     static void help() {

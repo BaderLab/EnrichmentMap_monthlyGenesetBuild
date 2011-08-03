@@ -146,7 +146,7 @@ public class GMTFileReaderTask implements Task {
                 String[] tokens = line.split("\t");
 
                 //if the first line starts with "%" extract the version and the source
-                if(i ==1 && line.startsWith("%")){
+                if(i ==0 && line.startsWith("%")){
                     params.setVersion(tokens[0]);
                     if(tokens.length > 1)
                         params.setSource(tokens[1]);
