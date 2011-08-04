@@ -18,6 +18,8 @@ import org.kohsuke.args4j.Option;
 import org.springframework.jmx.export.UnableToRegisterMBeanException;
 import sun.font.TrueTypeFont;
 
+import javax.print.DocFlavor;
+
 /**
  * Created by IntelliJ IDEA.
  * User: risserlin
@@ -42,7 +44,7 @@ public class GOGeneSetFileMaker {
     @Option(name = "--idtype", usage = "type of id to use (one of: uniprot or symbol) - Defaults to symbol")
     private String id_type="symbol";
     @Option(name = "--exclude", usage = "exclude all annotation ids attributed to IEA, RCA, or ND - defaults to true")
-    private boolean exclude = true;
+    private boolean exclude = false;
 
 	private String fConnectionString = "jdbc:mysql://mysql.ebi.ac.uk:4085/go_latest?user=go_select&password=amigo"; //$NON-NLS-1$
 
@@ -202,12 +204,15 @@ public class GOGeneSetFileMaker {
 	                 for (String term : terms) {
 	                     Set<String> genes = allCategories.get(term);
 	                     totalCategories++;
-	                     writer.print(term);
-	                     for (String gene : genes) {
-	                         writer.print("\t");
-	                         writer.print(gene);
-	                     }
-	                     writer.println();
+	                     //only write term if the genes are not null
+                         if(genes.size() >0){
+                            writer.print(term);
+	                        for (String gene : genes) {
+	                             writer.print("\t");
+	                             writer.print(gene);
+	                        }
+	                        writer.println();
+                         }
 	                 }
 	                 System.out.printf("Total GO categories: %d\n", totalCategories);
 	                 System.out.println("Done.");
@@ -233,8 +238,11 @@ public class GOGeneSetFileMaker {
         HashMap<String,Integer> taxons = new HashMap<String,Integer>();
 
         //track all the genesets as we go through the file before converting them into proper genesets
-        HashMap<GAFGeneset, HashSet<String>> file_gs = new HashMap<GAFGeneset, HashSet<String>>();
-        HashMap<GAFGeneset, HashSet<String>> file_gs_symbol = new HashMap<GAFGeneset, HashSet<String>>();
+        //HashMap<GAFGeneset, HashSet<String>> file_gs = new HashMap<GAFGeneset, HashSet<String>>();
+        //HashMap<GAFGeneset, HashSet<String>> file_gs_symbol = new HashMap<GAFGeneset, HashSet<String>>();
+
+        HashMap<String, HashSet<String>> file_gs = new HashMap<String, HashSet<String>>();
+        HashMap<String, HashSet<String>> file_gs_symbol = new HashMap<String, HashSet<String>>();
 
         //open GMT file
         if(gafFilename != null || !gafFilename.equalsIgnoreCase("")){
@@ -313,15 +321,17 @@ public class GOGeneSetFileMaker {
 
 
                    //create a new GAFGeneset for this line
-                   GAFGeneset current_set = new GAFGeneset(goid,product,dbname,taxon);
-                   GAFGeneset current_set_symbol = new GAFGeneset(goid,product,"symbol",taxon);
+                   //GAFGeneset current_set = new GAFGeneset(goid,product,dbname,taxon);
+                   //GAFGeneset current_set_symbol = new GAFGeneset(goid,product,"symbol",taxon);
+                   String current_set = goid;
+
                    if(file_gs.containsKey(current_set)){
                         HashSet<String> current_list = file_gs.get(current_set);
                         current_list.add(dbid);
                         file_gs.put(current_set,current_list);
-                        HashSet<String> current_list_symbol = file_gs_symbol.get(current_set_symbol);
+                        HashSet<String> current_list_symbol = file_gs_symbol.get(current_set);
                         current_list_symbol.add(symbol);
-                        file_gs_symbol.put(current_set_symbol,current_list_symbol);
+                        file_gs_symbol.put(current_set,current_list_symbol);
 
                    }
                    //this is a new set
@@ -332,7 +342,7 @@ public class GOGeneSetFileMaker {
 
                        HashSet<String> new_set_symbol = new HashSet<String>();
                        new_set_symbol.add(symbol);
-                       file_gs_symbol.put(current_set_symbol, new_set_symbol);
+                       file_gs_symbol.put(current_set, new_set_symbol);
 
                    }
 
@@ -350,18 +360,35 @@ public class GOGeneSetFileMaker {
             PrintWriter writer = new PrintWriter(new File(fQueryFilename));
             PrintWriter writer_symbol = new PrintWriter(new File(fQueryFilename + "_symbol"));
             HashMap<String,String> goterms = getGoterms();
+            //get all the descendants for the terms
+            HashMap<String, HashSet<String>> descendants = getDescendants();
             //go through all the GAF genesets and create genesets for them.
             for(Iterator j = file_gs.keySet().iterator();j.hasNext();){
-                GAFGeneset current = (GAFGeneset)j.next();
-                GAFGeneset current_set_symbol = new GAFGeneset(current.goid,current.product,"symbol",current.taxon);
+                //GAFGeneset current = (GAFGeneset)j.next();
+                //GAFGeneset current_set_symbol = new GAFGeneset(current.goid,current.product,"symbol",current.taxon);
+                String current = (String)j.next();
                 Set<String> genes = file_gs.get(current);
-                Set<String> genes_symbol = file_gs_symbol.get(current_set_symbol);
+                Set<String> genes_symbol = file_gs_symbol.get(current);
                 //gs name = GO?goid
-                String name = "GO?" + current.goid;
+                String name = "GO?" + current;
+
+                //up propagate the annotations for the terms that have descendants
+                HashSet<String> children = null;
+                if(descendants.containsKey(current)){
+                    children = descendants.get(current);
+                    //for each of the descendants, add their genes to this set
+                    for(String child : children){
+                        if(file_gs.containsKey(child))
+                            genes.addAll(file_gs.get(child));
+                        if(file_gs_symbol.containsKey(child))
+                            genes_symbol.addAll(file_gs_symbol.get(child));
+                    }
+                }
+
                 //gs descrip = goid name --> needs to be retrieved from db
                 String descrip;
-                if(goterms.containsKey(current.goid))
-                    descrip = goterms.get(current.goid);
+                if(goterms.containsKey(current))
+                    descrip = goterms.get(current);
                 else
                     descrip = "GO ID not found in EBI mysql db";
                 writer.print(name + "\t" + descrip);
@@ -414,6 +441,40 @@ public class GOGeneSetFileMaker {
 
 
         return goterms;
+    }
+
+    private HashMap<String, HashSet<String>> getDescendants() throws SQLException{
+        HashMap<String, HashSet<String>> descendants = new HashMap<String, HashSet<String>>();
+        String termquery = "select term.acc as parent, descendant.acc as child from term, graph_path, term as descendant " +
+                "where " +
+                "term.id = graph_path.term1_id and descendant.id=graph_path.term2_id" ;
+        new Driver();
+
+        System.out.println("Executing query...");
+	    Connection connection = DriverManager.getConnection(fConnectionString);
+
+        Statement statement_term = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+	    ResultSet termRes = statement_term.executeQuery(termquery);
+
+        while(termRes.next()){
+            String parent = termRes.getString("parent");
+            String child = termRes.getString("child");
+            //if the parent is already in the list then add the descendant to its list
+            if(descendants.containsKey(parent)){
+                HashSet<String> list = descendants.get(parent);
+                list.add(child);
+                descendants.put(parent, list);
+            }
+            else{
+                HashSet<String> newlist = new HashSet<String>();
+                newlist.add(child);
+                descendants.put(parent, newlist);
+            }
+        }
+        statement_term.close();
+
+
+        return descendants;
     }
 
     public class GAFGeneset{

@@ -191,7 +191,7 @@ public class GenesetTools {
                 {public void run(String[] argv) throws IOException{toGSEA(Arrays.copyOfRange(argv,1,argv.length));} },
         bulk("owldir outdir id speciescheck\t\t\t converts all biopax files in a directory to gmt files",4)
                 { public void run(String[] argv) throws IOException{bulk(Arrays.copyOfRange(argv,1,argv.length));} },
-        compare2gmt("gmt1 gmt2 dir cmd \t\t\t compares the contents or counts of two gmt files",4)
+        compare2gmt("gmt1 gmt2 outfile dir cmd \t\t\t compares the contents or counts of two gmt files",5)
                 { public void run(String[] argv) throws IOException{compare2gmt(Arrays.copyOfRange(argv,1,argv.length));} },
         help("\t\t\t\t\t\tprints this screen and exits", Integer.MAX_VALUE)
 		        {public void run(String[] argv) throws IOException{help();} };
