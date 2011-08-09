@@ -411,6 +411,66 @@ public class GOGeneSetFileMaker {
                 writer_symbol.flush();
             }
 
+            //There might be GO terms that are not directly annotated in the GAF file but because
+            //of the structure of GO should still be in the file because some of their children terms
+            //have annotations.
+            //check to see which terms with descendants aren't in our file_gs set.
+            Set<String> gafSets = file_gs.keySet();
+            Set<String> missingGoSets =  descendants.keySet();
+
+            //calculate the missing genesets
+            missingGoSets.removeAll(gafSets);
+            for(Iterator j = missingGoSets.iterator();j.hasNext();){
+
+                String current = (String)j.next();
+                //there are no genes associated with these terms that is why we have to go through them.
+                Set<String> genes = new HashSet<String>();
+                Set<String> genes_symbol = new HashSet<String>();
+                //gs name = GO?goid
+                String name = "GO?" + current;
+
+                //up propagate the annotations for the terms that have descendants
+                HashSet<String> children = null;
+                if(descendants.containsKey(current)){
+                    children = descendants.get(current);
+                    //for each of the descendants, add their genes to this set
+                    for(String child : children){
+                        if(file_gs.containsKey(child))
+                            genes.addAll(file_gs.get(child));
+                        if(file_gs_symbol.containsKey(child))
+                            genes_symbol.addAll(file_gs_symbol.get(child));
+                    }
+                }
+
+                //gs descrip = goid name --> needs to be retrieved from db
+                String descrip;
+                if(goterms.containsKey(current))
+                    descrip = goterms.get(current);
+                else
+                    descrip = "GO ID not found in EBI mysql db";
+
+                if(genes != null && genes.size() > 0){
+
+                    writer.print(name + "\t" + descrip);
+
+                    //list of genes
+                    for (String gene : genes) {
+	                    writer.print("\t");
+	                    writer.print(gene);
+	                }
+	                writer.println();
+
+                    writer_symbol.print(name + "\t" + descrip);
+                    //list of genes
+                    for (String gene_symbol : genes_symbol) {
+	                    writer_symbol.print("\t");
+	                    writer_symbol.print(gene_symbol);
+	                }
+	                writer_symbol.println();
+                    writer.flush();
+                    writer_symbol.flush();
+                }
+            }
 
             writer.close();
             writer_symbol.close();

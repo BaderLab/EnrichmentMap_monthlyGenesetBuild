@@ -17,9 +17,7 @@
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="1aa66b2a-6deb-4621-b183-e56ae32051be" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GeneSetTools.iws" afterPath="$PROJECT_DIR$/GeneSetTools.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Compare2GMT.java" afterPath="$PROJECT_DIR$/src/Compare2GMT.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/GOGeneSetFileMaker.java" afterPath="$PROJECT_DIR$/src/GOGeneSetFileMaker.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/GenesetTools.java" afterPath="$PROJECT_DIR$/src/GenesetTools.java" />
     </list>
     <ignored path="GMTAnalyzer.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -172,7 +170,7 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/GOGeneSetFileMaker.java" line="359" class="GOGeneSetFileMaker" package="">
+      <breakpoint url="file://$PROJECT_DIR$/src/GOGeneSetFileMaker.java" line="123" class="GOGeneSetFileMaker" package="">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -185,7 +183,20 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/GOGeneSetFileMaker.java" line="123" class="GOGeneSetFileMaker" package="">
+      <breakpoint url="file://$PROJECT_DIR$/src/GOGeneSetFileMaker.java" line="144" class="GOGeneSetFileMaker" package="">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="false" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/src/GOGeneSetFileMaker.java" line="417" class="GOGeneSetFileMaker" package="">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -261,15 +272,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BulkGSEAConverter.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/BulkGSEAConverter.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="57" column="44" selection-start="2542" selection-end="2542" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="CompareGMT.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/CompareGMT.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -300,7 +302,7 @@
       <file leaf-file-name="GOGeneSetFileMaker.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/GOGeneSetFileMaker.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="214" column="26" selection-start="9709" selection-end="9709" vertical-scroll-proportion="1.2017094">
+            <state line="471" column="17" selection-start="21481" selection-end="21481" vertical-scroll-proportion="0.960644">
               <folding />
             </state>
           </provider>
@@ -690,7 +692,7 @@
     <configuration default="false" name="GoGenesetmaker" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="GenesetTools" />
       <option name="VM_PARAMETERS" value="-Xmx2G" />
-      <option name="PROGRAM_PARAMETERS" value="createGo --organism 9606 --branch all --outfile testfiles/GOALL_human_uniprot.gmt  --idtype uniprot  " />
+      <option name="PROGRAM_PARAMETERS" value="createGo --organism 9606 --branch all --outfile testfiles/GOALL_human_uniprot_Aug82011_noiea_v2.gmt  --idtype uniprot --exclude " />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
@@ -712,7 +714,7 @@
     <configuration default="false" name="toGSEA" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="GenesetTools" />
       <option name="VM_PARAMETERS" value="-Xmx2G" />
-      <option name="PROGRAM_PARAMETERS" value="toGSEA --biopax ../GeneSetUpdater/originalBiopax/IOB_attempt2/CCR5.owl_updated_v1.owl --outfile testfiles/CCR5_eg.gmt --id &quot;Entrez gene&quot; --speciescheck FALSE" />
+      <option name="PROGRAM_PARAMETERS" value="toGSEA --biopax testfiles/PC_nci-nature.owl --outfile testfiles/PC_nci_uniprot.gmt --id &quot;UniProt&quot; --speciescheck FALSE" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
@@ -756,7 +758,7 @@
     <configuration default="false" name="compare2gmt" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="GenesetTools" />
       <option name="VM_PARAMETERS" value="-Xmx1G" />
-      <option name="PROGRAM_PARAMETERS" value="compare2gmt --cmd content --gmt1 testfiles/GOALL_human_uniprot_noiea.gmt --gmt2 testfiles/GOWEB_gene_association.goa_human_noiea.gmt --dir testfiles --outfile GOWEB_human_gmt_compare_noiea.txt" />
+      <option name="PROGRAM_PARAMETERS" value="compare2gmt --cmd content --gmt1 testfiles/EBI_gene_association.goa_human_July2611_noiea.gmt  --gmt2 testfiles/GOALL_human_uniprot_Aug82011_noiea.gmt --dir testfiles --outfile EBIgaf2Mysql_gmt_compare_noiea.txt" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
@@ -778,7 +780,7 @@
     <configuration default="false" name="GoGenesetmaker_file" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="GenesetTools" />
       <option name="VM_PARAMETERS" value="-Xmx2G" />
-      <option name="PROGRAM_PARAMETERS" value="createGo --organism 9606 --branch all --infile testfiles/GOWEB_gene_association.goa_human --outfile testfiles/GOWEB_gene_association.goa_human.gmt " />
+      <option name="PROGRAM_PARAMETERS" value="createGo --organism 9606 --branch all --infile testfiles/GOWEB_gene_association.goa_human_Aug52011 --outfile testfiles/GOWEB_gene_association.goa_human_Aug52011_noiea.gmt --exclude " />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
@@ -886,29 +888,35 @@
       <flatten-packages value="false" />
       <is-autoscroll-to-source value="true" />
     </todo-panel>
+    <todo-panel id="default-changelist">
+      <are-packages-shown value="false" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="false" />
+    </todo-panel>
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="22" width="1920" height="1076" extended-state="0" />
     <editor active="false" />
     <layout>
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32776618" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32881" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5626305" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32985386" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32463464" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32463464" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32985386" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26563334" sideWeight="0.6753653" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26563334" sideWeight="0.6482255" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.35177454" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.35177454" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="File View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32881" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="EJB" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1047,11 +1055,6 @@
         <state line="38" column="11" selection-start="986" selection-end="986" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/GSEAConverter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="194" column="0" selection-start="6105" selection-end="6105" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/GMTFileReaderTask.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="148" column="24" selection-start="4799" selection-end="4799" vertical-scroll-proportion="0.0" />
@@ -1083,9 +1086,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/paxtools-4.0.0-20110628.jar!/org/biopax/paxtools/converter/OneTwoThree.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="47" column="0" selection-start="3431" selection-end="3431" vertical-scroll-proportion="0.86911595">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/GSEAConverter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="194" column="0" selection-start="6105" selection-end="6105" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/GOGeneSetFileMaker.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="214" column="26" selection-start="9709" selection-end="9709" vertical-scroll-proportion="1.2017094">
+        <state line="471" column="17" selection-start="21481" selection-end="21481" vertical-scroll-proportion="0.960644">
           <folding />
         </state>
       </provider>
