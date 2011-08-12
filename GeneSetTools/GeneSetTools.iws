@@ -17,7 +17,10 @@
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="1aa66b2a-6deb-4621-b183-e56ae32051be" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GeneSetTools.iws" afterPath="$PROJECT_DIR$/GeneSetTools.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/GOGeneSetFileMaker.java" afterPath="$PROJECT_DIR$/src/GOGeneSetFileMaker.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/GeneSetTools.xml" afterPath="$PROJECT_DIR$/GeneSetTools.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/BulkGSEAConverter.java" afterPath="$PROJECT_DIR$/src/BulkGSEAConverter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/GSEAConverter.java" afterPath="$PROJECT_DIR$/src/GSEAConverter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/GenesetTools.java" afterPath="$PROJECT_DIR$/src/GenesetTools.java" />
     </list>
     <ignored path="GMTAnalyzer.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -209,6 +212,32 @@
         <option name="CONDITION" value="" />
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/src/GSEAConverter.java" line="216" class="GSEAConverter" package="">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="false" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+      <breakpoint url="file://$PROJECT_DIR$/src/GenesetTools.java" line="118" class="GenesetTools" package="">
+        <option name="ENABLED" value="true" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="false" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
     </line_breakpoints>
     <breakpoint_any>
       <breakpoint>
@@ -266,7 +295,7 @@
       <file leaf-file-name="GenesetTools.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/GenesetTools.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="193" column="105" selection-start="6981" selection-end="6981" vertical-scroll-proportion="0.0">
+            <state line="118" column="0" selection-start="3817" selection-end="3817" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -290,20 +319,33 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GSEAConverter.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="GSEAConverter.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/GSEAConverter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="194" column="0" selection-start="6105" selection-end="6105" vertical-scroll-proportion="0.0">
+            <state line="221" column="48" selection-start="7151" selection-end="7151" vertical-scroll-proportion="0.2781955">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="GOGeneSetFileMaker.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/GOGeneSetFileMaker.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="471" column="17" selection-start="21481" selection-end="21481" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GOGeneSetFileMaker.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/GOGeneSetFileMaker.java">
+      <file leaf-file-name="BulkGSEAConverter.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/BulkGSEAConverter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="471" column="17" selection-start="21481" selection-end="21481" vertical-scroll-proportion="0.960644">
-              <folding />
+            <state line="136" column="2" selection-start="6026" selection-end="6026" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -372,15 +414,15 @@
         <option value="$PROJECT_DIR$/src/GeneSetConverter.java" />
         <option value="$PROJECT_DIR$/src/GSEAEntry.java" />
         <option value="$PROJECT_DIR$/src/GeneSet.java" />
-        <option value="$PROJECT_DIR$/src/GSEAConverter.java" />
         <option value="$PROJECT_DIR$/src/GeneSetTranslator.java" />
         <option value="$PROJECT_DIR$/src/compare2GMT.java" />
         <option value="$PROJECT_DIR$/src/GMTParameters.java" />
         <option value="$PROJECT_DIR$/src/GMTFileReaderTask.java" />
-        <option value="$PROJECT_DIR$/src/BulkGSEAConverter.java" />
         <option value="$PROJECT_DIR$/src/Compare2GMT.java" />
-        <option value="$PROJECT_DIR$/src/GenesetTools.java" />
         <option value="$PROJECT_DIR$/src/GOGeneSetFileMaker.java" />
+        <option value="$PROJECT_DIR$/src/BulkGSEAConverter.java" />
+        <option value="$PROJECT_DIR$/src/GenesetTools.java" />
+        <option value="$PROJECT_DIR$/src/GSEAConverter.java" />
       </list>
     </option>
   </component>
@@ -555,6 +597,20 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="GeneSetTools" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="GeneSetTools" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="lib" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
       <pane id="Scope" />
@@ -573,11 +629,11 @@
     <property name="GenerateAntBuildDialog.generateSingleFile" value="true" />
     <property name="MemberChooser.sorted" value="false" />
     <property name="recentsLimit" value="5" />
-    <property name="GenerateAntBuildDialog.inclineRuntiemClasspath" value="false" />
+    <property name="GenerateAntBuildDialog.inclineRuntiemClasspath" value="true" />
     <property name="GenerateAntBuildDialog.forceTargetJdk" value="false" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="MemberChooser.copyJavadoc" value="false" />
-    <property name="GenerateAntBuildDialog.outputFileNameProperty" value="gmtanalyzer" />
+    <property name="GenerateAntBuildDialog.outputFileNameProperty" value="idea_genesettools" />
     <property name="GenerateAntBuildDialog.enableUiFormCompile" value="false" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
@@ -587,7 +643,7 @@
     <property name="options.searchVisible" value="true" />
     <property name="dynamic.classpath" value="false" />
   </component>
-  <component name="RunManager" selected="Application.compare2gmt">
+  <component name="RunManager" selected="Application.toGSEA">
     <configuration default="true" type="Remote" factoryName="Remote">
       <option name="USE_SOCKET_TRANSPORT" value="true" />
       <option name="SERVER_MODE" value="false" />
@@ -714,7 +770,7 @@
     <configuration default="false" name="toGSEA" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="GenesetTools" />
       <option name="VM_PARAMETERS" value="-Xmx2G" />
-      <option name="PROGRAM_PARAMETERS" value="toGSEA --biopax testfiles/PC_nci-nature.owl --outfile testfiles/PC_nci_uniprot.gmt --id &quot;UniProt&quot; --speciescheck FALSE" />
+      <option name="PROGRAM_PARAMETERS" value="toGSEA --biopax August_11_2011/SRC/NetPath/Netpath_1.owl --outfile August_11_2011/SRC/NetPath/Nepath_1.owl_uniprot.gmt --id &quot;UniProt&quot; --speciescheck FALSE " />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" value="" />
@@ -910,9 +966,9 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26563334" sideWeight="0.6482255" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26563334" sideWeight="0.64718163" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.35177454" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.35281837" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="File View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -958,7 +1014,7 @@
     <option name="CHECK_COMMIT_MESSAGE_SPELLING" value="true" />
     <option name="DEFAULT_PATCH_EXTENSION" value="patch" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="added uppropagation for gaf GO files, modified output for the compare 2 gmt files, fixed bug with excluding IEA" />
+    <option name="LAST_COMMIT_MESSAGE" value="added missing annotations from GAF file parsing where the GO terms had no direct annotations but had children terms with annotations.  the GO terms are not in the GAF file but through up-propagation should still have terms associated with them." />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -977,6 +1033,7 @@
     <MESSAGE value="added the ability to compare two gmt files to see if one has better or more annotations than the other." />
     <MESSAGE value="added parser for GAF 2.0 (gene ontology annotation standard flat file format) to gmt file (create one for the dbid specified and one for the symbols." />
     <MESSAGE value="added uppropagation for gaf GO files, modified output for the compare 2 gmt files, fixed bug with excluding IEA" />
+    <MESSAGE value="added missing annotations from GAF file parsing where the GO terms had no direct annotations but had children terms with annotations.  the GO terms are not in the GAF file but through up-propagation should still have terms associated with them." />
   </component>
   <component name="VssConfiguration">
     <option name="CLIENT_PATH" value="" />
@@ -1040,11 +1097,6 @@
         <state line="17" column="16" selection-start="933" selection-end="933" vertical-scroll-proportion="-6.36" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/BulkGSEAConverter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="57" column="44" selection-start="2542" selection-end="2542" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/CompareGMT.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="69" column="67" selection-start="2133" selection-end="2214" vertical-scroll-proportion="0.0" />
@@ -1070,13 +1122,6 @@
         <state line="92" column="0" selection-start="3212" selection-end="3212" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/GenesetTools.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="193" column="105" selection-start="6981" selection-end="6981" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Compare2GMT.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="41" column="82" selection-start="1440" selection-end="1440" vertical-scroll-proportion="0.0">
@@ -1093,17 +1138,35 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/GSEAConverter.java">
+    <entry file="file://$PROJECT_DIR$/src/GOGeneSetFileMaker.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="194" column="0" selection-start="6105" selection-end="6105" vertical-scroll-proportion="0.0">
+        <state line="471" column="17" selection-start="21481" selection-end="21481" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/GOGeneSetFileMaker.java">
+    <entry file="file://$PROJECT_DIR$/src/BulkGSEAConverter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="471" column="17" selection-start="21481" selection-end="21481" vertical-scroll-proportion="0.960644">
+        <state line="136" column="2" selection-start="6026" selection-end="6026" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/GenesetTools.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="118" column="0" selection-start="3817" selection-end="3817" vertical-scroll-proportion="0.0">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/GSEAConverter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="221" column="48" selection-start="7151" selection-end="7151" vertical-scroll-proportion="0.2781955">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

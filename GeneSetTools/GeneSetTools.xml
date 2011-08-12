@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="gmtanalyzer" default="all">
+<project name="genesettools" default="all">
   
   
-  <property file="gmtanalyzer.properties"/>
+  <property file="genesettools.properties"/>
   <!-- Uncomment the following property if no tests compilation is needed -->
   <!-- 
   <property name="skip.tests" value="true"/>
@@ -64,100 +64,106 @@
   <!-- Modules -->
   
   
-  <!-- Module GMTAnalyzer -->
+  <!-- Module genesettools -->
   
-  <dirname property="module.gmtanalyzer.basedir" file="${ant.file}"/>
+  <dirname property="module.genesettools.basedir" file="${ant.file}"/>
   
   
   
-  <property name="compiler.args.gmtanalyzer" value="${compiler.args}"/>
+  <property name="compiler.args.genesettools" value="${compiler.args}"/>
   
-  <property name="gmtanalyzer.output.dir" value="${module.gmtanalyzer.basedir}/classes"/>
-  <property name="gmtanalyzer.testoutput.dir" value="${module.gmtanalyzer.basedir}/classes"/>
+  <property name="genesettools.output.dir" value="${module.genesettools.basedir}/classes"/>
+  <property name="genesettools.testoutput.dir" value="${module.genesettools.basedir}/classes"/>
   
-  <path id="gmtanalyzer.module.bootclasspath">
+  <path id="genesettools.module.bootclasspath">
     <!-- Paths to be included in compilation bootclasspath -->
   </path>
   
-  <path id="gmtanalyzer.module.production.classpath">
+  <path id="genesettools.module.production.classpath">
     <path refid="library.cytoscape.classpath"/>
   </path>
   
-  <path id="gmtanalyzer.runtime.production.module.classpath">
-    <pathelement location="${gmtanalyzer.output.dir}"/>
+  <path id="genesettools.runtime.production.module.classpath">
+    <pathelement location="${genesettools.output.dir}"/>
     <path refid="library.cytoscape.classpath"/>
   </path>
   
-  <path id="gmtanalyzer.module.classpath">
-    <pathelement location="${gmtanalyzer.output.dir}"/>
+  <path id="genesettools.module.classpath">
+    <pathelement location="${genesettools.output.dir}"/>
     <path refid="library.cytoscape.classpath"/>
   </path>
   
-  <path id="gmtanalyzer.runtime.module.classpath">
-    <pathelement location="${gmtanalyzer.output.dir}"/>
+  <path id="genesettools.runtime.module.classpath">
+    <pathelement location="${genesettools.output.dir}"/>
     <path refid="library.cytoscape.classpath"/>
   </path>
   
   
-  <patternset id="excluded.from.module.gmtanalyzer">
+  <patternset id="excluded.from.module.genesettools">
     <patternset refid="ignored.files"/>
   </patternset>
   
-  <patternset id="excluded.from.compilation.gmtanalyzer">
-    <patternset refid="excluded.from.module.gmtanalyzer"/>
+  <patternset id="excluded.from.compilation.genesettools">
+    <patternset refid="excluded.from.module.genesettools"/>
   </patternset>
   
-  <path id="gmtanalyzer.module.sourcepath">
-    <dirset dir="${module.gmtanalyzer.basedir}">
+  <path id="genesettools.module.sourcepath">
+    <dirset dir="${module.genesettools.basedir}">
       <include name="src"/>
     </dirset>
   </path>
   
   
-  <target name="compile.module.gmtanalyzer" depends="compile.module.gmtanalyzer.production,compile.module.gmtanalyzer.tests" description="Compile module GMTAnalyzer"/>
+  <target name="compile.module.genesettools" depends="compile.module.genesettools.production,compile.module.genesettools.tests" description="Compile module genesettools"/>
   
-  <target name="compile.module.gmtanalyzer.production" description="Compile module GMTAnalyzer; production classes">
-    <mkdir dir="${gmtanalyzer.output.dir}"/>
-    <javac destdir="${gmtanalyzer.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
-      <compilerarg line="${compiler.args.gmtanalyzer}"/>
-      <bootclasspath refid="gmtanalyzer.module.bootclasspath"/>
-      <classpath refid="gmtanalyzer.module.production.classpath"/>
-      <src refid="gmtanalyzer.module.sourcepath"/>
-      <patternset refid="excluded.from.compilation.gmtanalyzer"/>
+  <target name="compile.module.genesettools.production" description="Compile module genesettools; production classes">
+    <mkdir dir="${genesettools.output.dir}"/>
+    <javac destdir="${genesettools.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.genesettools}"/>
+      <bootclasspath refid="genesettools.module.bootclasspath"/>
+      <classpath refid="genesettools.module.production.classpath"/>
+      <src refid="genesettools.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.genesettools"/>
     </javac>
     
-    <copy todir="${gmtanalyzer.output.dir}">
-      <fileset dir="${module.gmtanalyzer.basedir}/src">
+    <copy todir="${genesettools.output.dir}">
+      <fileset dir="${module.genesettools.basedir}/src">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
       </fileset>
     </copy>
   </target>
   
-  <target name="compile.module.gmtanalyzer.tests" depends="compile.module.gmtanalyzer.production" description="compile module GMTAnalyzer; test classes" unless="skip.tests"/>
+  <target name="compile.module.genesettools.tests" depends="compile.module.genesettools.production" description="compile module genesettools; test classes" unless="skip.tests"/>
   
-  <target name="clean.module.gmtanalyzer" description="cleanup module">
-    <delete dir="${gmtanalyzer.output.dir}"/>
-    <delete dir="${gmtanalyzer.testoutput.dir}"/>
+  <target name="clean.module.genesettools" description="cleanup module">
+    <delete dir="${genesettools.output.dir}"/>
+    <delete dir="${genesettools.testoutput.dir}"/>
   </target>
   
   <target name="init" description="Build initialization">
     <!-- Perform any build initialization in this target -->
   </target>
 
-      <target name="jars" depends="compile.module.gmtanalyzer.production" description="Creates jar file for gmt_analyzer">
-                <jar jarfile="./GMTAnalyzer.jar" basedir="." >
+      <target name="jars" depends="compile.module.genesettools.production" description="Creates jar file for GeneSetTools">
+                <jar jarfile="./GenesetTools.jar" basedir="./classes" >
                         <manifest>
                                 <attribute name="Main-Class" value="GenesetTools"/>
-                                <attribute name="Class-Path" value="gmtanalyzer.module.classpath" />
+                                <attribute name="Class-Path" value="genesettools.module.classpath" />
                         </manifest>
+			<zipfileset src="${basedir}/lib/cytoscape.jar"/>
+			<zipfileset src="${basedir}/lib/cytoscape-task.jar"/>
+			<zipfileset src="${basedir}/lib/paxtools-4.0.0-20110628.jar"/>
+			<zipfileset src="${basedir}/lib/mysql-connector-java-5.1.17-bin.jar"/>
+			<zipfileset src="${basedir}/lib/synergizer.jar"/>
+			<zipfileset src="${basedir}/lib/args4j-2.0.17.jar"/>
                 </jar>
         </target>
 
   
-  <target name="clean" depends="clean.module.gmtanalyzer" description="cleanup all"/>
+  <target name="clean" depends="clean.module.genesettools" description="cleanup all"/>
   
-  <target name="build.modules" depends="init, clean, compile.module.gmtanalyzer" description="build all modules"/>
+  <target name="build.modules" depends="init, clean, compile.module.genesettools" description="build all modules"/>
   
   <target name="all" depends="build.modules" description="build all"/>
 </project>

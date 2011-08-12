@@ -1,0 +1,3203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+ xmlns:bp="http://www.biopax.org/release/biopax-level3.owl#"
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+ xmlns:owl="http://www.w3.org/2002/07/owl#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<owl:Ontology rdf:about="">
+ <owl:imports rdf:resource="http://www.biopax.org/release/biopax-level3.owl#" />
+</owl:Ontology>
+
+<bp:RelationshipXref rdf:about="OMIM_RHOA">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">165390</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:MolecularInteraction rdf:about="Molecular_Interaction_Extracellular__316">
+ <bp:xref rdf:resource="Pubmed_9723709" />
+ <bp:xref rdf:resource="Pubmed_10051567" />
+ <bp:xref rdf:resource="Pubmed_8980223" />
+ <bp:xref rdf:resource="Pubmed_8980224" />
+ <bp:xref rdf:resource="Pubmed_12427764" />
+ <bp:xref rdf:resource="Pubmed_15284220" />
+ <bp:participant rdf:resource="ANGPT1__9606__Extracellular" />
+ <bp:participant rdf:resource="TEK__9606__Extracellular" />
+ <bp:evidence rdf:resource="Evidence_InVitro" />
+</bp:MolecularInteraction>
+
+<bp:ModificationFeature rdf:about="T324">
+ <bp:featureLocation rdf:resource="SeqSite_423" />
+ <bp:modificationType rdf:resource="SeqModVocab_T__MI_0217" />
+</bp:ModificationFeature>
+
+<bp:MolecularInteraction rdf:about="Molecular_Interaction_Extracellular__319">
+ <bp:xref rdf:resource="Pubmed_10051567" />
+ <bp:xref rdf:resource="Pubmed_15284220" />
+ <bp:participant rdf:resource="TEK__9606__Extracellular" />
+ <bp:participant rdf:resource="ANGPT4__9606__Extracellular" />
+ <bp:evidence rdf:resource="Evidence_InVitro" />
+</bp:MolecularInteraction>
+
+<bp:BiochemicalReaction rdf:about="BiochemReaction_354__">
+ <bp:left rdf:resource="MAPK3__9606__" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:right rdf:resource="MAPK3__MI__0217__9606____EMPTYRIGHT" />
+ <bp:interactionType rdf:resource="Interaction_Phosphorylation" />
+</bp:BiochemicalReaction>
+
+<bp:Catalysis rdf:about="Catalysis_3414__">
+ <bp:xref rdf:resource="Pubmed_14726409" />
+ <bp:controlled rdf:resource="BiochemReaction_3414__" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:Catalysis>
+
+<bp:Catalysis rdf:about="Catalysis_3415__">
+ <bp:xref rdf:resource="Pubmed_14726409" />
+ <bp:controlled rdf:resource="BiochemReaction_3415__" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:Catalysis>
+
+<bp:UnificationXref rdf:about="HPRD_PTK2">
+ <bp:id rdf:datatype = "xsd:string">02859</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:BiochemicalReaction rdf:about="BiochemReaction_334__">
+ <bp:left rdf:resource="AKT1__9606__" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:right rdf:resource="AKT1__MI__0217__9606____EMPTYRIGHT" />
+ <bp:interactionType rdf:resource="Interaction_Phosphorylation" />
+</bp:BiochemicalReaction>
+
+<bp:UnificationXref rdf:about="HPRD_NOS3">
+ <bp:id rdf:datatype = "xsd:string">01224</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:PublicationXref rdf:about="Pubmed_15851516">
+ <bp:id rdf:datatype = "xsd:string">15851516</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:RelationshipXref rdf:about="OMIM_ANGPTL1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">603874</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:MolecularInteraction rdf:about="Molecular_Interaction_Extracellular__321">
+ <bp:xref rdf:resource="Pubmed_10051567" />
+ <bp:xref rdf:resource="Pubmed_15284220" />
+ <bp:participant rdf:resource="TEK__10090__Extracellular" />
+ <bp:participant rdf:resource="ANGPTL1__10090__Extracellular" />
+ <bp:evidence rdf:resource="Evidence_InVitro" />
+</bp:MolecularInteraction>
+
+<bp:Protein rdf:about="BMX__MI__0217__9606__PlasmaMembrane__EMPTYRIGHT">
+ <bp:entityReference rdf:resource="ProteinRef_BMX__9606" />
+ <bp:displayName rdf:datatype = "xsd:string">BMX</bp:displayName>
+ <bp:feature rdf:resource="ModificationEmptyFeature_MI_0217" />
+ <bp:xref rdf:resource="PTM_ID_MI_0217" />
+ <bp:cellularLocation rdf:resource="CellularLocation_Plasma_Membrane" />
+ <bp:name rdf:datatype = "xsd:string">BMX__MI__0217</bp:name>
+</bp:Protein>
+
+<bp:MolecularInteraction rdf:about="Molecular_Interaction_Extracellular__327">
+ <bp:xref rdf:resource="Pubmed_10514510" />
+ <bp:participant rdf:resource="ANGPT1__9606__Extracellular" />
+ <bp:participant rdf:resource="ANGPT2__9606__Extracellular" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:MolecularInteraction>
+
+<bp:CellularLocationVocabulary rdf:about="CellularLocation_Cytoplasm">
+ <bp:xref rdf:resource="urn:biopax:UnificationXref:GO_GO%3A0005737" />
+ <bp:xref rdf:resource="GO_Cytoplasm" />
+ <bp:term rdf:datatype = "xsd:string">cytoplasm</bp:term>
+</bp:CellularLocationVocabulary>
+
+<bp:MolecularInteraction rdf:about="Molecular_Interaction_Extracellular__328">
+ <bp:xref rdf:resource="Pubmed_9723709" />
+ <bp:xref rdf:resource="Pubmed_10051567" />
+ <bp:xref rdf:resource="Pubmed_9204896" />
+ <bp:xref rdf:resource="Pubmed_12427764" />
+ <bp:xref rdf:resource="Pubmed_15284220" />
+ <bp:participant rdf:resource="ANGPT2__9606__Extracellular" />
+ <bp:participant rdf:resource="TEK__9606__Extracellular" />
+ <bp:evidence rdf:resource="Evidence_InVitro" />
+</bp:MolecularInteraction>
+
+<bp:MolecularInteraction rdf:about="Molecular_Interaction___325">
+ <bp:xref rdf:resource="Pubmed_12609966" />
+ <bp:participant rdf:resource="TNIP2__9606__" />
+ <bp:participant rdf:resource="TEK__9606__" />
+ <bp:evidence rdf:resource="Evidence_InVitro" />
+</bp:MolecularInteraction>
+
+<bp:UnificationXref rdf:about="UniProt_ANGPT1">
+ <bp:id rdf:datatype = "xsd:string">Q15389</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:Protein rdf:about="RHOA__9606__Cytoplasm">
+ <bp:displayName rdf:datatype = "xsd:string">RHOA</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">RHOA__9606</bp:name>
+</bp:Protein>
+
+<bp:Provenance rdf:about="provenance">
+ <bp:xref rdf:resource="Pubmed_20067622" />
+</bp:Provenance>
+
+<bp:Protein rdf:about="TEK__10090__Cytoplasm">
+ <bp:displayName rdf:datatype = "xsd:string">TEK</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">TEK__10090</bp:name>
+</bp:Protein>
+
+<bp:UnificationXref rdf:about="UniProt_NOS3">
+ <bp:id rdf:datatype = "xsd:string">P29474</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:UnificationXref rdf:about="UniProt_ANGPT4">
+ <bp:id rdf:datatype = "xsd:string">Q9Y264</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:UnificationXref rdf:about="UniProt_ANGPT2">
+ <bp:id rdf:datatype = "xsd:string">O15123</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:PublicationXref rdf:about="Pubmed_9204896">
+ <bp:id rdf:datatype = "xsd:string">9204896</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:ProteinReference rdf:about="ProteinRef_TIE1__9606">
+ <bp:xref rdf:resource="OMIM_TIE1" />
+ <bp:xref rdf:resource="UniProt_TIE1" />
+ <bp:xref rdf:resource="HPRD_TIE1" />
+ <bp:xref rdf:resource="Entrez_TIE1" />
+ <bp:sequence rdf:datatype = "xsd:string">MVWRVPPFLLPILFLASHVGAAVDLTLLANLRLTDPQRFFLTCVSGEAGAGRGSDAWGPPLLLEKDDRIVRTPPGPPLRLARNGSHQVTLRGFSKPSDLVGVFSCVGGAGARRTRVIYVHNSPGAHLLPDKVTHTVNKGDTAVLSARVHKEKQTDVIWKSNGSYFYTLDWHEAQDGRFLLQLPNVQPPSSGIYSATYLEASPLGSAFFRLIVRGCGAGRWGPGCTKECPGCLHGGVCHDHDGECVCPPGFTGTRCEQACREGRFGQSCQEQCPGISGCRGLTFCLPDPYGCSCGSGWRGSQCQEACAPGHFGADCRLQCQCQNGGTCDRFSGCVCPSGWHGVHCEKSDRIPQILNMASELEFNLETMPRINCAAAGNPFPVRGSIELRKPDGTVLLSTKAIVEPEKTTAEFEVPRLVLADSGFWECRVSTSGGQDSRRFKVNVKVPPVPLAAPRLLTKQSRQLVVSPLVSFSGDGPISTVRLHYRPQDSTMDWSTIVVDPSENVTLMNLRPKTGYSVRVQLSRPGEGGEGAWGPPTLMTTDCPEPLLQPWLEGWHVEGTDRLRVSWSLPLVPGPLVGDGFLLRLWDGTRGQERRENVSSPQARTALLTGLTPGTHYQLDVQLYHCTLLGPASPPAHVLLPPSGPPAPRHLHAQALSDSEIQLTWKHPEALPGPISKYVVEVQVAGGAGDPLWIDVDRPEETSTIIRGLNASTRYLFRMRASIQGLGDWSNTVEESTLGNGLQAEGPVQESRAAEEGLDQQLILAVVGSVSATCLTILAALLTLVCIRRSCLHRRRTFTYQSGSGEETILQFSSGTLTLTRRPKLQPEPLSYPVLEWEDITFEDLIGEGNFGQVIRAMIKKDGLKMNAAIKMLKEYASENDHRDFAGELEVLCKLGHHPNIINLLGACKNRGYLYIAIEYAPYGNLLDFLRKSRVLETDPAFAREHGTASTLSSRQLLRFASDAANGMQYLSEKQFIHRDLAARNVLVGENLASKIADFGLSRGEEVYVKKTMGRLPVRWMAIESLNYSVYTTKSDVWSFGVLLWEIVSLGGTPYCGMTCAELYEKLPQGYRMEQPRNCDDEVYELMRQCWRDRPYERPPFAQIALQLGRMLEARKAYVNMSLFENFTYAGIDATAEEA</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">TIE1</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">Tyrosine kinase with immunoglobulin and EGF homology domains</bp:name>
+</bp:ProteinReference>
+
+<bp:Complex rdf:about="Plasmamembrane__Complex__354">
+ <bp:displayName rdf:datatype = "xsd:string">Complex</bp:displayName>
+ <bp:component rdf:resource="PIK3R2__9606__Plasmamembrane" />
+ <bp:component rdf:resource="ITGB1__9606__Plasmamembrane" />
+ <bp:component rdf:resource="PTK2__9606__Plasmamembrane" />
+ <bp:component rdf:resource="PIK3R1__9606__Plasmamembrane" />
+ <bp:component rdf:resource="ITGA5__9606__Plasmamembrane" />
+ <bp:cellularLocation rdf:resource="CellularLocation_Plasma_membrane" />
+ <bp:name rdf:datatype = "xsd:string">ITGA5,ITGB1,PTK2,PIK3R1,PIK3R2</bp:name>
+</bp:Complex>
+
+<bp:PublicationXref rdf:about="Pubmed_12816861">
+ <bp:id rdf:datatype = "xsd:string">12816861</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:RelationshipXref rdf:about="OMIM_NOS3">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">163729</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:Protein rdf:about="PIK3R1__9606__Plasmamembrane">
+ <bp:displayName rdf:datatype = "xsd:string">PIK3R1</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">PIK3R1__9606</bp:name>
+</bp:Protein>
+
+<bp:Protein rdf:about="STAT5B__9606__">
+ <bp:displayName rdf:datatype = "xsd:string">STAT5B</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">STAT5B__9606</bp:name>
+</bp:Protein>
+
+<bp:RelationshipXref rdf:about="OMIM_BMX">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">300101</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:MolecularInteraction rdf:about="Molecular_Interaction_Cytoplasm__307">
+ <bp:xref rdf:resource="Pubmed_7478529" />
+ <bp:xref rdf:resource="Pubmed_10521483" />
+ <bp:participant rdf:resource="PTPN11__9606__Cytoplasm" />
+ <bp:participant rdf:resource="TEK__9606__Cytoplasm" />
+ <bp:evidence rdf:resource="Evidence_InVitro" />
+</bp:MolecularInteraction>
+
+<bp:MolecularInteraction rdf:about="Molecular_Interaction_Cytoplasm__309">
+ <bp:xref rdf:resource="Pubmed_10521483" />
+ <bp:participant rdf:resource="GRB7__9606__Cytoplasm" />
+ <bp:participant rdf:resource="TEK__9606__Cytoplasm" />
+ <bp:evidence rdf:resource="Evidence_InVitro" />
+</bp:MolecularInteraction>
+
+<bp:Protein rdf:about="PTK2__9606__">
+ <bp:displayName rdf:datatype = "xsd:string">PTK2</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">PTK2__9606</bp:name>
+</bp:Protein>
+
+<bp:ModificationFeature rdf:about="S9111">
+ <bp:featureLocation rdf:resource="SeqSite_1119" />
+ <bp:modificationType rdf:resource="SeqModVocab_S__MI_0217" />
+</bp:ModificationFeature>
+
+<bp:UnificationXref rdf:about="Taxonomy_UnificationXref_9913">
+ <bp:id rdf:datatype = "xsd:string">9913</bp:id>
+ <bp:db rdf:datatype = "xsd:string">TAXONOMY</bp:db>
+</bp:UnificationXref>
+
+<bp:Protein rdf:about="STAT5A__9606__Cytoplasm">
+ <bp:displayName rdf:datatype = "xsd:string">STAT5A</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">STAT5A__9606</bp:name>
+</bp:Protein>
+
+<bp:RelationshipXref rdf:about="Entrez_TNIP2">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">79155</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:MolecularInteraction rdf:about="Molecular_Interaction_Cytoplasm__310">
+ <bp:xref rdf:resource="Pubmed_10521483" />
+ <bp:participant rdf:resource="TEK__10090__Cytoplasm" />
+ <bp:participant rdf:resource="GRB14__10090__Cytoplasm" />
+ <bp:evidence rdf:resource="Evidence_InVitro" />
+</bp:MolecularInteraction>
+
+<bp:BiochemicalReaction rdf:about="BiochemReaction_366__">
+ <bp:left rdf:resource="PXN__40674__" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:right rdf:resource="PXN__MI__0217__40674____EMPTYRIGHT" />
+ <bp:interactionType rdf:resource="Interaction_Phosphorylation" />
+</bp:BiochemicalReaction>
+
+<bp:RelationshipXref rdf:about="OMIM_TIE1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">600222</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:BiochemicalReaction rdf:about="BiochemReaction_399__PlasmaMembrane">
+ <bp:left rdf:resource="BMX__9606__PlasmaMembrane" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:right rdf:resource="BMX__MI__0217__9606__PlasmaMembrane__EMPTYRIGHT" />
+ <bp:interactionType rdf:resource="Interaction_Phosphorylation" />
+</bp:BiochemicalReaction>
+
+<bp:RelationshipXref rdf:about="OMIM_MAPK14">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">600289</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:ModificationFeature rdf:about="Y299">
+ <bp:featureLocation rdf:resource="SeqSite_992" />
+ <bp:modificationType rdf:resource="SeqModVocab_Y__MI_0217" />
+</bp:ModificationFeature>
+
+<bp:Protein rdf:about="STAT5A__9606__">
+ <bp:displayName rdf:datatype = "xsd:string">STAT5A</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">STAT5A__9606</bp:name>
+</bp:Protein>
+
+<bp:Catalysis rdf:about="Catalysis_365__">
+ <bp:xref rdf:resource="Pubmed_16157706" />
+ <bp:xref rdf:resource="Pubmed_10807867" />
+ <bp:controlled rdf:resource="BiochemReaction_365__" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:Catalysis>
+
+<bp:ProteinReference rdf:about="ProteinRef_FES__9606">
+ <bp:xref rdf:resource="Entrez_FES" />
+ <bp:xref rdf:resource="HPRD_FES" />
+ <bp:xref rdf:resource="UniProt_FES" />
+ <bp:xref rdf:resource="OMIM_FES" />
+ <bp:sequence rdf:datatype = "xsd:string">MGFSSELCSPQGHGVLQQMQEAELRLLEGMRKWMAQRVKSDREYAGLLHHMSLQDSGGQSRAISPDSPISQSWAEITSQTEGLSRLLRQHAEDLNSGPLSKLSLLIRERQQLRKTYSEQWQQLQQELTKTHSQDIEKLKSQYRALARDSAQAKRKYQEASKDKDRDKAKDKYVRSLWKLFAHHNRYVLGVRAAQLHHQHHHQLLLPGLLRSLQDLHEEMACILKEILQEYLEISSLVQDEVVAIHREMAAAAARIQPEAEYQGFLRQYGSAPDVPPCVTFDESLLEEGEPLEPGELQLNELTVESVQHTLTSVTDELAVATEMVFRRQEMVTQLQQELRNEEENTHPRERVQLLGKRQVLQEALQGLQVALCSQAKLQAQQELLQTKLEHLGPGEPPPVLLLQDDRHSTSSSEQEREGGRTPTLEILKSHISGIFRPKFSLPPPLQLIPEVQKPLHEQLWYHGAIPRAEVAELLVHSGDFLVRESQGKQEYVLSVLWDGLPRHFIIQSLDNLYRLEGEGFPSIPLLIDHLLSTQQPLTKKSGVVLHRAVPKDKWVLNHEDLVLGEQIGRGNFGEVFSGRLRADNTLVAVKSCRETLPPDLKAKFLQEARILKQYSHPNIVRLIGVCTQKQPIYIVMELVQGGDFLTFLRTEGARLRVKTLLQMVGDAAAGMEYLESKCCIHRDLAARNCLVTEKNVLKISDFGMSREEADGVYAASGGLRQVPVKWTAPEALNYGRYSSESDVWSFGILLWETFSLGASPYPNLSNQQTREFVEKGGRLPCPELCPDAVFRLMEQCWAYEPGQRPSFSTIYQELQSIRKRHR</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">FES</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:entityFeature rdf:resource="ModificationEmptyFeature_MI_0217" />
+ <bp:name rdf:datatype = "xsd:string">(v-fes)/Fujinami avian sarcoma (PRCII) viral (v-fps) oncogene homolog</bp:name>
+ <bp:name rdf:datatype = "xsd:string">FPS</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Feline sarcoma (Snyder-Theilen) viral homolog</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Oncogene FES, feline sarcoma virus</bp:name>
+</bp:ProteinReference>
+
+<bp:Protein rdf:about="STAT5B__MI__0217__9606____EMPTYRIGHT">
+ <bp:entityReference rdf:resource="ProteinRef_STAT5B__9606" />
+ <bp:displayName rdf:datatype = "xsd:string">STAT5B</bp:displayName>
+ <bp:feature rdf:resource="ModificationEmptyFeature_MI_0217" />
+ <bp:xref rdf:resource="PTM_ID_MI_0217" />
+ <bp:name rdf:datatype = "xsd:string">STAT5B__MI__0217</bp:name>
+</bp:Protein>
+
+<bp:ProteinReference rdf:about="ProteinRef_ANGPT1__9606">
+ <bp:xref rdf:resource="HPRD_ANGPT1" />
+ <bp:xref rdf:resource="OMIM_ANGPT1" />
+ <bp:xref rdf:resource="UniProt_ANGPT1" />
+ <bp:xref rdf:resource="Entrez_ANGPT1" />
+ <bp:sequence rdf:datatype = "xsd:string">MTVFLSFAFLAAILTHIGCSNQRRSPENSGRRYNRIQHGQCAYTFILPEHDGNCRESTTDQYNTNALQRDAPHVEPDFSSQKLQHLEHVMENYTQWLQKLENYIVENMKSEMAQIQQNAVQNHTATMLEIGTSLLSQTAEQTRKLTDVETQVLNQTSRLEIQLLENSLSTYKLEKQLLQQTNEILKIHEKNSLLEHKILEMEGKHKEELDTLKEEKENLQGLVTRQTYIIQELEKQLNRATTNNSVLQKQQLELMDTVHNLVNLCTKEGVLLKGGKREEEKPFRDCADVYQAGFNKSGIYTIYINNMPEPKKVFCNMDVNGGGWTVIQHREDGSLDFQRGWKEYKMGFGNPSGEYWLGNEFIFAITSQRQYMLRIELMDWEGNRAYSQYDRFHIGNEKQNYRLYLKGHTGTAGKQSSLILHGADFSTKDADNDNCMCKCALMLTGGWWFDACGPSNLNGMFYTAGQNHGKLNGIKWHYFKGPSYSLRSTTMMIRPLDF</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">ANGPT1</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">Angiopoietin 1 isoform b</bp:name>
+ <bp:name rdf:datatype = "xsd:string">AGPT</bp:name>
+ <bp:name rdf:datatype = "xsd:string">ANG1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">AGP1</bp:name>
+</bp:ProteinReference>
+
+<bp:RelationshipXref rdf:about="OMIM_PTK2">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">600758</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:UnificationXref rdf:about="UniProt_AKT1">
+ <bp:id rdf:datatype = "xsd:string">P31749</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:Protein rdf:about="NOS3__Phosphorylation__S1177__9606__">
+ <bp:entityReference rdf:resource="ProteinRef_NOS3__9606" />
+ <bp:displayName rdf:datatype = "xsd:string">NOS3</bp:displayName>
+ <bp:feature rdf:resource="S7711" />
+ <bp:name rdf:datatype = "xsd:string">NOS3__Phosphorylation</bp:name>
+</bp:Protein>
+
+<bp:Protein rdf:about="FES__9606__">
+ <bp:displayName rdf:datatype = "xsd:string">FES</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">FES__9606</bp:name>
+</bp:Protein>
+
+<bp:SequenceSite rdf:about="SeqSite_1102">
+ <bp:sequencePosition rdf:datatype = "xsd:int">1102</bp:sequencePosition>
+ <bp:positionStatus rdf:datatype = "xsd:string">EQUAL</bp:positionStatus>
+</bp:SequenceSite>
+
+<bp:ProteinReference rdf:about="ProteinRef_STAT5A__9606">
+ <bp:xref rdf:resource="OMIM_STAT5A" />
+ <bp:xref rdf:resource="HPRD_STAT5A" />
+ <bp:xref rdf:resource="Entrez_STAT5A" />
+ <bp:xref rdf:resource="UniProt_STAT5A" />
+ <bp:sequence rdf:datatype = "xsd:string">MAGWIQAQQLQGDALRQMQVLYGQHFPIEVRHYLAQWIESQPWDAIDLDNPQDRAQATQLLEGLVQELQKKAEHQVGEDGFLLKIKLGHYATQLQKTYDRCPLELVRCIRHILYNEQRLVREANNCSSPAGILVDAMSQKHLQINQTFEELRLVTQDTENELKKLQQTQEYFIIQYQESLRIQAQFAQLAQLSPQERLSRETALQQKQVSLEAWLQREAQTLQQYRVELAEKHQKTLQLLRKQQTIILDDELIQWKRRQQLAGNGGPPEGSLDVLQSWCEKLAEIIWQNRQQIRRAEHLCQQLPIPGPVEEMLAEVNATITDIISALVTSTFIIEKQPPQVLKTQTKFAATVRLLVGGKLNVHMNPPQVKATIISEQQAKSLLKNENTRNECSGEILNNCCVMEYHQATGTLSAHFRNMSLKRIKRADRRGAESVTEEKFTVLFESQFSVGSNELVFQVKTLSLPVVVIVHGSQDHNATATVLWDNAFAEPGRVPFAVPDKVLWPQLCEALNMKFKAEVQSNRGLTKENLVFLAQKLFNNSSSHLEDYSGLSVSWSQFNRENLPGWNYTFWQWFDGVMEVLKKHHKPHWNDGAILGFVNKQQAHDLLINKPDGTFLLRFSDSEIGGITIAWKFDSPERNLWNLKPFTTRDFSIRSLADRLGDLSYLIYVFPDRPKDEVFSKYYTPVLAKAVDGYVKPQIKQVVPEFVNASADAGGSSATYMDQAPSPAVCPQAPYNMYPQNPDHVLDQDGEFDLDETMDVARHVEELLRRPMDSLDSRLSPPAGLFTSARGSLS</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">STAT5A</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">Signal transducer and activator of transcription 5A</bp:name>
+ <bp:name rdf:datatype = "xsd:string">MGF</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Mammary gland factor</bp:name>
+</bp:ProteinReference>
+
+<bp:UnificationXref rdf:about="PTM_ID_MI0176">
+ <bp:id rdf:datatype = "xsd:string">MI:0176</bp:id>
+ <bp:db rdf:datatype = "xsd:string">MOLECULAR INTERACTIONS ONTOLOGY</bp:db>
+</bp:UnificationXref>
+
+<bp:UnificationXref rdf:about="PTM_ID_MI0177">
+ <bp:id rdf:datatype = "xsd:string">MI:0177</bp:id>
+ <bp:db rdf:datatype = "xsd:string">MOLECULAR INTERACTIONS ONTOLOGY</bp:db>
+</bp:UnificationXref>
+
+<bp:Complex rdf:about="Plasmamembrane__Complex__306">
+ <bp:displayName rdf:datatype = "xsd:string">Complex</bp:displayName>
+ <bp:component rdf:resource="PIK3R2__9606__Plasmamembrane" />
+ <bp:component rdf:resource="PIK3R1__9606__Plasmamembrane" />
+ <bp:cellularLocation rdf:resource="CellularLocation_Plasma_membrane" />
+ <bp:name rdf:datatype = "xsd:string">PIK3R1,PIK3R2</bp:name>
+</bp:Complex>
+
+<bp:UnificationXref rdf:about="PTM_ID_MI0178">
+ <bp:id rdf:datatype = "xsd:string">MI:0178</bp:id>
+ <bp:db rdf:datatype = "xsd:string">MOLECULAR INTERACTIONS ONTOLOGY</bp:db>
+</bp:UnificationXref>
+
+<bp:ProteinReference rdf:about="ProteinRef_PIK3R1__9606">
+ <bp:xref rdf:resource="OMIM_PIK3R1" />
+ <bp:xref rdf:resource="UniProt_PIK3R1" />
+ <bp:xref rdf:resource="Entrez_PIK3R1" />
+ <bp:xref rdf:resource="HPRD_PIK3R1" />
+ <bp:sequence rdf:datatype = "xsd:string">MSAEGYQYRALYDYKKEREEDIDLHLGDILTVNKGSLVALGFSDGQEARPEEIGWLNGYNETTGERGDFPGTYVEYIGRKKISPPTPKPRPPRPLPVAPGSSKTEADVEQQALTLPDLAEQFAPPDIAPPLLIKLVEAIEKKGLECSTLYRTQSSSNLAELRQLLDCDTPSVDLEMIDVHVLADAFKRYLLDLPNPVIPAAVYSEMISLAPEVQSSEEYIQLLKKLIRSPSIPHQYWLTLQYLLKHFFKLSQTSSKNLLNARVLSEIFSPMLFRFSAASSDNTENLIKVIEILISTEWNERQPAPALPPKPPKPTTVANNGMNNNMSLQDAEWYWGDISREEVNEKLRDTADGTFLVRDASTKMHGDYTLTLRKGGNNKLIKIFHRDGKYGFSDPLTFSSVVELINHYRNESLAQYNPKLDVKLLYPVSKYQQDQVVKEDNIEAVGKKLHEYNTQFQEKSREYDRLYEEYTRTSQEIQMKRTAIEAFNETIKIFEEQCQTQERYSKEYIEKFKREGNEKEIQRIMHNYDKLKSRISEIIDSRRRLEEDLKKQAAEYREIDKRMNSIKPDLIQLRKTRDQYLMWLTQKGVRQKKLNEWLGNENTEDQYSLVEDDEDLPHHDEKTWNVGSSNRNKAENLLRGKRDGTFLVRESSKQGCYACSVVVDGEVKHCVINKTATGYGFAEPYNLYSSLKELVLHYQHTSLVQHNDSLNVTLAYPVYAQQRR</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">PIK3R1</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">GRB1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Phosphatidyl inositol 3 kinase associated p85 alpha</bp:name>
+ <bp:name rdf:datatype = "xsd:string">p85 alpha</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Phosphoinositide-3-kinase, regulatory subunit, polypeptide 1 isoform 1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Phosphatidyl inositol 3 kinase regulatory 85 KD, alpha</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Phosphoinositide-3-kinase, regulatory subunit, polypeptide 1 isoform 3</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Phosphoinositide-3-kinase, regulatory subunit, polypeptide 1 isoform 2</bp:name>
+</bp:ProteinReference>
+
+<bp:UnificationXref rdf:about="UniProt_MAPK14">
+ <bp:id rdf:datatype = "xsd:string">Q16539</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:Protein rdf:about="GRB7__9606__Cytoplasm">
+ <bp:displayName rdf:datatype = "xsd:string">GRB7</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">GRB7__9606</bp:name>
+</bp:Protein>
+
+<bp:PublicationXref rdf:about="Pubmed_8980223">
+ <bp:id rdf:datatype = "xsd:string">8980223</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:PublicationXref rdf:about="Pubmed_8980224">
+ <bp:id rdf:datatype = "xsd:string">8980224</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:SequenceSite rdf:about="SeqSite_1108">
+ <bp:sequencePosition rdf:datatype = "xsd:int">1108</bp:sequencePosition>
+ <bp:positionStatus rdf:datatype = "xsd:string">EQUAL</bp:positionStatus>
+</bp:SequenceSite>
+
+<bp:Protein rdf:about="NOS3__9606__">
+ <bp:displayName rdf:datatype = "xsd:string">NOS3</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">NOS3__9606</bp:name>
+</bp:Protein>
+
+<bp:Transport rdf:about="Transport_53">
+ <bp:left rdf:resource="FOXO1__9913__Nucleus" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:xref rdf:resource="Pubmed_15132996" />
+ <bp:right rdf:resource="FOXO1__9913__Cytoplasm" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:Transport>
+
+<bp:UnificationXref rdf:about="urn:biopax:UnificationXref:GO_GO%3A0005634">
+ <bp:id rdf:datatype = "xsd:string">GO:0005634</bp:id>
+ <bp:db rdf:datatype = "xsd:string">GO</bp:db>
+</bp:UnificationXref>
+
+<bp:Transport rdf:about="Transport_56">
+ <bp:left rdf:resource="RHOA__9606__Cytoplasm" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:xref rdf:resource="Pubmed_12816861" />
+ <bp:right rdf:resource="RHOA__9606__Plasmamembrane" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:Transport>
+
+<bp:RelationshipXref rdf:about="Entrez_TIE1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">7075</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:Protein rdf:about="PTK2__MI__0217__9606____EMPTYRIGHT">
+ <bp:entityReference rdf:resource="ProteinRef_PTK2__9606" />
+ <bp:displayName rdf:datatype = "xsd:string">PTK2</bp:displayName>
+ <bp:feature rdf:resource="ModificationEmptyFeature_MI_0217" />
+ <bp:xref rdf:resource="PTM_ID_MI_0217" />
+ <bp:name rdf:datatype = "xsd:string">PTK2__MI__0217</bp:name>
+</bp:Protein>
+
+<bp:UnificationXref rdf:about="urn:biopax:UnificationXref:GO_GO%3A0005737">
+ <bp:id rdf:datatype = "xsd:string">GO:0005737</bp:id>
+ <bp:db rdf:datatype = "xsd:string">GO</bp:db>
+</bp:UnificationXref>
+
+<bp:Protein rdf:about="GRB14__10090__Cytoplasm">
+ <bp:displayName rdf:datatype = "xsd:string">GRB14</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">GRB14__10090</bp:name>
+</bp:Protein>
+
+<bp:Transport rdf:about="Transport_57">
+ <bp:left rdf:resource="RAC1__9606__Cytoplasm" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:xref rdf:resource="Pubmed_12816861" />
+ <bp:right rdf:resource="RAC1__9606__Plasmamembrane" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:Transport>
+
+<bp:PublicationXref rdf:about="Pubmed_11865050">
+ <bp:id rdf:datatype = "xsd:string">11865050</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:Protein rdf:about="MAPK3__9606__">
+ <bp:displayName rdf:datatype = "xsd:string">MAPK3</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">MAPK3__9606</bp:name>
+</bp:Protein>
+
+<bp:UnificationXref rdf:about="HPRD_NCK1">
+ <bp:id rdf:datatype = "xsd:string">02740</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:SequenceSite rdf:about="SeqSite_1119">
+ <bp:sequencePosition rdf:datatype = "xsd:int">1119</bp:sequencePosition>
+ <bp:positionStatus rdf:datatype = "xsd:string">EQUAL</bp:positionStatus>
+</bp:SequenceSite>
+
+<bp:UnificationXref rdf:about="UniProt_NCK1">
+ <bp:id rdf:datatype = "xsd:string">P16333</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:ProteinReference rdf:about="ProteinRef_GRB14__10090">
+ <bp:xref rdf:resource="UniProt_GRB14" />
+ <bp:xref rdf:resource="HPRD_GRB14" />
+ <bp:xref rdf:resource="Entrez_GRB14" />
+ <bp:xref rdf:resource="OMIM_GRB14" />
+ <bp:sequence rdf:datatype = "xsd:string">MTTSLQDGQSAASRAAARDSPLAAQVCGAAQGRGDAHDLAPAPWLHARALLPLPDGTRGCAADRRKKKDLDVPEMPSIPNPFPELCCSPFTSVLSADLFPKANSRKKQVIKVYSEDETSRALDVPSDITARDVCQLLILKNHYIDDHSWTLFEHLPHIGVERTIEDHELVIEVLSNWGIEEENKLYFRKNYAKYEFFKNPMYFFPEHMVSFATETNGEISPTQILQMFLSSSTYPEIHGFLHAKEQGKKSWKKIYFFLRRSGLYFSTKGTSKEPRHLQFFSEFGNSDIYVSLAGKKKHGAPTNYGFCFKPNKAGGPRDLKMLCAEEEQSRTCWVTAIRLLKYGMQLYQNYMHPYQGRSGCSSQSISPMRSISENSLVAMDFSGQKSRVIENPTEALSVAVEEGLAWRKKGCLRLGTHGSPTASSQSSATNMAIHRSQPWFHHKISRDEAQRLIIQQGLVDGVFLVRDSQSNPKTFVLSMSHGQKIKHFQIIPVEDDGEMFHTLDDGHTRFTDLIQLVEFYQLNKGVLPCKLKHYCARIAL</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">GRB14</bp:displayName>
+ <bp:organism rdf:resource="biosource_10090" />
+ <bp:name rdf:datatype = "xsd:string">GRB14 adapter protein</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Growth factor receptor bound protein 14</bp:name>
+</bp:ProteinReference>
+
+<bp:UnificationXref rdf:about="UniProt_PIK3R1">
+ <bp:id rdf:datatype = "xsd:string">P27986</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:UnificationXref rdf:about="UniProt_PIK3R2">
+ <bp:id rdf:datatype = "xsd:string">O00459</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:Protein rdf:about="TEK__10090__Extracellular">
+ <bp:displayName rdf:datatype = "xsd:string">TEK</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">TEK__10090</bp:name>
+</bp:Protein>
+
+<bp:ModificationFeature rdf:about="S7711">
+ <bp:featureLocation rdf:resource="SeqSite_1177" />
+ <bp:modificationType rdf:resource="SeqModVocab_S__MI_0217" />
+</bp:ModificationFeature>
+
+<bp:Protein rdf:about="SHC1__9606__Cytoplasm">
+ <bp:displayName rdf:datatype = "xsd:string">SHC1</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">SHC1__9606</bp:name>
+</bp:Protein>
+
+<bp:PublicationXref rdf:about="Pubmed_15284220">
+ <bp:id rdf:datatype = "xsd:string">15284220</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:PublicationXref rdf:about="Pubmed_16157706">
+ <bp:id rdf:datatype = "xsd:string">16157706</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:ProteinReference rdf:about="ProteinRef_PTPN11__9606">
+ <bp:xref rdf:resource="Entrez_PTPN11" />
+ <bp:xref rdf:resource="UniProt_PTPN11" />
+ <bp:xref rdf:resource="OMIM_PTPN11" />
+ <bp:xref rdf:resource="HPRD_PTPN11" />
+ <bp:sequence rdf:datatype = "xsd:string">MTSRRWFHPNITGVEAENLLLTRGVDGSFLARPSKSNPGDFTLSVRRNGAVTHIKIQNTGDYYDLYGGEKFATLAELVQYYMEHHGQLKEKNGDVIELKYPLNCADPTSERWFHGHLSGKEAEKLLTEKGKHGSFLVRESQSHPGDFVLSVRTGDDKGESNDGKSKVTHVMIRCQELKYDVGGGERFDSLTDLVEHYKKNPMVETLGTVLQLKQPLNTTRINAAEIESRVRELSKLAETTDKVKQGFWEEFETLQQQECKLLYSRKEGQRQENKNKNRYKNILPFDHTRVVLHDGDPNEPVSDYINANIIMPEFETKCNNSKPKKSYIATQGCLQNTVNDFWRMVFQENSRVIVMTTKEVERGKSKCVKYWPDEYALKEYGVMRVRNVKESAAHDYTLRELKLSKVGQGNTERTVWQYHFRTWPDHGVPSDPGGVLDFLEEVHHKQESIMDAGPVVVHCSAGIGRTGTFIVIDILIDIIREKGVDCDIDVPKTIQMVRSQRSGMVQTEAQYRFIYMAVQHYIETLQRRIEEEQKSKRKGHEYTNIKYSLADQTSGDQSPLPPCTPTPPCAEMREDSARVYENVGLMQQQKSFR</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">PTPN11</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">PTP2C</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Tyrosine phosphatase SHP2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">SH2 containing protein tyrosine phosphatase 2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">SHPTP2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Protein tyrosine phosphatase 2C</bp:name>
+ <bp:name rdf:datatype = "xsd:string">SHPTP3</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Protein tyrosine phosphatase, nonreceptor type 11</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Syp</bp:name>
+ <bp:name rdf:datatype = "xsd:string">PTP-1D</bp:name>
+</bp:ProteinReference>
+
+<bp:RelationshipXref rdf:about="Entrez_PTK2">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">5747</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:RelationshipXref rdf:about="Entrez_NCK1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">4690</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:RelationshipXref rdf:about="GO_Plasmamembrane">
+ <bp:id rdf:datatype = "xsd:string">GO:0005886</bp:id>
+ <bp:db rdf:datatype = "xsd:string">GENE ONTOLOGY</bp:db>
+</bp:RelationshipXref>
+
+<bp:Protein rdf:about="NCK1__MI__0217__9606____EMPTYRIGHT">
+ <bp:entityReference rdf:resource="ProteinRef_NCK1__9606" />
+ <bp:displayName rdf:datatype = "xsd:string">NCK1</bp:displayName>
+ <bp:feature rdf:resource="ModificationEmptyFeature_MI_0217" />
+ <bp:xref rdf:resource="PTM_ID_MI_0217" />
+ <bp:name rdf:datatype = "xsd:string">NCK1__MI__0217</bp:name>
+</bp:Protein>
+
+<bp:UnificationXref rdf:about="UniProt_BMX">
+ <bp:id rdf:datatype = "xsd:string">P51813</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:UnificationXref rdf:about="HPRD_SHC1">
+ <bp:id rdf:datatype = "xsd:string">02780</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:UnificationXref rdf:about="UniProt_TIE1">
+ <bp:id rdf:datatype = "xsd:string">P35590</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:Catalysis rdf:about="Catalysis_366__">
+ <bp:xref rdf:resource="Pubmed_10807867" />
+ <bp:controlled rdf:resource="BiochemReaction_366__" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:Catalysis>
+
+<bp:MolecularInteraction rdf:about="Molecular_Interaction_Extracellular__380">
+ <bp:xref rdf:resource="Pubmed_10514510" />
+ <bp:xref rdf:resource="Pubmed_15769741" />
+ <bp:xref rdf:resource="Pubmed_15284220" />
+ <bp:participant rdf:resource="ANGPT1__10090__Extracellular" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:MolecularInteraction>
+
+<bp:MolecularInteraction rdf:about="Molecular_Interaction_Extracellular__381">
+ <bp:xref rdf:resource="Pubmed_10514510" />
+ <bp:xref rdf:resource="Pubmed_15769741" />
+ <bp:xref rdf:resource="Pubmed_15284220" />
+ <bp:participant rdf:resource="ANGPT2__10090__Extracellular" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:MolecularInteraction>
+
+<bp:Protein rdf:about="RAC1__9606__Cytoplasm">
+ <bp:displayName rdf:datatype = "xsd:string">RAC1</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">RAC1__9606</bp:name>
+</bp:Protein>
+
+<bp:ProteinReference rdf:about="ProteinRef_SHC1__9606">
+ <bp:xref rdf:resource="UniProt_SHC1" />
+ <bp:xref rdf:resource="OMIM_SHC1" />
+ <bp:xref rdf:resource="HPRD_SHC1" />
+ <bp:xref rdf:resource="Entrez_SHC1" />
+ <bp:sequence rdf:datatype = "xsd:string">MNLLPPKPKYNPLRNESLSSMEEGASGSTPPEELPSPPASSLGPILPPLPGDDSPTTLCSFFPRMSNLRLANPAGGRPGSKGEPGRAADDGEGIVGAAMPDSGPLPLLQDMNKLSGGGGRRTRVEGGQLGGEEWTRHGSFVNKPTRGWLHPNDKVMGPGVSYLVRYMGCVEVLQSMRALDFNTRTQVTREAISLVCEAVPGAKGATRRRKPCSRPLSSILGRSNLKFAGMPITLTVSTSSLNLMAADCKQIIANHHMQSISFASGGDPDTAEYVAYVAKDPVNQRACHILECPEGLAQDVISTIGQAFELRFKQYLRNPPKLVTPHDRMAGFDGSAWDEEEEEPPDHQYYNDFPGKEPPLGGVVDMRLREGAAPGAARPTAPNAQTPSHLGATLPVGQPVGGDPEVRKQMPPPPPCPGRELFDDPSYVNVQNLDKARQAVGGAGPPNPAINGSAPRDLFDMKPFEDALRVPPPPQSVSMAEQLRGEPWFHGKLSRREAEALLQLNGDFLVRESTTTPGQYVLTGLQSGQPKHLLLVDPEGVVRTKDHRFESVSHLISYHMDNHLPIISAGSELCLQQPVERKL</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">SHC1</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">SHC (Src homology 2 domain containing) transforming protein 1 isoform p52Shc</bp:name>
+ <bp:name rdf:datatype = "xsd:string">SHC</bp:name>
+ <bp:name rdf:datatype = "xsd:string">p66SHC</bp:name>
+ <bp:name rdf:datatype = "xsd:string">FLJ26504</bp:name>
+ <bp:name rdf:datatype = "xsd:string">SHC (Src homology 2 domain containing) transforming protein 1 isoform p66Shc</bp:name>
+ <bp:name rdf:datatype = "xsd:string">SHCA</bp:name>
+ <bp:name rdf:datatype = "xsd:string">p52SHC</bp:name>
+</bp:ProteinReference>
+
+<bp:RelationshipXref rdf:about="OMIM_NCK1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">600508</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:RelationshipXref rdf:about="OMIM_PTPN11">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">176876</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:UnificationXref rdf:about="HPRD_ANGPT1">
+ <bp:id rdf:datatype = "xsd:string">03392</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:UnificationXref rdf:about="HPRD_ANGPT2">
+ <bp:id rdf:datatype = "xsd:string">03563</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:UnificationXref rdf:about="HPRD_ANGPT4">
+ <bp:id rdf:datatype = "xsd:string">04747</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:MolecularInteraction rdf:about="Molecular_Interaction___472">
+ <bp:xref rdf:resource="Pubmed_11865050" />
+ <bp:participant rdf:resource="TIE1__10090__" />
+ <bp:participant rdf:resource="PIK3R1__9606__" />
+ <bp:evidence rdf:resource="Evidence_InVitro" />
+</bp:MolecularInteraction>
+
+<bp:PublicationXref rdf:about="Pubmed_11002428">
+ <bp:id rdf:datatype = "xsd:string">11002428</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:SequenceSite rdf:about="SeqSite_1048">
+ <bp:sequencePosition rdf:datatype = "xsd:int">1048</bp:sequencePosition>
+ <bp:positionStatus rdf:datatype = "xsd:string">EQUAL</bp:positionStatus>
+</bp:SequenceSite>
+
+<bp:ProteinReference rdf:about="ProteinRef_NOS3__9606">
+ <bp:xref rdf:resource="Entrez_NOS3" />
+ <bp:xref rdf:resource="HPRD_NOS3" />
+ <bp:xref rdf:resource="UniProt_NOS3" />
+ <bp:xref rdf:resource="OMIM_NOS3" />
+ <bp:sequence rdf:datatype = "xsd:string">MGNLKSVAQEPGPPCGLGLGLGLGLCGKQGPATPAPEPSRAPASLLPPAPEHSPPSSPLTQPPEGPKFPRVKNWEVGSITYDTLSAQAQQDGPCTPRRCLGSLVFPRKLQGRPSPGPPAPEQLLSQARDFINQYYSSIKRSGSQAHEQRLQEVEAEVAATGTYQLRESELVFGAKQAWRNAPRCVGRIQWGKLQVFDARDCRSAQEMFTYICNHIKYATNRGNLRSAITVFPQRCPGRGDFRIWNSQLVRYAGYRQQDGSVRGDPANVEITELCIQHGWTPGNGRFDVLPLLLQAPDDPPELFLLPPELVLEVPLEHPTLEWFAALGLRWYALPAVSNMLLEIGGLEFPAAPFSGWYMSTEIGTRNLCDPHRYNILEDVAVCMDLDTRTTSSLWKDKAAVEINVAVLHSYQLAKVTIVDHHAATASFMKHLENEQKARGGCPADWAWIVPPISGSLTPVFHQEMVNYFLSPAFRYQPDPWKGSAAKGTGITRKKTFKEVANAVKISASLMGTVMAKRVKATILYGSETGRAQSYAQQLGRLFRKAFDPRVLCMDEYDVVSLEHETLVLVVTSTFGNGDPPENGESFAAALMEMSGPYNSSPRPEQHKSYKIRFNSISCSDPLVSSWRRKRKESSNTDSAGALGTLRFCVFGLGSRAYPHFCAFARAVDTRLEELGGERLLQLGQGDELCGQEEAFRGWAQAAFQAACETFCVGEDAKAAARDIFSPKRSWKRQRYRLSAQAEGLQLLPGLIHVHRRKMFQATIRSVENLQSSKSTRATILVRLDTGGQEGLQYQPGDHIGVCPPNRPGLVEALLSRVEDPPAPTEPVAVEQLEKGSPGGPPPGWVRDPRLPPCTLRQALTFFLDITSPPSPQLLRLLSTLAEEPREQQELEALSQDPRRYEEWKWFRCPTLLEVLEQFPSVALPAPLLLTQLPLLQPRYYSVSSAPSTHPGEIHLTVAVLAYRTQDGLGPLHYGVCSTWLSQLKPGDPVPCFIRGAPSFRLPPDPSLPCILVGPGTGIAPFRGFWQERLHDIESKGLQPTPMTLVFGCRCSQLDHLYRDEVQNAQQRGVFGRVLTAFSREPDNPKTYVQDILRTELAAEVHRVLCLERGHMFVCGDVTMATNVLQTVQRILATEGDMELDEAGDVIGVLRDQQRYHEDIFGLTLRTQEVTSRIRTQSFSLQERQLRGAVPWAFDPPGSDTNSP</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">NOS3</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:entityFeature rdf:resource="S7711" />
+ <bp:name rdf:datatype = "xsd:string">EC-NOS</bp:name>
+ <bp:name rdf:datatype = "xsd:string">NOSIII</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Endothelial NOS</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Nitric oxide synthase, endothelial</bp:name>
+ <bp:name rdf:datatype = "xsd:string">eNOS</bp:name>
+ <bp:name rdf:datatype = "xsd:string">NOS type III</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Constitutive NOS</bp:name>
+ <bp:name rdf:datatype = "xsd:string">cNOS</bp:name>
+ <bp:name rdf:datatype = "xsd:string">ENOS</bp:name>
+</bp:ProteinReference>
+
+<bp:Protein rdf:about="TEK__Phosphorylation__Y__Y__Y__Y__Y__S1102__897__992__1048__1108__1119">
+ <bp:entityReference rdf:resource="ProteinRef_TEK__9606" />
+ <bp:displayName rdf:datatype = "xsd:string">TEK</bp:displayName>
+ <bp:feature rdf:resource="Y8401" />
+ <bp:feature rdf:resource="Y299" />
+ <bp:feature rdf:resource="Y8011" />
+ <bp:feature rdf:resource="Y2011" />
+ <bp:feature rdf:resource="S9111" />
+ <bp:feature rdf:resource="Y798" />
+ <bp:cellularLocation rdf:resource="CellularLocation_Plasma_membrane" />
+ <bp:name rdf:datatype = "xsd:string">TEK__Phosphorylation</bp:name>
+</bp:Protein>
+
+<bp:Catalysis rdf:about="Catalysis_3413__">
+ <bp:xref rdf:resource="Pubmed_10521483" />
+ <bp:controlled rdf:resource="BiochemReaction_3413__" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:Catalysis>
+
+<bp:BiochemicalReaction rdf:about="BiochemReaction_383__">
+ <bp:left rdf:resource="PAK1__9606__" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:right rdf:resource="PAK1__Phosphorylation__S__S__T199__204__423" />
+ <bp:interactionType rdf:resource="Interaction_Phosphorylation" />
+</bp:BiochemicalReaction>
+
+<bp:Protein rdf:about="TIE1__10090__">
+ <bp:displayName rdf:datatype = "xsd:string">TIE1</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">TIE1__10090</bp:name>
+</bp:Protein>
+
+<bp:Catalysis rdf:about="Catalysis_360__">
+ <bp:xref rdf:resource="Pubmed_12824293" />
+ <bp:controlled rdf:resource="BiochemReaction_360__" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:Catalysis>
+
+<bp:ProteinReference rdf:about="ProteinRef_RHOA__9606">
+ <bp:xref rdf:resource="HPRD_RHOA" />
+ <bp:xref rdf:resource="OMIM_RHOA" />
+ <bp:xref rdf:resource="Entrez_RHOA" />
+ <bp:xref rdf:resource="UniProt_RHOA" />
+ <bp:sequence rdf:datatype = "xsd:string">MAAIRKKLVIVGDGACGKTCLLIVFSKDQFPEVYVPTVFENYVADIEVDGKQVELALWDTAGQEDYDRLRPLSYPDTDVILMCFSIDSPDSLENIPEKWTPEVKHFCPNVPIILVGNKKDLRNDEHTRRELAKMKQEPVKPEEGRDMANRIGAFGYMECSAKTKDGVREVFEMATRAALQARRGKKKSGCLVL</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">RHOA</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">Aplysia ras related homolog 12</bp:name>
+ <bp:name rdf:datatype = "xsd:string">RHOH12</bp:name>
+ <bp:name rdf:datatype = "xsd:string">ARH12</bp:name>
+ <bp:name rdf:datatype = "xsd:string">ARHA</bp:name>
+ <bp:name rdf:datatype = "xsd:string">RHO12</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Transforming protein RhoA</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Oncogene rho H12</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Ras homolog gene family member A</bp:name>
+</bp:ProteinReference>
+
+<bp:Protein rdf:about="TEK__10090__Plasmamembrane">
+ <bp:displayName rdf:datatype = "xsd:string">TEK</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">TEK__10090</bp:name>
+</bp:Protein>
+
+<bp:Protein rdf:about="FOXO1__Phosphorylation__T__S24__256">
+ <bp:entityReference rdf:resource="ProteinRef_FOXO1__9913" />
+ <bp:displayName rdf:datatype = "xsd:string">FOXO1</bp:displayName>
+ <bp:feature rdf:resource="S652" />
+ <bp:feature rdf:resource="T42" />
+ <bp:cellularLocation rdf:resource="CellularLocation_Cytoplasm" />
+ <bp:name rdf:datatype = "xsd:string">FOXO1__Phosphorylation</bp:name>
+</bp:Protein>
+
+<bp:UnificationXref rdf:about="HPRD_STAT5A">
+ <bp:id rdf:datatype = "xsd:string">03301</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:ProteinReference rdf:about="ProteinRef_STAT5B__9606">
+ <bp:xref rdf:resource="OMIM_STAT5B" />
+ <bp:xref rdf:resource="Entrez_STAT5B" />
+ <bp:xref rdf:resource="UniProt_STAT5B" />
+ <bp:xref rdf:resource="HPRD_STAT5B" />
+ <bp:sequence rdf:datatype = "xsd:string">MAVWIQAQQLQGEALHQMQALYGQHFPIEVRHYLSQWIESQAWDSVDLDNPQENIKATQLLEGLVQELQKKAEHQVGEDGFLLKIKLGHYATQLQNTYDRCPMELVRCIRHILYNEQRLVREANNGSSPAGSLADAMSQKHLQINQTFEELRLVTQDTENELKKLQQTQEYFIIQYQESLRIQAQFGPLAQLSPQERLSRETALQQKQVSLEAWLQREAQTLQQYRVELAEKHQKTLQLLRKQQTIILDDELIQWKRRQQLAGNGGPPEGSLDVLQSWCEKLAEIIWQNRQQIRRAEHLCQQLPIPGPVEEMLAEVNATITDIISALVTSTFIIEKQPPQVLKTQTKFAATVRLLVGGKLNVHMNPPQVKATIISEQQAKSLLKNENTRNDYSGEILNNCCVMEYHQATGTLSAHFRNMSLKRIKRSDRRGAESVTEEKFTILFESQFSVGGNELVFQVKTLSLPVVVIVHGSQDNNATATVLWDNAFAEPGRVPFAVPDKVLWPQLCEALNMKFKAEVQSNRGLTKENLVFLAQKLFNNSSSHLEDYSGLSVSWSQFNRENLPGRNYTFWQWFDGVMEVLKKHLKPHWNDGAILGFVNKQQAHDLLINKPDGTFLLRFSDSEIGGITIAWKFDSQERMFWNLMPFTTRDFSIRSLADRLGDLNYLIYVFPDRPKDEVYSKYYTPVPCESATAKAVDGYVKPQIKQVVPEFVNASADAGGGSATYMDQAPSPAVCPQAHYNMYPQNPDSVLDTDGDFDLEDTMDVARRVEELLGRPMDSQWIPHAQS</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">STAT5B</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">Signal transducer and activator of transcription 5B</bp:name>
+</bp:ProteinReference>
+
+<bp:UnificationXref rdf:about="HPRD_STAT5B">
+ <bp:id rdf:datatype = "xsd:string">05037</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:ProteinReference rdf:about="ProteinRef_DOK2__9606">
+ <bp:xref rdf:resource="UniProt_DOK2" />
+ <bp:xref rdf:resource="Entrez_DOK2" />
+ <bp:xref rdf:resource="HPRD_DOK2" />
+ <bp:xref rdf:resource="OMIM_DOK2" />
+ <bp:sequence rdf:datatype = "xsd:string">MGDGAVKQGFLYLQQQQTFGKKWRRFGASLYGGSDCALARLELQEGPEKPRRCEAARKVIRLSDCLRVAEAGGEASSPRDTSAFFLETKERLYLLAAPAAERGDWVQAICLLAFPGQRKELSGPEGKQSRPCMEENELYSSAVTVGPHKEFAVTMRPTEASERCHLRGSYTLRAGESALELWGGPEPGTQLYDWPYRFLRRFGRDKVTFSFEAGRRCVSGEGNFEFETRQGNEIFLALEEAISAQKNAAPATPQPQPATIPASLPRPDSPYSRPHDSLPPPSPTTPVPAPRPRGQEGEYAVPFDAVARSLGKNFRGILAVPPQLLADPLYDSIEETLPPRPDHIYDEPEGVAALSLYDSPQEPRGEAWRRQATADRDPAGLQHVQPAGQDFSASGWQPGTEYDNVVLKKGPK</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">DOK2</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">p56 dok2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Docking protein 2 isoform a</bp:name>
+ <bp:name rdf:datatype = "xsd:string">p56DOK</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Docking protein 2 isoform b</bp:name>
+ <bp:name rdf:datatype = "xsd:string">FRIP</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Downstream of tyrosine kinase 2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Docking protein 2</bp:name>
+</bp:ProteinReference>
+
+<bp:UnificationXref rdf:about="HPRD_DOK2">
+ <bp:id rdf:datatype = "xsd:string">05411</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:ProteinReference rdf:about="ProteinRef_NCK1__9606">
+ <bp:xref rdf:resource="OMIM_NCK1" />
+ <bp:xref rdf:resource="UniProt_NCK1" />
+ <bp:xref rdf:resource="Entrez_NCK1" />
+ <bp:xref rdf:resource="HPRD_NCK1" />
+ <bp:sequence rdf:datatype = "xsd:string">MAEEVVVVAKFDYVAQQEQELDIKKNERLWLLDDSKSWWRVRNSMNKTGFVPSNYVERKNSARKASIVKNLKDTLGIGKVKRKPSVPDSASPADDSFVDPGERLYDLNMPAYVKFNYMAEREDELSLIKGTKVIVMEKCSDGWWRGSYNGQVGWFPSNYVTEEGDSPLGDHVGSLSEKLAAVVNNLNTGQVLHVVQALYPFSSSNDEELNFEKGDVMDVIEKPENDPEWWKCRKINGMVGLVPKNYVTVMQNNPLTSGLEPSPPQCDYIRPSLTGKFAGNPWYYGKVTRHQAEMALNERGHEGDFLIRDSESSPNDFSVSLKAQGKNKHFKVQLKETVYCIGQRKFSTMEELVEHYKKAPIFTSEQGEKLYLVKHLS</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">NCK1</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">Cytoplasmic protein NCK1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">NCK alpha</bp:name>
+ <bp:name rdf:datatype = "xsd:string">NCK tyrosine kinase</bp:name>
+ <bp:name rdf:datatype = "xsd:string">NCK adaptor protein 1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Non catalytic region of tyrosine kinase</bp:name>
+ <bp:name rdf:datatype = "xsd:string">NCK</bp:name>
+ <bp:name rdf:datatype = "xsd:string">SH2/SH3 adaptor protein NCK alpha</bp:name>
+ <bp:name rdf:datatype = "xsd:string">MGC12668</bp:name>
+</bp:ProteinReference>
+
+<bp:Protein rdf:about="ITGA5__9606__Plasmamembrane">
+ <bp:displayName rdf:datatype = "xsd:string">ITGA5</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">ITGA5__9606</bp:name>
+</bp:Protein>
+
+<bp:BiochemicalReaction rdf:about="BiochemReaction_3397__Plasmamembrane">
+ <bp:left rdf:resource="TIE1__9606__Plasmamembrane" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:right rdf:resource="TIE1__MI__0217__9606__Plasmamembrane__EMPTYRIGHT" />
+ <bp:interactionType rdf:resource="Interaction_Phosphorylation" />
+</bp:BiochemicalReaction>
+
+<bp:Protein rdf:about="TEK__9606__PlasmaMembrane">
+ <bp:displayName rdf:datatype = "xsd:string">TEK</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">TEK__9606</bp:name>
+</bp:Protein>
+
+<bp:ProteinReference rdf:about="ProteinRef_TEK__10090">
+ <bp:xref rdf:resource="Entrez_TEK" />
+ <bp:xref rdf:resource="UniProt_TEK" />
+ <bp:xref rdf:resource="OMIM_TEK" />
+ <bp:xref rdf:resource="HPRD_TEK" />
+ <bp:sequence rdf:datatype = "xsd:string">MDSLASLVLCGVSLLLSGTVEGAMDLILINSLPLVSDAETSLTCIASGWRPHEPITIGRDFEALMNQHQDPLEVTQDVTREWAKKVVWKREKASKINGAYFCEGRVRGEAIRIRTMKMRQQASFLPATLTMTVDKGDNVNISFKKVLIKEEDAVIYKNGSFIHSVPRHEVPDILEVHLPHAQPQDAGVYSARYIGGNLFTSAFTRLIVRRCEAQKWGPECNHLCTACMNNGVCHEDTGECICPPGFMGRTCEKACELHTFGRTCKERCSGQEGCKSYVFCLPDPYGCSCATGWKGLQCNEACHPGFYGPDCKLRCSCNNGEMCDRFQGCLCSPGWQGLQCEREGIPRMTPKIVDLPDHIEVNSGKFNPICKASGWPLPTNEEMTLVKPDGTVLHPKDFNHTDHFSVAIFTIHRILPPDSGVWVCSVNTVAGMVEKPFNISVKVLPKPLNAPNVIDTGHNFAVINISSEPYFGDGPIKSKKLLYKPVNHYEAWQHIQVTNEIVTLNYLEPRTEYELCVQLVRRGEGGEGHPGPVRRFTTASIGLPPPRGLNLLPKSQTTLNLTWQPIFPSSEDDFYVEVERRSVQKSDQQNIKVPGNLTSVLLNNLHPREQYVVRARVNTKAQGEWSEDLTAWTLSDILPPQPENIKISNITHSSAVISWTILDGYSISSITIRYKVQGKNEDQHVDVKIKNATIIQYQLKGLEPETAYQVDIFAENNIGSSNPAFSHELVTLPESQAPADLGGGKMLLIAILGSAGMTCLTVLLAFLIILQLKRANVQRRMAQAFQNVREEPAVQFNSGTLALNRKVKNNPDPTIYPVLDWNDIKFQDVIGEGNFGQVLKARIKKDGLRMDAAIKRMKEYASKDDHRDFAGELEVLCKLGHHPNIINLLGACEHRGYLYLAIEYAPHGNLLDFLRKSRVLETDPAFAIANSTASTLSSQQLLHFAADVARGMDYLSQKQFIHRDLAARNILVGENYVAKIADFGLSRGQEVYVKKTMGRLPVRWMAIESLNYSVYTTNSDVWSYGVLLWEIVSLGGTPYCGMTCAELYEKLPQGYRLEKPLNCDDEVYDLMRQCWREKPYERPSFAQILVSLNRMLEERKTYVNTTLYEKFTYAGIDCSAEEAA</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">TEK</bp:displayName>
+ <bp:organism rdf:resource="biosource_10090" />
+ <bp:name rdf:datatype = "xsd:string">Angiopoietin 1 receptor</bp:name>
+ <bp:name rdf:datatype = "xsd:string">CD202b antigen</bp:name>
+ <bp:name rdf:datatype = "xsd:string">HPK 6</bp:name>
+ <bp:name rdf:datatype = "xsd:string">TIE2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Protein receptor tyrosine kinase, epithelial specific, TIE 2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Tunica interna endothelial cell kinase</bp:name>
+ <bp:name rdf:datatype = "xsd:string">TEK tyrosine kinase, endothelial</bp:name>
+ <bp:name rdf:datatype = "xsd:string">VMCM</bp:name>
+</bp:ProteinReference>
+
+<bp:Protein rdf:about="RASA1__9606__Cytoplasm">
+ <bp:displayName rdf:datatype = "xsd:string">RASA1</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">RASA1__9606</bp:name>
+</bp:Protein>
+
+<bp:ProteinReference rdf:about="ProteinRef_ITGB1__9606">
+ <bp:xref rdf:resource="OMIM_ITGB1" />
+ <bp:xref rdf:resource="Entrez_ITGB1" />
+ <bp:xref rdf:resource="HPRD_ITGB1" />
+ <bp:xref rdf:resource="UniProt_ITGB1" />
+ <bp:sequence rdf:datatype = "xsd:string">MNLQPIFWIGLISSVCCVFAQTDENRCLKANAKSCGECIQAGPNCGWCTNSTFLQEGMPTSARCDDLEALKKKGCPPDDIENPRGSKDIKKNKNVTNRSKGTAEKLKPEDITQIQPQQLVLRLRSGEPQTFTLKFKRAEDYPIDLYYLMDLSYSMKDDLENVKSLGTDLMNEMRRITSDFRIGFGSFVEKTVMPYISTTPAKLRNPCTSEQNCTSPFSYKNVLSLTNKGEVFNELVGKQRISGNLDSPEGGFDAIMQVAVCGSLIGWRNVTRLLVFSTDAGFHFAGDGKLGGIVLPNDGQCHLENNMYTMSHYYDYPSIAHLVQKLSENNIQTIFAVTEEFQPVYKELKNLIPKSAVGTLSANSSNVIQLIIDAYNSLSSEVILENGKLSEGVTISYKSYCKNGVNGTGENGRKCSNISIGDEVQFEISITSNKCPKKDSDSFKIRPLGFTEEVEVILQYICECECQSEGIPESPKCHEGNGTFECGACRCNEGRVGRHCECSTDEVNSEDMDAYCRKENSSEICSNNGECVCGQCVCRKRDNTNEIYSGKFCECDNFNCDRSNGLICGGNGVCKCRVCECNPNYTGSACDCSLDTSTCEASNGQICNGRGICECGVCKCTDPKFQGQTCEMCQTCLGVCAEHKECVQCRAFNKGEKKDTCTQECSYFNITKVESRDKLPQPVQPDPVSHCKEKDVDDCWFYFTYSVNGNNEVMVHVVENPECPTGPDIIPIVAGVVAGIVLIGLALLLIWKLLMIIHDRREFAKFEKEKMNAKWDTSLSVAQPGVQWCDISSLQPLTSRFQQFSCLSLPSTWDYRVKILFIRVP</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">ITGB1</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">FNRBL</bp:name>
+ <bp:name rdf:datatype = "xsd:string">FNRB</bp:name>
+ <bp:name rdf:datatype = "xsd:string">VLA beta</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Integrin VLA4 beta subunit</bp:name>
+ <bp:name rdf:datatype = "xsd:string">MSK12</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Very late activation protein, beta polypeptide</bp:name>
+ <bp:name rdf:datatype = "xsd:string">GPIIA</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Fibronectin receptor, beta subunit</bp:name>
+ <bp:name rdf:datatype = "xsd:string">CD29</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Integrin beta 1 isoform 1B</bp:name>
+ <bp:name rdf:datatype = "xsd:string">VLAB</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Integrin beta 1 isoform 1A</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Integrin beta 1 isoform 1D</bp:name>
+ <bp:name rdf:datatype = "xsd:string">MDF2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Integrin beta 1 isoform 1C-1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Fibronectin receptor, beta subunit like</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Integrin beta 1 isoform 1C-2</bp:name>
+</bp:ProteinReference>
+
+<bp:SequenceModificationVocabulary rdf:about="SeqModVocab_Y__MI_0217">
+ <bp:term rdf:datatype = "xsd:string">O4&apos;-phospho-tyrosine</bp:term>
+</bp:SequenceModificationVocabulary>
+
+<bp:ProteinReference rdf:about="ProteinRef_ANGPT2__9606">
+ <bp:xref rdf:resource="OMIM_ANGPT2" />
+ <bp:xref rdf:resource="Entrez_ANGPT2" />
+ <bp:xref rdf:resource="UniProt_ANGPT2" />
+ <bp:xref rdf:resource="HPRD_ANGPT2" />
+ <bp:sequence rdf:datatype = "xsd:string">MWQIVFFTLSCDLVLAAAYNNFRKSMDSIGKKQYQVQHGSCSYTFLLPEMDNCRSSSSPYVSNAVQRDAPLEYDDSVQRLQVLENIMENNTQWLMKLENYIQDNMKKEMVEIQQNAVQNQTAVMIEIGTNLLNQTAEQTRKLTDVEAQVLNQTTRLELQLLEHSLSTNKLEKQILDQTSEINKLQDKNSFLEKKVLAMEDKHIIQLQSIKEEKDQLQVLVSKQNSIIEELEKKIVTATVNNSVLQKQQHDLMETVNNLLTMMSTSNSAKDPTVAKEEQISFRDCAEVFKSGHTTNGIYTLTFPNSTEEIKAYCDMEAGGGGWTIIQRREDGSVDFQRTWKEYKVGFGNPSGEYWLGNEFVSQLTNQQRYVLKIHLKDWEGNEAYSLYEHFYLSSEELNYRIHLKGLTGTAGKISSISQPGNDFSTKDGDNDKCICKCSQMLTGGWWFDACGPSNLNGMYYPQRQNTNKFNGIKWYYWKGSGYSLKATTMMIRPADF</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">ANGPT2</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">ANG2</bp:name>
+</bp:ProteinReference>
+
+<bp:PublicationXref rdf:about="Pubmed_9723709">
+ <bp:id rdf:datatype = "xsd:string">9723709</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:RelationshipXref rdf:about="Entrez_MAPK14">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">1432</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:UnificationXref rdf:about="HPRD_FOXO1">
+ <bp:id rdf:datatype = "xsd:string">00645</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:UnificationXref rdf:about="UniProt_PAK1">
+ <bp:id rdf:datatype = "xsd:string">Q13153</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:RelationshipXref rdf:about="Entrez_PIK3R1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">5295</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:PublicationXref rdf:about="Pubmed_15769741">
+ <bp:id rdf:datatype = "xsd:string">15769741</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:RelationshipXref rdf:about="Entrez_PIK3R2">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">5296</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:Protein rdf:about="STAT5A__MI__0217__9606____EMPTYRIGHT">
+ <bp:entityReference rdf:resource="ProteinRef_STAT5A__9606" />
+ <bp:displayName rdf:datatype = "xsd:string">STAT5A</bp:displayName>
+ <bp:feature rdf:resource="ModificationEmptyFeature_MI_0217" />
+ <bp:xref rdf:resource="PTM_ID_MI_0217" />
+ <bp:name rdf:datatype = "xsd:string">STAT5A__MI__0217</bp:name>
+</bp:Protein>
+
+<bp:PublicationXref rdf:about="Pubmed_10514510">
+ <bp:id rdf:datatype = "xsd:string">10514510</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:SequenceSite rdf:about="SeqSite_1177">
+ <bp:sequencePosition rdf:datatype = "xsd:int">1177</bp:sequencePosition>
+ <bp:positionStatus rdf:datatype = "xsd:string">EQUAL</bp:positionStatus>
+</bp:SequenceSite>
+
+<bp:UnificationXref rdf:about="UniProt_FOXO1">
+ <bp:id rdf:datatype = "xsd:string">Q12778</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:CellularLocationVocabulary rdf:about="CellularLocation_Nucleus">
+ <bp:xref rdf:resource="urn:biopax:UnificationXref:GO_GO%3A0005634" />
+ <bp:xref rdf:resource="GO_Nucleus" />
+ <bp:term rdf:datatype = "xsd:string">Nucleus</bp:term>
+</bp:CellularLocationVocabulary>
+
+<bp:Catalysis rdf:about="Catalysis_393__">
+ <bp:xref rdf:resource="Pubmed_12759249" />
+ <bp:controlled rdf:resource="BiochemReaction_393__" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:Catalysis>
+
+<bp:Catalysis rdf:about="Catalysis_412__">
+ <bp:xref rdf:resource="Pubmed_11865050" />
+ <bp:controlled rdf:resource="BiochemReaction_412__" />
+ <bp:evidence rdf:resource="Evidence_InVitro" />
+ <bp:controller rdf:resource="TIE1__10090__" />
+</bp:Catalysis>
+
+<bp:Protein rdf:about="FOXO1__9913__Cytoplasm">
+ <bp:displayName rdf:datatype = "xsd:string">FOXO1</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">FOXO1__9913</bp:name>
+</bp:Protein>
+
+<bp:Protein rdf:about="TIE1__9606__Plasmamembrane">
+ <bp:displayName rdf:datatype = "xsd:string">TIE1</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">TIE1__9606</bp:name>
+</bp:Protein>
+
+<bp:ProteinReference rdf:about="ProteinRef_ANGPTL1__10090">
+ <bp:xref rdf:resource="UniProt_ANGPTL1" />
+ <bp:xref rdf:resource="Entrez_ANGPTL1" />
+ <bp:xref rdf:resource="OMIM_ANGPTL1" />
+ <bp:xref rdf:resource="HPRD_ANGPTL1" />
+ <bp:sequence rdf:datatype = "xsd:string">MKTFTWTLGVLFFLLVDTGHCRGGQFKIKKINQRRYPRATDGKEEAKKCAYTFLVPEQRITGPICVNTKGQDASTIKDMITRMDLENLKDVLSRQKREIDVLQLVVDVDGNIVNEVKLLRKESRNMNSRVTQLYMQLLHEIIRKRDNSLELSQLENKILNVTTEMLKMATRYRELEVKYASLTDLVNNQSVMITLLEEQCLRIFSRQDTHVSPPLVQVVPQHIPNSQQYTPGLLGGNEIQRDPGYPRDLMPPPDLATSPTKSPFKIPPVTFINEGPFKDCQQAKEAGHSVSGIYMIKPENSNGPMQLWCENSLDPGGWTVIQKRTDGSVNFFRNWENYKKGFGNIDGEYWLGLENIYMLSNQDNYKLLIELEDWSDKKVYAEYSSFRLEPESEFYRLRLGTYQGNAGDSMMWHNGKQFTTLDRDKDMYAGNCAHFHKGGWWYNACAHSNLNGVWYRGGHYRSKHQDGIFWAEYRGGSYSLRAVQMMIKPID</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">ANGPTL1</bp:displayName>
+ <bp:organism rdf:resource="biosource_10090" />
+ <bp:name rdf:datatype = "xsd:string">Angiopoietin related protein 1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Angiopoietin Y1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Angiopoietin 3</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Ang3</bp:name>
+ <bp:name rdf:datatype = "xsd:string">ARP1</bp:name>
+</bp:ProteinReference>
+
+<bp:Protein rdf:about="PAK1__Phosphorylation__S__S__T199__204__423">
+ <bp:entityReference rdf:resource="ProteinRef_PAK1__9606" />
+ <bp:displayName rdf:datatype = "xsd:string">PAK1</bp:displayName>
+ <bp:feature rdf:resource="S402" />
+ <bp:feature rdf:resource="S991" />
+ <bp:feature rdf:resource="T324" />
+ <bp:name rdf:datatype = "xsd:string">PAK1__Phosphorylation</bp:name>
+</bp:Protein>
+
+<bp:UnificationXref rdf:about="HPRD_PXN">
+ <bp:id rdf:datatype = "xsd:string">03937</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:PublicationXref rdf:about="Pubmed_16049136">
+ <bp:id rdf:datatype = "xsd:string">16049136</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:UnificationXref rdf:about="HPRD_RHOA">
+ <bp:id rdf:datatype = "xsd:string">01323</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:ProteinReference rdf:about="ProteinRef_MAP2K2__9606">
+ <bp:xref rdf:resource="Entrez_MAP2K2" />
+ <bp:xref rdf:resource="UniProt_MAP2K2" />
+ <bp:xref rdf:resource="OMIM_MAP2K2" />
+ <bp:xref rdf:resource="HPRD_MAP2K2" />
+ <bp:sequence rdf:datatype = "xsd:string">MLARRKPVLPALTINPTIAEGPSPTSEGASEANLVDLQKKLEELELDEQQKKRLEAFLTQKAKVGELKDDDFERISELGAGNGGVVTKVQHRPSGLIMARKLIHLEIKPAIRNQIIRELQVLHECNSPYIVGFYGAFYSDGEISICMEHMDGGSLDQVLKEAKRIPEEILGKVSIAVLRGLAYLREKHQIMHRDVKPSNILVNSRGEIKLCDFGVSGQLIDSMANSFVGTRSYMAPERLQGTHYSVQSDIWSMGLSLVELAVGRYPIPPPDAKELEAIFGRPVVDGEEGEPHSISPRPRPPGRPVSGHGMDSRPAMAIFELLDYIVNEPPPKLPNGVFTPDFQEFVNKCLIKNPAERADLKMLTNHTFIKRSEVEEVDFAGWLCKTLRLNQPGTPTRTAV</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">MAP2K2</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">MAPKK2 MAPK/ERK Kinase 2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">ERK activator kinase 2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">MKK2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">MAP kinase/Erk kinase 2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Mitogen activated protein kinase kinase 2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">MEK2</bp:name>
+</bp:ProteinReference>
+
+<bp:RelationshipXref rdf:about="OMIM_FES">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">190030</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:Catalysis rdf:about="Catalysis_358__">
+ <bp:xref rdf:resource="Pubmed_12824293" />
+ <bp:xref rdf:resource="Pubmed_16049136" />
+ <bp:controlled rdf:resource="BiochemReaction_358__" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:Catalysis>
+
+<bp:ProteinReference rdf:about="ProteinRef_ANGPT2__10090">
+ <bp:xref rdf:resource="OMIM_ANGPT2" />
+ <bp:xref rdf:resource="Entrez_ANGPT2" />
+ <bp:xref rdf:resource="UniProt_ANGPT2" />
+ <bp:xref rdf:resource="HPRD_ANGPT2" />
+ <bp:sequence rdf:datatype = "xsd:string">MWQIVFFTLSCDLVLAAAYNNFRKSMDSIGKKQYQVQHGSCSYTFLLPEMDNCRSSSSPYVSNAVQRDAPLEYDDSVQRLQVLENIMENNTQWLMKLENYIQDNMKKEMVEIQQNAVQNQTAVMIEIGTNLLNQTAEQTRKLTDVEAQVLNQTTRLELQLLEHSLSTNKLEKQILDQTSEINKLQDKNSFLEKKVLAMEDKHIIQLQSIKEEKDQLQVLVSKQNSIIEELEKKIVTATVNNSVLQKQQHDLMETVNNLLTMMSTSNSAKDPTVAKEEQISFRDCAEVFKSGHTTNGIYTLTFPNSTEEIKAYCDMEAGGGGWTIIQRREDGSVDFQRTWKEYKVGFGNPSGEYWLGNEFVSQLTNQQRYVLKIHLKDWEGNEAYSLYEHFYLSSEELNYRIHLKGLTGTAGKISSISQPGNDFSTKDGDNDKCICKCSQMLTGGWWFDACGPSNLNGMYYPQRQNTNKFNGIKWYYWKGSGYSLKATTMMIRPADF</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">ANGPT2</bp:displayName>
+ <bp:organism rdf:resource="biosource_10090" />
+ <bp:name rdf:datatype = "xsd:string">ANG2</bp:name>
+</bp:ProteinReference>
+
+<bp:Catalysis rdf:about="Catalysis_359__">
+ <bp:xref rdf:resource="Pubmed_12824293" />
+ <bp:controlled rdf:resource="BiochemReaction_359__" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:Catalysis>
+
+<bp:Protein rdf:about="DOK2__MI__0217__9606__Cytoplasm__EMPTYRIGHT">
+ <bp:entityReference rdf:resource="ProteinRef_DOK2__9606" />
+ <bp:displayName rdf:datatype = "xsd:string">DOK2</bp:displayName>
+ <bp:feature rdf:resource="ModificationEmptyFeature_MI_0217" />
+ <bp:xref rdf:resource="PTM_ID_MI_0217" />
+ <bp:cellularLocation rdf:resource="CellularLocation_Cytoplasm" />
+ <bp:name rdf:datatype = "xsd:string">DOK2__MI__0217</bp:name>
+</bp:Protein>
+
+<bp:UnificationXref rdf:about="HPRD_ELK1">
+ <bp:id rdf:datatype = "xsd:string">02407</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:RelationshipTypeVocabulary rdf:about="RelType_1">
+ <bp:xref rdf:resource="urn:biopax:UnificationXref:MI_MI%3A0251" />
+ <bp:term rdf:datatype = "xsd:string">Gene product</bp:term>
+</bp:RelationshipTypeVocabulary>
+
+<bp:Catalysis rdf:about="Catalysis_357__">
+ <bp:xref rdf:resource="Pubmed_12824293" />
+ <bp:controlled rdf:resource="BiochemReaction_357__" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:Catalysis>
+
+<bp:UnificationXref rdf:about="HPRD_RASA1">
+ <bp:id rdf:datatype = "xsd:string">00745</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:Catalysis rdf:about="Catalysis_356__">
+ <bp:xref rdf:resource="Pubmed_12824293" />
+ <bp:xref rdf:resource="Pubmed_16049136" />
+ <bp:controlled rdf:resource="BiochemReaction_356__" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:Catalysis>
+
+<bp:Protein rdf:about="ANGPT1__9606__Extracellular">
+ <bp:displayName rdf:datatype = "xsd:string">ANGPT1</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">ANGPT1__9606</bp:name>
+</bp:Protein>
+
+<bp:RelationshipXref rdf:about="OMIM_ITGA5">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">135620</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:PublicationXref rdf:about="Pubmed_12074640">
+ <bp:id rdf:datatype = "xsd:string">12074640</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:UnificationXref rdf:about="UniProt_SHC1">
+ <bp:id rdf:datatype = "xsd:string">P29353</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:UnificationXref rdf:about="HPRD_TIE1">
+ <bp:id rdf:datatype = "xsd:string">02572</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:RelationshipXref rdf:about="GO_Cytoplasm">
+ <bp:id rdf:datatype = "xsd:string">GO:0005737</bp:id>
+ <bp:db rdf:datatype = "xsd:string">GENE ONTOLOGY</bp:db>
+</bp:RelationshipXref>
+
+<bp:UnificationXref rdf:about="UniProt_PTK2">
+ <bp:id rdf:datatype = "xsd:string">Q05397</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:UnificationXref rdf:about="UniProt_TEK">
+ <bp:id rdf:datatype = "xsd:string">Q02763</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:PublicationXref rdf:about="Pubmed_9764820">
+ <bp:id rdf:datatype = "xsd:string">9764820</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:RelationshipXref rdf:about="OMIM_ITGB1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">135630</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:Protein rdf:about="ANGPTL1__10090__Extracellular">
+ <bp:displayName rdf:datatype = "xsd:string">ANGPTL1</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">ANGPTL1__10090</bp:name>
+</bp:Protein>
+
+<bp:UnificationXref rdf:about="UniProt_ITGA5">
+ <bp:id rdf:datatype = "xsd:string">P08648</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:ProteinReference rdf:about="ProteinRef_ITGA5__9606">
+ <bp:xref rdf:resource="OMIM_ITGA5" />
+ <bp:xref rdf:resource="HPRD_ITGA5" />
+ <bp:xref rdf:resource="Entrez_ITGA5" />
+ <bp:xref rdf:resource="UniProt_ITGA5" />
+ <bp:sequence rdf:datatype = "xsd:string">MGSRTPESPLHAVQLRWGPRRRPPLLPLLLLLLPPPPRVGGFNLDAEAPAVLSGPPGSFFGFSVEFYRPGTDGVSVLVGAPKANTSQPGVLQGGAVYLCPWGASPTQCTPIEFDSKGSRLLESSLSSSEGEEPVEYKSLQWFGATVRAHGSSILACAPLYSWRTEKEPLSDPVGTCYLSTDNFTRILEYAPCRSDFSWAAGQGYCQGGFSAEFTKTGRVVLGGPGSYFWQGQILSATQEQIAESYYPEYLINLVQGQLQTRQASSIYDDSYLGYSVAVGEFSGDDTEDFVAGVPKGNLTYGYVTILNGSDIRSLYNFSGEQMASYFGYAVAATDVNGDGLDDLLVGAPLLMDRTPDGRPQEVGRVYVYLQHPAGIEPTPTLTLTGHDEFGRFGSSLTPLGDLDQDGYNDVAIGAPFGGETQQGVVFVFPGGPGGLGSKPSQVLQPLWAASHTPDFFGSALRGGRDLDGNGYPDLIVGSFGVDKAVVYRGRPIVSASASLTIFPAMFNPEERSCSLEGNPVACINLSFCLNASGKHVADSIGFTVELQLDWQKQKGGVRRALFLASRQATLTQTLLIQNGAREDCREMKIYLRNESEFRDKLSPIHIALNFSLDPQAPVDSHGLRPALHYQSKSRIEDKAQILLDCGEDNICVPDLQLEVFGEQNHVYLGDKNALNLTFHAQNVGEGGAYEAELRVTAPPEAEYSGLVRHPGNFSSLSCDYFAVNQSRLLVCDLGNPMKAGASLWGGLRFTVPHLRDTKKTIQFDFQILSKNLNNSQSDVVSFRLSVEAQAQVTLNGVSKPEAVLFPVSDWHPRDQPQKEEDLGPAVHHVYELINQGPSSISQGVLELSCPQALEGQQLLYVTRVTGLNCTTNHPINPKGLELDPEGSLHHQQKREAPSRSSASSGPQILKCPEAECFRLRCELGPLHQQESQSLQLHFRVWAKTFLQREHQPFSLQCEAVYKALKMPYRILPRQLPQKERQVATAVQWTKAEGSYGVPLWIIILAILFGLLLLGLLIYILYKLGFFKRSLPYGTAMEKAQLKPPATSDA</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">ITGA5</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">Integrin, alpha F</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Fibronectin receptor, alpha subunit</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Very late activation protein 5, alpha subunit</bp:name>
+ <bp:name rdf:datatype = "xsd:string">VLA5A</bp:name>
+ <bp:name rdf:datatype = "xsd:string">CD49e</bp:name>
+ <bp:name rdf:datatype = "xsd:string">FNRA</bp:name>
+</bp:ProteinReference>
+
+<bp:ModificationFeature rdf:about="ModificationEmptyFeature_MI_0217">
+ <bp:featureLocation rdf:resource="EmptySeqSite" />
+ <bp:modificationType rdf:resource="SeqModVocab_MI_0217" />
+</bp:ModificationFeature>
+
+<bp:RelationshipXref rdf:about="OMIM_SHC1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">600560</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:PublicationXref rdf:about="Pubmed_11513602">
+ <bp:id rdf:datatype = "xsd:string">11513602</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:ProteinReference rdf:about="ProteinRef_PIK3R2__9606">
+ <bp:xref rdf:resource="OMIM_PIK3R2" />
+ <bp:xref rdf:resource="HPRD_PIK3R2" />
+ <bp:xref rdf:resource="Entrez_PIK3R2" />
+ <bp:xref rdf:resource="UniProt_PIK3R2" />
+ <bp:sequence rdf:datatype = "xsd:string">MAGPEGFQYRALYPFRRERPEDLELLPGDVLVVSRAALQALGVAEGGERCPQSVGWMPGLNERTRQRGDFPGTYVEFLGPVALARPGPRPRGPRPLPARPRDGAPEPGLTLPDLPEQFSPPDVAPPLLVKLVEAIERTGLDSESHYRPELPAPRTDWSLSDVDQWDTAALADGIKSFLLALPAPLVTPEASAEARRALREAAGPVGPALEPPTLPLHRALTLRFLLQHLGRVARRAPALGPAVRALGATFGPLLLRAPPPPSSPPPGGAPDGSEPSPDFPALLVEKLLQEHLEEQEVAPPALPPKPPKAKPAPTVLANGGSPPSLQDAEWYWGDISREEVNEKLRDTPDGTFLVRDASSKIQGEYTLTLRKGGNNKLIKVFHRDGHYGFSEPLTFCSVVDLINHYRHESLAQYNAKLDTRLLYPVSKYQQDQIVKEDSVEAVGAQLKVYHQQYQDKSREYDQLYEEYTRTSQELQMKRTAIEAFNETIKIFEEQGQTQEKCSKEYLERFRREGNEKEMQRILLNSERLKSRIAEIHESRTKLEQQLRAQASDNREIDKRMNSLKPDLMQLRKIRDQYLVWLTQKGARQKKINEWLGIKNETEDQYALMEDEDDLPHHEERTWYVGKINRTQAEEMLSGKRDGTFLIRESSQRGCYACSVVVDGDTKHCVIYRTATGFGFAEPYNLYGSLKELVLHYQHASLVQHNDALTVTLAHPVRAPGPGPPPAAR</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">PIK3R2</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">P85B</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Phosphatidylinositol 3-kinase regulatory 85KD, beta</bp:name>
+ <bp:name rdf:datatype = "xsd:string">PI3-kinase p85-beta subunit</bp:name>
+ <bp:name rdf:datatype = "xsd:string">p85 beta</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Phosphatidylinositol 3-kinase p85, beta subunit</bp:name>
+ <bp:name rdf:datatype = "xsd:string">PtdIns-3-kinase p85-beta</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Phosphatidylinositol 3-kinase regulatory subunit, beta</bp:name>
+</bp:ProteinReference>
+
+<bp:BioSource rdf:about="biosource_40674">
+ <bp:standardName rdf:datatype = "xsd:string">Mammalia</bp:standardName>
+ <bp:xref rdf:resource="Taxonomy_UnificationXref_40674" />
+ <bp:displayName rdf:datatype = "xsd:string">Mammal</bp:displayName>
+</bp:BioSource>
+
+<bp:Protein rdf:about="PTK2__9606__Plasmamembrane">
+ <bp:displayName rdf:datatype = "xsd:string">PTK2</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">PTK2__9606</bp:name>
+</bp:Protein>
+
+<bp:Protein rdf:about="TNIP2__9606__">
+ <bp:displayName rdf:datatype = "xsd:string">TNIP2</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">TNIP2__9606</bp:name>
+</bp:Protein>
+
+<bp:BiochemicalReaction rdf:about="BiochemReaction_321__">
+ <bp:left rdf:resource="FES__9606__" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:right rdf:resource="FES__MI__0217__9606____EMPTYRIGHT" />
+ <bp:interactionType rdf:resource="Interaction_Phosphorylation" />
+</bp:BiochemicalReaction>
+
+<bp:Protein rdf:about="MAP2K1__9606__">
+ <bp:displayName rdf:datatype = "xsd:string">MAP2K1</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">MAP2K1__9606</bp:name>
+</bp:Protein>
+
+<bp:UnificationXref rdf:about="UniProt_PXN">
+ <bp:id rdf:datatype = "xsd:string">P49023</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:PublicationXref rdf:about="Pubmed_12665569">
+ <bp:id rdf:datatype = "xsd:string">12665569</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:ProteinReference rdf:about="ProteinRef_RAC1__9606">
+ <bp:xref rdf:resource="UniProt_RAC1" />
+ <bp:xref rdf:resource="Entrez_RAC1" />
+ <bp:xref rdf:resource="HPRD_RAC1" />
+ <bp:xref rdf:resource="OMIM_RAC1" />
+ <bp:sequence rdf:datatype = "xsd:string">MQAIKCVVVGDGAVGKTCLLISYTTNAFPGEYIPTVFDNYSANVMVDGKPVNLGLWDTAGQEDYDRLRPLSYPQTVGETYGKDITSRGKDKPIADVFLICFSLVSPASFENVRAKWYPEVRHHCPNTPIILVGTKLDLRDDKDTIEKLKEKKLTPITYPQGLAMAKEIGAVKYLECSALTQRGLKTVFDEAIRAVLCPPPVKKRKRKCLLL</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">RAC1</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">Rho family, small GTP binding protein RAC1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">TC-25</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Ras-related C3 botulinum toxin substrate 1 isoform Rac1b</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Ras-related C3 botulinum toxin substrate 1 isoform Rac1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Ras like protein TC25</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Ras-related C3 botulinum toxin substrate 1 isoform Rac1c</bp:name>
+ <bp:name rdf:datatype = "xsd:string">p21-Rac1</bp:name>
+</bp:ProteinReference>
+
+<bp:UnificationXref rdf:about="UniProt_ITGB1">
+ <bp:id rdf:datatype = "xsd:string">P05556</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:EvidenceCodeVocabulary rdf:about="EvidenceCodeVocab_2">
+ <bp:term rdf:datatype = "xsd:string">in vivo</bp:term>
+</bp:EvidenceCodeVocabulary>
+
+<bp:ModificationFeature rdf:about="S991">
+ <bp:featureLocation rdf:resource="SeqSite_199" />
+ <bp:modificationType rdf:resource="SeqModVocab_S__MI_0217" />
+</bp:ModificationFeature>
+
+<bp:EvidenceCodeVocabulary rdf:about="EvidenceCodeVocab_1">
+ <bp:term rdf:datatype = "xsd:string">in vitro</bp:term>
+</bp:EvidenceCodeVocabulary>
+
+<bp:RelationshipXref rdf:about="Entrez_RHOA">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">387</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:UnificationXref rdf:about="HPRD_GRB7">
+ <bp:id rdf:datatype = "xsd:string">03311</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:UnificationXref rdf:about="HPRD_GRB2">
+ <bp:id rdf:datatype = "xsd:string">00150</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:UnificationXref rdf:about="UniProt_TNIP2">
+ <bp:id rdf:datatype = "xsd:string">Q8NFZ5</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:UnificationXref rdf:about="HPRD_TEK">
+ <bp:id rdf:datatype = "xsd:string">02571</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:PublicationXref rdf:about="Pubmed_12427764">
+ <bp:id rdf:datatype = "xsd:string">12427764</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:Protein rdf:about="MAP2K1__MI__0217__9606____EMPTYRIGHT">
+ <bp:entityReference rdf:resource="ProteinRef_MAP2K1__9606" />
+ <bp:displayName rdf:datatype = "xsd:string">MAP2K1</bp:displayName>
+ <bp:feature rdf:resource="ModificationEmptyFeature_MI_0217" />
+ <bp:xref rdf:resource="PTM_ID_MI_0217" />
+ <bp:name rdf:datatype = "xsd:string">MAP2K1__MI__0217</bp:name>
+</bp:Protein>
+
+<bp:Catalysis rdf:about="Catalysis_3416__">
+ <bp:xref rdf:resource="Pubmed_11689432" />
+ <bp:controlled rdf:resource="BiochemReaction_3416__" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:Catalysis>
+
+<bp:Protein rdf:about="STAT5B__9606__Cytoplasm">
+ <bp:displayName rdf:datatype = "xsd:string">STAT5B</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">STAT5B__9606</bp:name>
+</bp:Protein>
+
+<bp:Protein rdf:about="ANGPT1__10090__Extracellular">
+ <bp:displayName rdf:datatype = "xsd:string">ANGPT1</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">ANGPT1__10090</bp:name>
+</bp:Protein>
+
+<bp:RelationshipXref rdf:about="Entrez_PAK1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">5058</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:RelationshipXref rdf:about="Entrez_FES">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">2242</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:UnificationXref rdf:about="UniProt_RAC1">
+ <bp:id rdf:datatype = "xsd:string">P63000</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:UnificationXref rdf:about="HPRD_BMX">
+ <bp:id rdf:datatype = "xsd:string">02111</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:Protein rdf:about="TEK__9606__Cytoplasm">
+ <bp:displayName rdf:datatype = "xsd:string">TEK</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">TEK__9606</bp:name>
+</bp:Protein>
+
+<bp:UnificationXref rdf:about="urn:biopax:UnificationXref:GO_GO%3A0005886">
+ <bp:id rdf:datatype = "xsd:string">GO:0005886</bp:id>
+ <bp:db rdf:datatype = "xsd:string">GO</bp:db>
+</bp:UnificationXref>
+
+<bp:SequenceSite rdf:about="SeqSite_423">
+ <bp:sequencePosition rdf:datatype = "xsd:int">423</bp:sequencePosition>
+ <bp:positionStatus rdf:datatype = "xsd:string">EQUAL</bp:positionStatus>
+</bp:SequenceSite>
+
+<bp:PublicationXref rdf:about="Pubmed_11416142">
+ <bp:id rdf:datatype = "xsd:string">11416142</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:Protein rdf:about="TIE1__MI__0217__9606__Plasmamembrane__EMPTYRIGHT">
+ <bp:entityReference rdf:resource="ProteinRef_TIE1__9606" />
+ <bp:displayName rdf:datatype = "xsd:string">TIE1</bp:displayName>
+ <bp:feature rdf:resource="ModificationEmptyFeature_MI_0217" />
+ <bp:xref rdf:resource="PTM_ID_MI_0217" />
+ <bp:cellularLocation rdf:resource="CellularLocation_Plasma_membrane" />
+ <bp:name rdf:datatype = "xsd:string">TIE1__MI__0217</bp:name>
+</bp:Protein>
+
+<bp:Protein rdf:about="FES__MI__0217__9606____EMPTYRIGHT">
+ <bp:entityReference rdf:resource="ProteinRef_FES__9606" />
+ <bp:displayName rdf:datatype = "xsd:string">FES</bp:displayName>
+ <bp:feature rdf:resource="ModificationEmptyFeature_MI_0217" />
+ <bp:xref rdf:resource="PTM_ID_MI_0217" />
+ <bp:name rdf:datatype = "xsd:string">FES__MI__0217</bp:name>
+</bp:Protein>
+
+<bp:RelationshipXref rdf:about="Entrez_RAC1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">5879</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:ProteinReference rdf:about="ProteinRef_GRB7__9606">
+ <bp:xref rdf:resource="UniProt_GRB7" />
+ <bp:xref rdf:resource="Entrez_GRB7" />
+ <bp:xref rdf:resource="OMIM_GRB7" />
+ <bp:xref rdf:resource="HPRD_GRB7" />
+ <bp:sequence rdf:datatype = "xsd:string">MELDLSPPHLSSSPEDLCPAPGTPPGTPRPPDTPLPEEVKRSQPLLIPTTGRKLREEERRATSLPSIPNPFPELCSPPSQSPILGGPSSARGLLPRDASRPHVVKVYSEDGACRSVEVAAGATARHVCEMLVQRAHALSDETWGLVECHPHLALERGLEDHESVVEVQAAWPVGGDSRFVFRKNFAKYELFKSSPHSLFPEKMVSSCLDAHTGISHEDLIQNFLNAGSFPEIQGFLQLRGSGRKLWKRFFCFLRRSGLYYSTKGTSKDPRHLQYVADVNESNVYVVTQGRKLYGMPTDFGFCVKPNKLRNGHKGLRIFCSEDEQSRTCWLAAFRLFKYGVQLYKNYQQAQSRHLHPSCLGSPPLRSASDNTLVAMDFSGHAGRVIENPREALSVALEEAQAWRKKTNHRLSLPMPASGTSLSAAIHRTQLWFHGRISREESQRLIGQQGLVDGLFLVRESQRNPQGFVLSLCHLQKVKHYLILPSEEEGRLYFSMDDGQTRFTDLLQLVEFHQLNRGILPCLLRHCCTRVAL</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">GRB7</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">B47</bp:name>
+ <bp:name rdf:datatype = "xsd:string">GRB7 adapter protein</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Epidermal growth factor receptor GRB-7</bp:name>
+</bp:ProteinReference>
+
+<bp:Protein rdf:about="NCK1__9606__">
+ <bp:displayName rdf:datatype = "xsd:string">NCK1</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">NCK1__9606</bp:name>
+</bp:Protein>
+
+<bp:BiochemicalReaction rdf:about="BiochemReaction_3414__">
+ <bp:left rdf:resource="STAT5A__9606__" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:right rdf:resource="STAT5A__MI__0217__9606____EMPTYRIGHT" />
+ <bp:interactionType rdf:resource="Interaction_Phosphorylation" />
+</bp:BiochemicalReaction>
+
+<bp:RelationshipXref rdf:about="OMIM_RAF1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">164760</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:Protein rdf:about="MAPK14__MI__0217__9606____EMPTYRIGHT">
+ <bp:entityReference rdf:resource="ProteinRef_MAPK14__9606" />
+ <bp:displayName rdf:datatype = "xsd:string">MAPK14</bp:displayName>
+ <bp:feature rdf:resource="ModificationEmptyFeature_MI_0217" />
+ <bp:xref rdf:resource="PTM_ID_MI_0217" />
+ <bp:name rdf:datatype = "xsd:string">MAPK14__MI__0217</bp:name>
+</bp:Protein>
+
+<bp:Catalysis rdf:about="Catalysis_399__PlasmaMembrane">
+ <bp:xref rdf:resource="Pubmed_11416142" />
+ <bp:controlled rdf:resource="BiochemReaction_399__PlasmaMembrane" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:Catalysis>
+
+<bp:SequenceModificationVocabulary rdf:about="SeqModVocab_S__MI_0217">
+ <bp:term rdf:datatype = "xsd:string">O-phospho-serine</bp:term>
+</bp:SequenceModificationVocabulary>
+
+<bp:ModificationFeature rdf:about="Y2011">
+ <bp:featureLocation rdf:resource="SeqSite_1102" />
+ <bp:modificationType rdf:resource="SeqModVocab_Y__MI_0217" />
+</bp:ModificationFeature>
+
+<bp:RelationshipXref rdf:about="Entrez_MAP2K1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">5604</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:UnificationXref rdf:about="Taxonomy_UnificationXref_40674">
+ <bp:id rdf:datatype = "xsd:string">40674</bp:id>
+ <bp:db rdf:datatype = "xsd:string">TAXONOMY</bp:db>
+</bp:UnificationXref>
+
+<bp:Catalysis rdf:about="Catalysis_321__">
+ <bp:xref rdf:resource="Pubmed_11801735" />
+ <bp:controlled rdf:resource="BiochemReaction_321__" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+ <bp:controller rdf:resource="FES__9606__" />
+</bp:Catalysis>
+
+<bp:BiochemicalReaction rdf:about="BiochemReaction_291__Plasmamembrane">
+ <bp:left rdf:resource="TEK__9606__Plasmamembrane" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:right rdf:resource="TEK__Phosphorylation__Y__Y__Y__Y__Y__S1102__897__992__1048__1108__1119" />
+ <bp:interactionType rdf:resource="Interaction_Phosphorylation" />
+</bp:BiochemicalReaction>
+
+<bp:Protein rdf:about="MAP2K2__MI__0217__9606____EMPTYRIGHT">
+ <bp:entityReference rdf:resource="ProteinRef_MAP2K2__9606" />
+ <bp:displayName rdf:datatype = "xsd:string">MAP2K2</bp:displayName>
+ <bp:feature rdf:resource="ModificationEmptyFeature_MI_0217" />
+ <bp:xref rdf:resource="PTM_ID_MI_0217" />
+ <bp:name rdf:datatype = "xsd:string">MAP2K2__MI__0217</bp:name>
+</bp:Protein>
+
+<bp:ModificationFeature rdf:about="Y8011">
+ <bp:featureLocation rdf:resource="SeqSite_1108" />
+ <bp:modificationType rdf:resource="SeqModVocab_Y__MI_0217" />
+</bp:ModificationFeature>
+
+<bp:ModificationFeature rdf:about="Y798">
+ <bp:featureLocation rdf:resource="SeqSite_897" />
+ <bp:modificationType rdf:resource="SeqModVocab_Y__MI_0217" />
+</bp:ModificationFeature>
+
+<bp:Protein rdf:about="DOK2__9606__Cytoplasm">
+ <bp:displayName rdf:datatype = "xsd:string">DOK2</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">DOK2__9606</bp:name>
+</bp:Protein>
+
+<bp:PublicationXref rdf:about="Pubmed_14665640">
+ <bp:id rdf:datatype = "xsd:string">14665640</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:ProteinReference rdf:about="ProteinRef_ANGPT4__10090">
+ <bp:xref rdf:resource="HPRD_ANGPT4" />
+ <bp:xref rdf:resource="OMIM_ANGPT4" />
+ <bp:xref rdf:resource="Entrez_ANGPT4" />
+ <bp:xref rdf:resource="UniProt_ANGPT4" />
+ <bp:sequence rdf:datatype = "xsd:string">MLSQLAMLQGSLLLVVATMSVAQQTRQEADRGCETLVVQHGHCSYTFLLPKSEPCPPGPEVSRDSNTLQRESLANPLHLGKLPTQQVKQLEQALQNNTQWLKKLERAIKTILRSKLEQVQQQMAQNQTAPMLELGTSLLNQTTAQIRKLTDMEAQLLNQTSRMDAQMPETFLSTNKLENQLLLQRQKLQQLQGQNSALEKRLQALETKQQEELASILSKKAKLLNTLSRQSAALTNIERGLRGVRHNSSLLQDQQHSLRQLLVLLRHLVQERANASAPAFIMAGEQVFQDCAEIQRSGASASGVYTIQVSNATKPRKVFCDLQSSGGRWTLIQRRENGTVNFQRNWKDYKQGFGDPAGEHWLGNEVVHQLTRRAAYSLRVELQDWEGHEAYAQYEHFHLGSENQLYRLSVVGYSGSAGRQSSLVLQNTSFSTLDSDNDHCLCKCAQVMSGGWWFDACGLSNLNGVYYHAPDNKYKMDGIRWHYFKGPSYSLRASRMMIRPLDI</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">ANGPT4</bp:displayName>
+ <bp:organism rdf:resource="biosource_10090" />
+ <bp:name rdf:datatype = "xsd:string">ANG4</bp:name>
+</bp:ProteinReference>
+
+<bp:Catalysis rdf:about="Catalysis_293__Cytoplasm">
+ <bp:xref rdf:resource="Pubmed_14665640" />
+ <bp:controlled rdf:resource="BiochemReaction_293__Cytoplasm" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:Catalysis>
+
+<bp:UnificationXref rdf:about="HPRD_GRB14">
+ <bp:id rdf:datatype = "xsd:string">03313</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:UnificationXref rdf:about="Taxonomy_UnificationXref_9606">
+ <bp:id rdf:datatype = "xsd:string">9606</bp:id>
+ <bp:db rdf:datatype = "xsd:string">TAXONOMY</bp:db>
+</bp:UnificationXref>
+
+<bp:RelationshipXref rdf:about="Entrez_SHC1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">6464</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:RelationshipXref rdf:about="Entrez_MAP2K2">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">5605</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:RelationshipXref rdf:about="OMIM_TEK">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">600221</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:Protein rdf:about="MAPK1__9606__">
+ <bp:displayName rdf:datatype = "xsd:string">MAPK1</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">MAPK1__9606</bp:name>
+</bp:Protein>
+
+<bp:Protein rdf:about="RAC1__9606__Plasmamembrane">
+ <bp:displayName rdf:datatype = "xsd:string">RAC1</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">RAC1__9606</bp:name>
+</bp:Protein>
+
+<bp:Protein rdf:about="MAPK3__MI__0217__9606____EMPTYRIGHT">
+ <bp:entityReference rdf:resource="ProteinRef_MAPK3__9606" />
+ <bp:displayName rdf:datatype = "xsd:string">MAPK3</bp:displayName>
+ <bp:feature rdf:resource="ModificationEmptyFeature_MI_0217" />
+ <bp:xref rdf:resource="PTM_ID_MI_0217" />
+ <bp:name rdf:datatype = "xsd:string">MAPK3__MI__0217</bp:name>
+</bp:Protein>
+
+<bp:CellularLocationVocabulary rdf:about="CellularLocation_Plasma_membrane">
+ <bp:xref rdf:resource="urn:biopax:UnificationXref:GO_GO%3A0005886" />
+ <bp:xref rdf:resource="GO_Plasmamembrane" />
+ <bp:term rdf:datatype = "xsd:string">plasma membrane</bp:term>
+</bp:CellularLocationVocabulary>
+
+<bp:SequenceSite rdf:about="SeqSite_24">
+ <bp:sequencePosition rdf:datatype = "xsd:int">24</bp:sequencePosition>
+ <bp:positionStatus rdf:datatype = "xsd:string">EQUAL</bp:positionStatus>
+</bp:SequenceSite>
+
+<bp:ProteinReference rdf:about="ProteinRef_TEK__9606">
+ <bp:xref rdf:resource="Entrez_TEK" />
+ <bp:xref rdf:resource="UniProt_TEK" />
+ <bp:xref rdf:resource="OMIM_TEK" />
+ <bp:xref rdf:resource="HPRD_TEK" />
+ <bp:sequence rdf:datatype = "xsd:string">MDSLASLVLCGVSLLLSGTVEGAMDLILINSLPLVSDAETSLTCIASGWRPHEPITIGRDFEALMNQHQDPLEVTQDVTREWAKKVVWKREKASKINGAYFCEGRVRGEAIRIRTMKMRQQASFLPATLTMTVDKGDNVNISFKKVLIKEEDAVIYKNGSFIHSVPRHEVPDILEVHLPHAQPQDAGVYSARYIGGNLFTSAFTRLIVRRCEAQKWGPECNHLCTACMNNGVCHEDTGECICPPGFMGRTCEKACELHTFGRTCKERCSGQEGCKSYVFCLPDPYGCSCATGWKGLQCNEACHPGFYGPDCKLRCSCNNGEMCDRFQGCLCSPGWQGLQCEREGIPRMTPKIVDLPDHIEVNSGKFNPICKASGWPLPTNEEMTLVKPDGTVLHPKDFNHTDHFSVAIFTIHRILPPDSGVWVCSVNTVAGMVEKPFNISVKVLPKPLNAPNVIDTGHNFAVINISSEPYFGDGPIKSKKLLYKPVNHYEAWQHIQVTNEIVTLNYLEPRTEYELCVQLVRRGEGGEGHPGPVRRFTTASIGLPPPRGLNLLPKSQTTLNLTWQPIFPSSEDDFYVEVERRSVQKSDQQNIKVPGNLTSVLLNNLHPREQYVVRARVNTKAQGEWSEDLTAWTLSDILPPQPENIKISNITHSSAVISWTILDGYSISSITIRYKVQGKNEDQHVDVKIKNATIIQYQLKGLEPETAYQVDIFAENNIGSSNPAFSHELVTLPESQAPADLGGGKMLLIAILGSAGMTCLTVLLAFLIILQLKRANVQRRMAQAFQNVREEPAVQFNSGTLALNRKVKNNPDPTIYPVLDWNDIKFQDVIGEGNFGQVLKARIKKDGLRMDAAIKRMKEYASKDDHRDFAGELEVLCKLGHHPNIINLLGACEHRGYLYLAIEYAPHGNLLDFLRKSRVLETDPAFAIANSTASTLSSQQLLHFAADVARGMDYLSQKQFIHRDLAARNILVGENYVAKIADFGLSRGQEVYVKKTMGRLPVRWMAIESLNYSVYTTNSDVWSYGVLLWEIVSLGGTPYCGMTCAELYEKLPQGYRLEKPLNCDDEVYDLMRQCWREKPYERPSFAQILVSLNRMLEERKTYVNTTLYEKFTYAGIDCSAEEAA</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">TEK</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:entityFeature rdf:resource="Y8401" />
+ <bp:entityFeature rdf:resource="Y299" />
+ <bp:entityFeature rdf:resource="Y8011" />
+ <bp:entityFeature rdf:resource="Y2011" />
+ <bp:entityFeature rdf:resource="S9111" />
+ <bp:entityFeature rdf:resource="Y798" />
+ <bp:name rdf:datatype = "xsd:string">Angiopoietin 1 receptor</bp:name>
+ <bp:name rdf:datatype = "xsd:string">CD202b antigen</bp:name>
+ <bp:name rdf:datatype = "xsd:string">HPK 6</bp:name>
+ <bp:name rdf:datatype = "xsd:string">TIE2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Protein receptor tyrosine kinase, epithelial specific, TIE 2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Tunica interna endothelial cell kinase</bp:name>
+ <bp:name rdf:datatype = "xsd:string">TEK tyrosine kinase, endothelial</bp:name>
+ <bp:name rdf:datatype = "xsd:string">VMCM</bp:name>
+</bp:ProteinReference>
+
+<bp:Protein rdf:about="ITGB1__9606__Plasmamembrane">
+ <bp:displayName rdf:datatype = "xsd:string">ITGB1</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">ITGB1__9606</bp:name>
+</bp:Protein>
+
+<bp:RelationshipXref rdf:about="OMIM_TNIP2">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">610669</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:ProteinReference rdf:about="ProteinRef_GRB2__9606">
+ <bp:xref rdf:resource="Entrez_GRB2" />
+ <bp:xref rdf:resource="OMIM_GRB2" />
+ <bp:xref rdf:resource="HPRD_GRB2" />
+ <bp:xref rdf:resource="UniProt_GRB2" />
+ <bp:sequence rdf:datatype = "xsd:string">MEAIAKYDFKATADDELSFKRGDILKVLNEECDQNWYKAELNGKDGFIPKNYIEMKPHPWFFGKIPRAKAEEMLSKQRHDGAFLIRESESAPGDFSLSVKFGNDVQHFKVLRDGAGKYFLWVVKFNSLNELVDYHRSTSVSRNQQIFLRDIEQVPQQPTYVQALFDFDPQEDGELGFRRGDFIHVMDNSDPNWWKGACHGQTGMFPRNYVTPVNRNV</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">GRB2</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">ASH</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Growth factor receptor bound protein 2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Grb3-3</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Abundant Src homology protein</bp:name>
+</bp:ProteinReference>
+
+<bp:UnificationXref rdf:about="UniProt_RASA1">
+ <bp:id rdf:datatype = "xsd:string">P20936</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:ProteinReference rdf:about="ProteinRef_BMX__9606">
+ <bp:xref rdf:resource="HPRD_BMX" />
+ <bp:xref rdf:resource="Entrez_BMX" />
+ <bp:xref rdf:resource="UniProt_BMX" />
+ <bp:xref rdf:resource="OMIM_BMX" />
+ <bp:sequence rdf:datatype = "xsd:string">MDTKSILEELLLKRSQQKKKMSPNNYKERLFVLTKTNLSYYEYDKMKRGSRKGSIEIKKIRCVEKVNLEEQTPVERQYPFQIVYKDGLLYVYASNEESRSQWLKALQKEIRGNPHLLVKYHSGFFVDGKFLCCQQSCKAAPGCTLWEAYANLHTAVNEEKHRVPTFPDRVLKIPRAVPVLKMDAPSSSTTLAQYDNESKKNYGSQPPSSSTSLAQYDSNSKKIYGSQPNFNMQYIPREDFPDWWQVRKLKSSSSSEDVASSNQKERNVNHTTSKISWEFPESSSSEEEENLDDYDWFAGNISRSQSEQLLRQKGKEGAFMVRNSSQVGMYTVSLFSKAVNDKKGTVKHYHVHTNAENKLYLAENYCFDSIPKLIHYHQHNSAGMITRLRHPVSTKANKVPDSVSLGNGIWELKREEITLLKELGSGQFGVVQLGKWKGQYDVAVKMIKEGSMSEDEFFQEAQTMMKLSHPKLVKFYGVCSKEYPIYIVTEYISNGCLLNYLRSHGKGLEPSQLLEMCYDVCEGMAFLESHQFIHRDLAARNCLVDRDLCVKVSDFGMTRYVLDDQYVSSVGTKFPVKWSAPEVFHYFKYSSKSDVWAFGILMWEVFSLGKQPYDLYDNSQVVLKVSQGHRLYRPHLASDTIYQIMYSCWHELPEKRPTFQQLLSSIEPLREKDKH</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">BMX</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">Protein tyrosine kinase BMX</bp:name>
+ <bp:name rdf:datatype = "xsd:string">ETK</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Bone marrow kinase, X-linked</bp:name>
+ <bp:name rdf:datatype = "xsd:string">NTK38</bp:name>
+ <bp:name rdf:datatype = "xsd:string">EC 2.7.1.112</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Cytoplasmic tyrosine-protein kinase</bp:name>
+ <bp:name rdf:datatype = "xsd:string">PSCTK2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">PSCTK3</bp:name>
+ <bp:name rdf:datatype = "xsd:string">BMX non-receptor tyrosine kinase</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Epithelial and endothelial tyrosine kinase</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Bone marrow kinase</bp:name>
+</bp:ProteinReference>
+
+<bp:RelationshipXref rdf:about="Entrez_MAPK1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">5594</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:ProteinReference rdf:about="ProteinRef_TIE1__10090">
+ <bp:xref rdf:resource="OMIM_TIE1" />
+ <bp:xref rdf:resource="UniProt_TIE1" />
+ <bp:xref rdf:resource="HPRD_TIE1" />
+ <bp:xref rdf:resource="Entrez_TIE1" />
+ <bp:sequence rdf:datatype = "xsd:string">MVWRVPPFLLPILFLASHVGAAVDLTLLANLRLTDPQRFFLTCVSGEAGAGRGSDAWGPPLLLEKDDRIVRTPPGPPLRLARNGSHQVTLRGFSKPSDLVGVFSCVGGAGARRTRVIYVHNSPGAHLLPDKVTHTVNKGDTAVLSARVHKEKQTDVIWKSNGSYFYTLDWHEAQDGRFLLQLPNVQPPSSGIYSATYLEASPLGSAFFRLIVRGCGAGRWGPGCTKECPGCLHGGVCHDHDGECVCPPGFTGTRCEQACREGRFGQSCQEQCPGISGCRGLTFCLPDPYGCSCGSGWRGSQCQEACAPGHFGADCRLQCQCQNGGTCDRFSGCVCPSGWHGVHCEKSDRIPQILNMASELEFNLETMPRINCAAAGNPFPVRGSIELRKPDGTVLLSTKAIVEPEKTTAEFEVPRLVLADSGFWECRVSTSGGQDSRRFKVNVKVPPVPLAAPRLLTKQSRQLVVSPLVSFSGDGPISTVRLHYRPQDSTMDWSTIVVDPSENVTLMNLRPKTGYSVRVQLSRPGEGGEGAWGPPTLMTTDCPEPLLQPWLEGWHVEGTDRLRVSWSLPLVPGPLVGDGFLLRLWDGTRGQERRENVSSPQARTALLTGLTPGTHYQLDVQLYHCTLLGPASPPAHVLLPPSGPPAPRHLHAQALSDSEIQLTWKHPEALPGPISKYVVEVQVAGGAGDPLWIDVDRPEETSTIIRGLNASTRYLFRMRASIQGLGDWSNTVEESTLGNGLQAEGPVQESRAAEEGLDQQLILAVVGSVSATCLTILAALLTLVCIRRSCLHRRRTFTYQSGSGEETILQFSSGTLTLTRRPKLQPEPLSYPVLEWEDITFEDLIGEGNFGQVIRAMIKKDGLKMNAAIKMLKEYASENDHRDFAGELEVLCKLGHHPNIINLLGACKNRGYLYIAIEYAPYGNLLDFLRKSRVLETDPAFAREHGTASTLSSRQLLRFASDAANGMQYLSEKQFIHRDLAARNVLVGENLASKIADFGLSRGEEVYVKKTMGRLPVRWMAIESLNYSVYTTKSDVWSFGVLLWEIVSLGGTPYCGMTCAELYEKLPQGYRMEQPRNCDDEVYELMRQCWRDRPYERPPFAQIALQLGRMLEARKAYVNMSLFENFTYAGIDATAEEA</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">TIE1</bp:displayName>
+ <bp:organism rdf:resource="biosource_10090" />
+ <bp:name rdf:datatype = "xsd:string">Tyrosine kinase with immunoglobulin and EGF homology domains</bp:name>
+</bp:ProteinReference>
+
+<bp:UnificationXref rdf:about="urn:biopax:UnificationXref:MOD_MOD%3A00696">
+ <bp:id rdf:datatype = "xsd:string">MOD:00696</bp:id>
+ <bp:db rdf:datatype = "xsd:string">MOD</bp:db>
+</bp:UnificationXref>
+
+<bp:BioSource rdf:about="biosource_10090">
+ <bp:standardName rdf:datatype = "xsd:string">Mus musculus</bp:standardName>
+ <bp:xref rdf:resource="Taxonomy_UnificationXref_10090" />
+ <bp:displayName rdf:datatype = "xsd:string">Mouse</bp:displayName>
+</bp:BioSource>
+
+<bp:MolecularInteraction rdf:about="Molecular_Interaction_Cytoplasm__330">
+ <bp:xref rdf:resource="Pubmed_14665640" />
+ <bp:participant rdf:resource="SHC1__9606__Cytoplasm" />
+ <bp:participant rdf:resource="TEK__9606__Cytoplasm" />
+ <bp:evidence rdf:resource="Evidence_InVitro" />
+</bp:MolecularInteraction>
+
+<bp:RelationshipXref rdf:about="Entrez_RAF1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">5894</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:PublicationXref rdf:about="Pubmed_11080633">
+ <bp:id rdf:datatype = "xsd:string">11080633</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:Protein rdf:about="TIE1__MI__0217__10090____EMPTYRIGHT">
+ <bp:entityReference rdf:resource="ProteinRef_TIE1__10090" />
+ <bp:displayName rdf:datatype = "xsd:string">TIE1</bp:displayName>
+ <bp:feature rdf:resource="ModificationEmptyFeature_MI_0217" />
+ <bp:xref rdf:resource="PTM_ID_MI_0217" />
+ <bp:name rdf:datatype = "xsd:string">TIE1__MI__0217</bp:name>
+</bp:Protein>
+
+<bp:Protein rdf:about="RAF1__MI__0217__9606____EMPTYRIGHT">
+ <bp:entityReference rdf:resource="ProteinRef_RAF1__9606" />
+ <bp:displayName rdf:datatype = "xsd:string">RAF1</bp:displayName>
+ <bp:feature rdf:resource="ModificationEmptyFeature_MI_0217" />
+ <bp:xref rdf:resource="PTM_ID_MI_0217" />
+ <bp:name rdf:datatype = "xsd:string">RAF1__MI__0217</bp:name>
+</bp:Protein>
+
+<bp:Catalysis rdf:about="Catalysis_355__">
+ <bp:xref rdf:resource="Pubmed_15132996" />
+ <bp:xref rdf:resource="Pubmed_12824293" />
+ <bp:xref rdf:resource="Pubmed_16049136" />
+ <bp:xref rdf:resource="Pubmed_14726409" />
+ <bp:controlled rdf:resource="BiochemReaction_355__" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:Catalysis>
+
+<bp:BiochemicalReaction rdf:about="BiochemReaction_358__">
+ <bp:left rdf:resource="MAPK14__9606__" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:right rdf:resource="MAPK14__MI__0217__9606____EMPTYRIGHT" />
+ <bp:interactionType rdf:resource="Interaction_Phosphorylation" />
+</bp:BiochemicalReaction>
+
+<bp:RelationshipXref rdf:about="Entrez_AKT1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">207</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:BioSource rdf:about="biosource_9913">
+ <bp:standardName rdf:datatype = "xsd:string">Bos taurus</bp:standardName>
+ <bp:xref rdf:resource="Taxonomy_UnificationXref_9913" />
+ <bp:displayName rdf:datatype = "xsd:string">Bovine</bp:displayName>
+</bp:BioSource>
+
+<bp:Catalysis rdf:about="Catalysis_383__">
+ <bp:xref rdf:resource="Pubmed_16049136" />
+ <bp:controlled rdf:resource="BiochemReaction_383__" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:Catalysis>
+
+<bp:ModificationFeature rdf:about="Y8401">
+ <bp:featureLocation rdf:resource="SeqSite_1048" />
+ <bp:modificationType rdf:resource="SeqModVocab_Y__MI_0217" />
+</bp:ModificationFeature>
+
+<bp:MolecularInteraction rdf:about="Molecular_Interaction_Cytoplasm__332">
+ <bp:xref rdf:resource="Pubmed_14726409" />
+ <bp:participant rdf:resource="STAT5A__9606__Cytoplasm" />
+ <bp:participant rdf:resource="TEK__9606__Cytoplasm" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:MolecularInteraction>
+
+<bp:MolecularInteraction rdf:about="Molecular_Interaction_Cytoplasm__333">
+ <bp:xref rdf:resource="Pubmed_14726409" />
+ <bp:participant rdf:resource="STAT5B__9606__Cytoplasm" />
+ <bp:participant rdf:resource="TEK__9606__Cytoplasm" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:MolecularInteraction>
+
+<bp:MolecularInteraction rdf:about="Molecular_Interaction_Cytoplasm__335">
+ <bp:xref rdf:resource="Pubmed_11689432" />
+ <bp:xref rdf:resource="Pubmed_9764820" />
+ <bp:participant rdf:resource="NCK1__9606__Cytoplasm" />
+ <bp:participant rdf:resource="DOK2__9606__Cytoplasm" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:MolecularInteraction>
+
+<bp:UnificationXref rdf:about="UniProt_RAF1">
+ <bp:id rdf:datatype = "xsd:string">P04049</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:RelationshipXref rdf:about="OMIM_FOXO1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">136533</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:Protein rdf:about="AKT1__MI__0217__9606____EMPTYRIGHT">
+ <bp:entityReference rdf:resource="ProteinRef_AKT1__9606" />
+ <bp:displayName rdf:datatype = "xsd:string">AKT1</bp:displayName>
+ <bp:feature rdf:resource="ModificationEmptyFeature_MI_0217" />
+ <bp:xref rdf:resource="PTM_ID_MI_0217" />
+ <bp:name rdf:datatype = "xsd:string">AKT1__MI__0217</bp:name>
+</bp:Protein>
+
+<bp:ProteinReference rdf:about="ProteinRef_ANGPT4__9606">
+ <bp:xref rdf:resource="HPRD_ANGPT4" />
+ <bp:xref rdf:resource="OMIM_ANGPT4" />
+ <bp:xref rdf:resource="Entrez_ANGPT4" />
+ <bp:xref rdf:resource="UniProt_ANGPT4" />
+ <bp:sequence rdf:datatype = "xsd:string">MLSQLAMLQGSLLLVVATMSVAQQTRQEADRGCETLVVQHGHCSYTFLLPKSEPCPPGPEVSRDSNTLQRESLANPLHLGKLPTQQVKQLEQALQNNTQWLKKLERAIKTILRSKLEQVQQQMAQNQTAPMLELGTSLLNQTTAQIRKLTDMEAQLLNQTSRMDAQMPETFLSTNKLENQLLLQRQKLQQLQGQNSALEKRLQALETKQQEELASILSKKAKLLNTLSRQSAALTNIERGLRGVRHNSSLLQDQQHSLRQLLVLLRHLVQERANASAPAFIMAGEQVFQDCAEIQRSGASASGVYTIQVSNATKPRKVFCDLQSSGGRWTLIQRRENGTVNFQRNWKDYKQGFGDPAGEHWLGNEVVHQLTRRAAYSLRVELQDWEGHEAYAQYEHFHLGSENQLYRLSVVGYSGSAGRQSSLVLQNTSFSTLDSDNDHCLCKCAQVMSGGWWFDACGLSNLNGVYYHAPDNKYKMDGIRWHYFKGPSYSLRASRMMIRPLDI</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">ANGPT4</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">ANG4</bp:name>
+</bp:ProteinReference>
+
+<bp:MolecularInteraction rdf:about="Molecular_Interaction_Plasmamembrane__354">
+ <bp:xref rdf:resource="Pubmed_16157706" />
+ <bp:participant rdf:resource="Plasmamembrane__Complex__354" />
+ <bp:participant rdf:resource="TEK__9606__Plasmamembrane" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:MolecularInteraction>
+
+<bp:SequenceSite rdf:about="SeqSite_199">
+ <bp:sequencePosition rdf:datatype = "xsd:int">199</bp:sequencePosition>
+ <bp:positionStatus rdf:datatype = "xsd:string">EQUAL</bp:positionStatus>
+</bp:SequenceSite>
+
+<bp:BiochemicalReaction rdf:about="BiochemReaction_3415__">
+ <bp:left rdf:resource="STAT5B__9606__" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:right rdf:resource="STAT5B__MI__0217__9606____EMPTYRIGHT" />
+ <bp:interactionType rdf:resource="Interaction_Phosphorylation" />
+</bp:BiochemicalReaction>
+
+<bp:Protein rdf:about="NCK1__9606__Cytoplasm">
+ <bp:displayName rdf:datatype = "xsd:string">NCK1</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">NCK1__9606</bp:name>
+</bp:Protein>
+
+<bp:UnificationXref rdf:about="PTM_ID_MI_0217">
+ <bp:id rdf:datatype = "xsd:string">MI:0217</bp:id>
+ <bp:db rdf:datatype = "xsd:string">MOLECULAR INTERACTIONS ONTOLOGY</bp:db>
+</bp:UnificationXref>
+
+<bp:Protein rdf:about="ANGPT2__9606__Extracellular">
+ <bp:displayName rdf:datatype = "xsd:string">ANGPT2</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">ANGPT2__9606</bp:name>
+</bp:Protein>
+
+<bp:ProteinReference rdf:about="ProteinRef_MAPK3__9606">
+ <bp:xref rdf:resource="Entrez_MAPK3" />
+ <bp:xref rdf:resource="OMIM_MAPK3" />
+ <bp:xref rdf:resource="HPRD_MAPK3" />
+ <bp:xref rdf:resource="UniProt_MAPK3" />
+ <bp:sequence rdf:datatype = "xsd:string">MAAAAAQGGGGGEPRRTEGVGPGVPGEVEMVKGQPFDVGPRYTQLQYIGEGAYGMVSSAYDHVRKTRVAIKKISPFEHQTYCQRTLREIQILLRFRHENVIGIRDILRASTLEAMRDVYIVQDLMETDLYKLLKSQQLSNDHICYFLYQILRGLKYIHSANVLHRDLKPSNLLSNTTCDLKICDFGLARIADPEHDHTGFLTEYVATRWYRAPEIMLNSKGYTKSIDIWSVGCILAEMLSNRPIFPGKHYLDQLNHILGILGSPSQEDLNCIINMKARNYLQSLPSKTKVAWAKLFPKSDSKALDLLDRMLTFNPNKRITVEEALAHPYLEQYYDPTDEPVAEEPFTFAMELDDLPKERLKELIFQETARFQPGVLEAP</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">MAPK3</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">Extracellular signal regulated kinase 1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Protein kinase, mitogen activated, 3</bp:name>
+ <bp:name rdf:datatype = "xsd:string">EC 2.7.1.37</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Insulin stimulated MAP2 kinase</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Mitogen activated protein kinase 3</bp:name>
+ <bp:name rdf:datatype = "xsd:string">PRKM3</bp:name>
+ <bp:name rdf:datatype = "xsd:string">p44ERK1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Microtubule associated protein 2 kinase</bp:name>
+ <bp:name rdf:datatype = "xsd:string">p44MAPK</bp:name>
+</bp:ProteinReference>
+
+<bp:Protein rdf:about="ELK1__9606__">
+ <bp:displayName rdf:datatype = "xsd:string">ELK1</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">ELK1__9606</bp:name>
+</bp:Protein>
+
+<bp:UnificationXref rdf:about="UniProt_DOK2">
+ <bp:id rdf:datatype = "xsd:string">O60496</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:RelationshipXref rdf:about="Entrez_TEK">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">7010</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:RelationshipXref rdf:about="Entrez_GRB2">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">2885</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:UnificationXref rdf:about="HPRD_ITGB1">
+ <bp:id rdf:datatype = "xsd:string">00628</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:RelationshipXref rdf:about="OMIM_ELK1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">311040</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:RelationshipXref rdf:about="OMIM_GRB7">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">601522</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:UnificationXref rdf:about="Taxonomy_UnificationXref_10090">
+ <bp:id rdf:datatype = "xsd:string">10090</bp:id>
+ <bp:db rdf:datatype = "xsd:string">TAXONOMY</bp:db>
+</bp:UnificationXref>
+
+<bp:Protein rdf:about="TEK__9606__Extracellular">
+ <bp:displayName rdf:datatype = "xsd:string">TEK</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">TEK__9606</bp:name>
+</bp:Protein>
+
+<bp:RelationshipXref rdf:about="OMIM_GRB2">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">108355</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:RelationshipXref rdf:about="Entrez_ELK1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">2002</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:UnificationXref rdf:about="HPRD_PIK3R1">
+ <bp:id rdf:datatype = "xsd:string">01381</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:BiochemicalReaction rdf:about="BiochemReaction_3413__">
+ <bp:left rdf:resource="GRB7__9606__" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:right rdf:resource="GRB7__MI__0217__9606____EMPTYRIGHT" />
+ <bp:interactionType rdf:resource="Interaction_Phosphorylation" />
+</bp:BiochemicalReaction>
+
+<bp:UnificationXref rdf:about="HPRD_PIK3R2">
+ <bp:id rdf:datatype = "xsd:string">04404</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:ProteinReference rdf:about="ProteinRef_FOXO1__9913">
+ <bp:xref rdf:resource="HPRD_FOXO1" />
+ <bp:xref rdf:resource="UniProt_FOXO1" />
+ <bp:xref rdf:resource="Entrez_FOXO1" />
+ <bp:xref rdf:resource="OMIM_FOXO1" />
+ <bp:sequence rdf:datatype = "xsd:string">MAEAPQVVEIDPDFEPLPRPRSCTWPLPRPEFSQSNSATSSPAPSGSAAANPDAAAGLPSASAAAVSADFMSNLSLLEESEDFPQAPGSVAAAVAAAAAAAATGGLCGDFQGPEAGCLHPAPPQPPPPGPLSQHPPVPPAAAGPLAGQPRKSSSSRRNAWGNLSYADLITKAIESSAEKRLTLSQIYEWMVKSVPYFKDKGDSNSSAGWKNSIRHNLSLHSKFIRVQNEGTGKSSWWMLNPEGGKSGKSPRRRAASMDNNSKFAKSRSRAAKKKASLQSGQEGAGDSPGSQFSKWPASPGSHSNDDFDNWSTFRPRTSSNASTISGRLSPIMTEQDDLGEGDVHSMVYPPSAAKMASTLPSLSEISNPENMENLLDNLNLLSSPTSLTVSTQSSPGTMMQQTPCYSFAPPNTSLNSPSPNYQKYTYGQSSMSPLPQMPIQTLQDNKSSYGGMSQYNCAPGLLKELLTSDSPPHNDIMTPVDPGVAQPNSRVLGQNVMMGPNSVMSTYGSQASHNKMMNPSSHTHPGHAQQTSAVNGRPLPHTVSTMPHTSGMNRLTQVKTPVQVPLPHPMQMSALGGYSSVSSCNGYGRMGLLHQEKLPSDLDGMFIERLDCDMESIIRNDLMDGDTLDFNFDNVLPNQSFPHSVKTTTHSWVSG</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">FOXO1</bp:displayName>
+ <bp:organism rdf:resource="biosource_9913" />
+ <bp:entityFeature rdf:resource="S652" />
+ <bp:entityFeature rdf:resource="T42" />
+ <bp:name rdf:datatype = "xsd:string">FOXO1A</bp:name>
+ <bp:name rdf:datatype = "xsd:string">FKHR</bp:name>
+ <bp:name rdf:datatype = "xsd:string">FKH1</bp:name>
+</bp:ProteinReference>
+
+<bp:Protein rdf:about="PIK3R1__9606__">
+ <bp:displayName rdf:datatype = "xsd:string">PIK3R1</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">PIK3R1__9606</bp:name>
+</bp:Protein>
+
+<bp:PublicationXref rdf:about="Pubmed_7478529">
+ <bp:id rdf:datatype = "xsd:string">7478529</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:SequenceModificationVocabulary rdf:about="SeqModVocab_MI_0217">
+ <bp:xref rdf:resource="urn:biopax:UnificationXref:MOD_MOD%3A00696" />
+ <bp:term rdf:datatype = "xsd:string">phosphorylated residue</bp:term>
+</bp:SequenceModificationVocabulary>
+
+<bp:PublicationXref rdf:about="Pubmed_12759249">
+ <bp:id rdf:datatype = "xsd:string">12759249</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:Protein rdf:about="GRB2__9606__Plasmamembrane">
+ <bp:displayName rdf:datatype = "xsd:string">GRB2</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">GRB2__9606</bp:name>
+</bp:Protein>
+
+<bp:Complex rdf:about="Cytoplasm__Complex__6051">
+ <bp:displayName rdf:datatype = "xsd:string">Complex</bp:displayName>
+ <bp:component rdf:resource="NCK1__9606__Cytoplasm" />
+ <bp:component rdf:resource="PAK1__9606__Cytoplasm" />
+ <bp:cellularLocation rdf:resource="CellularLocation_Cytoplasm" />
+ <bp:name rdf:datatype = "xsd:string">PAK1,NCK1</bp:name>
+</bp:Complex>
+
+<bp:BiochemicalReaction rdf:about="BiochemReaction_412__">
+ <bp:left rdf:resource="TIE1__10090__" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:right rdf:resource="TIE1__MI__0217__10090____EMPTYRIGHT" />
+ <bp:interactionType rdf:resource="Interaction_Phosphorylation" />
+</bp:BiochemicalReaction>
+
+<bp:Protein rdf:about="BMX__9606__PlasmaMembrane">
+ <bp:displayName rdf:datatype = "xsd:string">BMX</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">BMX__9606</bp:name>
+</bp:Protein>
+
+<bp:PublicationXref rdf:about="Pubmed_20067622">
+ <bp:id rdf:datatype = "xsd:string">20067622</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:Protein rdf:about="PAK1__9606__Cytoplasm">
+ <bp:displayName rdf:datatype = "xsd:string">PAK1</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">PAK1__9606</bp:name>
+</bp:Protein>
+
+<bp:Protein rdf:about="PAK1__9606__">
+ <bp:displayName rdf:datatype = "xsd:string">PAK1</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">PAK1__9606</bp:name>
+</bp:Protein>
+
+<bp:ProteinReference rdf:about="ProteinRef_TNIP2__9606">
+ <bp:xref rdf:resource="OMIM_TNIP2" />
+ <bp:xref rdf:resource="HPRD_TNIP2" />
+ <bp:xref rdf:resource="UniProt_TNIP2" />
+ <bp:xref rdf:resource="Entrez_TNIP2" />
+ <bp:sequence rdf:datatype = "xsd:string">MSRDPGSGGWEEAPRAAAALCTLYHEAGQRLRRLQDQLAARDALIARLRARLAALEGDAAPSLVDALLEQVARFREQLRRQEGGAAEAQMRQEIERLTERLEEKEREMQQLLSQPQHEREKEVVLLRRSMAEGERARAASDVLCRSLANETHQLRRTLTATAHMCQHLAKCLDERQHAQRNVGERSPDQSEHTDGHTSVQSVIEKLQEENRLLKQKVTHVEDLNAKWQRYNASRDEYVRGLHAQLRGLQIPHEPELMRKEISRLNRQLEEKINDCAEVKQELAASRTARDAALERVQMLEQQILAYKDDFMSERADRERAQSRIQELEEKVASLLHQVSWRQDSREPDAGRIHAGSKTAKYLAADALELMVPGGWRPGTGSQQPEPPAEGGHPGAVQRGQGDLQCPHCLQCFSDEQGEELLRHVAECCQ</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">TNIP2</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">MGC4289</bp:name>
+ <bp:name rdf:datatype = "xsd:string">ABIN-2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">LKB1 interacting protein</bp:name>
+ <bp:name rdf:datatype = "xsd:string">FLIP1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">KLIP</bp:name>
+ <bp:name rdf:datatype = "xsd:string">A20 binding inhibitor of NF kappaB activation 2</bp:name>
+</bp:ProteinReference>
+
+<bp:Pathway rdf:about="Pathway_TIE1/TEK">
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:displayName rdf:datatype = "xsd:string">TIE1/TEK</bp:displayName>
+ <bp:availability rdf:datatype = "xsd:string">Freely available from NetPath (http://www.netpath.org) under the Creative Commons license (http://creativecommons.org/licenses/by/2.5/).</bp:availability>
+ <bp:dataSource rdf:resource="provenance" />
+ <bp:pathwayComponent rdf:resource="Molecular_Interaction_Plasmamembrane__324" />
+ <bp:pathwayComponent rdf:resource="Catalysis_356__" />
+ <bp:pathwayComponent rdf:resource="Molecular_Interaction_Cytoplasm__6051" />
+ <bp:pathwayComponent rdf:resource="Catalysis_357__" />
+ <bp:pathwayComponent rdf:resource="Transport_56" />
+ <bp:pathwayComponent rdf:resource="Molecular_Interaction_Extracellular__327" />
+ <bp:pathwayComponent rdf:resource="Molecular_Interaction_Plasmamembrane__305" />
+ <bp:pathwayComponent rdf:resource="Catalysis_365__" />
+ <bp:pathwayComponent rdf:resource="Molecular_Interaction_Cytoplasm__6052" />
+ <bp:pathwayComponent rdf:resource="Catalysis_3415__" />
+ <bp:pathwayComponent rdf:resource="Catalysis_355__" />
+ <bp:pathwayComponent rdf:resource="Catalysis_334__" />
+ <bp:pathwayComponent rdf:resource="Molecular_Interaction___325" />
+ <bp:pathwayComponent rdf:resource="Catalysis_412__" />
+ <bp:pathwayComponent rdf:resource="Molecular_Interaction_Cytoplasm__310" />
+ <bp:pathwayComponent rdf:resource="Molecular_Interaction_Cytoplasm__335" />
+ <bp:pathwayComponent rdf:resource="Molecular_Interaction_Extracellular__328" />
+ <bp:pathwayComponent rdf:resource="Molecular_Interaction_PlasmaMembrane__322" />
+ <bp:pathwayComponent rdf:resource="Catalysis_294__Cytoplasm" />
+ <bp:pathwayComponent rdf:resource="Molecular_Interaction_Cytoplasm__330" />
+ <bp:pathwayComponent rdf:resource="Molecular_Interaction_Extracellular__380" />
+ <bp:pathwayComponent rdf:resource="Catalysis_354__" />
+ <bp:pathwayComponent rdf:resource="Transport_57" />
+ <bp:pathwayComponent rdf:resource="Molecular_Interaction_Cytoplasm__307" />
+ <bp:pathwayComponent rdf:resource="Catalysis_393__" />
+ <bp:pathwayComponent rdf:resource="Catalysis_358__" />
+ <bp:pathwayComponent rdf:resource="Molecular_Interaction___472" />
+ <bp:pathwayComponent rdf:resource="Catalysis_293__Cytoplasm" />
+ <bp:pathwayComponent rdf:resource="Molecular_Interaction_Extracellular__316" />
+ <bp:pathwayComponent rdf:resource="Catalysis_359__" />
+ <bp:pathwayComponent rdf:resource="Transport_53" />
+ <bp:pathwayComponent rdf:resource="Catalysis_3416__" />
+ <bp:pathwayComponent rdf:resource="Catalysis_321__" />
+ <bp:pathwayComponent rdf:resource="Catalysis_3414__" />
+ <bp:pathwayComponent rdf:resource="Molecular_Interaction_Extracellular__424" />
+ <bp:pathwayComponent rdf:resource="Catalysis_362__Cytoplasm" />
+ <bp:pathwayComponent rdf:resource="Molecular_Interaction_Plasmamembrane__306" />
+ <bp:pathwayComponent rdf:resource="Molecular_Interaction_Extracellular__319" />
+ <bp:pathwayComponent rdf:resource="Catalysis_399__PlasmaMembrane" />
+ <bp:pathwayComponent rdf:resource="Molecular_Interaction_Cytoplasm__309" />
+ <bp:pathwayComponent rdf:resource="Molecular_Interaction_Extracellular__423" />
+ <bp:pathwayComponent rdf:resource="Catalysis_3397__Plasmamembrane" />
+ <bp:pathwayComponent rdf:resource="Catalysis_366__" />
+ <bp:pathwayComponent rdf:resource="Molecular_Interaction_Cytoplasm__332" />
+ <bp:pathwayComponent rdf:resource="Catalysis_360__" />
+ <bp:pathwayComponent rdf:resource="Molecular_Interaction_Cytoplasm__333" />
+ <bp:pathwayComponent rdf:resource="Molecular_Interaction_Extracellular__381" />
+ <bp:pathwayComponent rdf:resource="Catalysis_291__Plasmamembrane" />
+ <bp:pathwayComponent rdf:resource="Catalysis_383__" />
+ <bp:pathwayComponent rdf:resource="Molecular_Interaction_Plasmamembrane__354" />
+ <bp:pathwayComponent rdf:resource="Molecular_Interaction_Extracellular__321" />
+ <bp:pathwayComponent rdf:resource="Catalysis_3413__" />
+ <bp:pathwayComponent rdf:resource="Molecular_Interaction_Plasmamembrane__308" />
+</bp:Pathway>
+
+<bp:RelationshipXref rdf:about="Entrez_MAPK3">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">5595</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:UnificationXref rdf:about="HPRD_ITGA5">
+ <bp:id rdf:datatype = "xsd:string">00627</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:Protein rdf:about="RAF1__9606__">
+ <bp:displayName rdf:datatype = "xsd:string">RAF1</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">RAF1__9606</bp:name>
+</bp:Protein>
+
+<bp:PublicationXref rdf:about="Pubmed_14726409">
+ <bp:id rdf:datatype = "xsd:string">14726409</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:ProteinReference rdf:about="ProteinRef_MAP2K1__9606">
+ <bp:xref rdf:resource="UniProt_MAP2K1" />
+ <bp:xref rdf:resource="HPRD_MAP2K1" />
+ <bp:xref rdf:resource="Entrez_MAP2K1" />
+ <bp:xref rdf:resource="OMIM_MAP2K1" />
+ <bp:sequence rdf:datatype = "xsd:string">MPKKKPTPIQLNPAPDGSAVNGTSSAETNLEALQKKLEELELDEQQRKRLEAFLTQKQKVGELKDDDFEKISELGAGNGGVVFKVSHKPSGLVMARKLIHLEIKPAIRNQIIRELQVLHECNSPYIVGFYGAFYSDGEISICMEHMDGGSLDQVLKKAGRIPEQILGKVSIAVIKGLTYLREKHKIMHRDVKPSNILVNSRGEIKLCDFGVSGQLIDSMANSFVGTRSYMSPERLQGTHYSVQSDIWSMGLSLVEMAVGRYPIPPPDAKELELMFGCQVEGDAAETPPRPRTPGRPLSSYGMDSRPPMAIFELLDYIVNEPPPKLPSGVFSLEFQDFVNKCLIKNPAERADLKQLMVHAFIKRSDAEEVDFAGWLCSTIGLNQPSTPTHAAGV</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">MAP2K1</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">MKK1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">MAPKK1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Dual specificity mitogen activated protein kinase kinase 1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">MAPK/ERK kinase 1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">ERK activator kinase 1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">PRKMK1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Mitogen activated protein kinase kinase 1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">MAP kinase kinase 1</bp:name>
+</bp:ProteinReference>
+
+<bp:UnificationXref rdf:about="UniProt_MAPK1">
+ <bp:id rdf:datatype = "xsd:string">P28482</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:UnificationXref rdf:about="UniProt_MAPK3">
+ <bp:id rdf:datatype = "xsd:string">P27361</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:Catalysis rdf:about="Catalysis_3397__Plasmamembrane">
+ <bp:xref rdf:resource="Pubmed_15851516" />
+ <bp:controlled rdf:resource="BiochemReaction_3397__Plasmamembrane" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+ <bp:controller rdf:resource="TEK__9606__Plasmamembrane" />
+</bp:Catalysis>
+
+<bp:PublicationXref rdf:about="Pubmed_15132996">
+ <bp:id rdf:datatype = "xsd:string">15132996</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:Protein rdf:about="DOK2__9606__Plasmamembrane">
+ <bp:displayName rdf:datatype = "xsd:string">DOK2</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">DOK2__9606</bp:name>
+</bp:Protein>
+
+<bp:RelationshipXref rdf:about="OMIM_AKT1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">164730</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:InteractionVocabulary rdf:about="Interaction_Phosphorylation">
+ <bp:xref rdf:resource="PTM_ID_MI_0217" />
+ <bp:term rdf:datatype = "xsd:string">Phosphorylation</bp:term>
+</bp:InteractionVocabulary>
+
+<bp:MolecularInteraction rdf:about="Molecular_Interaction_PlasmaMembrane__322">
+ <bp:xref rdf:resource="Pubmed_15851516" />
+ <bp:participant rdf:resource="TIE1__9606__PlasmaMembrane" />
+ <bp:participant rdf:resource="TEK__9606__PlasmaMembrane" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:MolecularInteraction>
+
+<bp:UnificationXref rdf:about="HPRD_TNIP2">
+ <bp:id rdf:datatype = "xsd:string">18207</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:PublicationXref rdf:about="Pubmed_10734041">
+ <bp:id rdf:datatype = "xsd:string">10734041</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:Protein rdf:about="GRB7__MI__0217__9606____EMPTYRIGHT">
+ <bp:entityReference rdf:resource="ProteinRef_GRB7__9606" />
+ <bp:displayName rdf:datatype = "xsd:string">GRB7</bp:displayName>
+ <bp:feature rdf:resource="ModificationEmptyFeature_MI_0217" />
+ <bp:xref rdf:resource="PTM_ID_MI_0217" />
+ <bp:name rdf:datatype = "xsd:string">GRB7__MI__0217</bp:name>
+</bp:Protein>
+
+<bp:RelationshipXref rdf:about="Entrez_FOXO1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">2308</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:RelationshipXref rdf:about="OMIM_PAK1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">602590</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:RelationshipXref rdf:about="OMIM_RAC1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">602048</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:UnificationXref rdf:about="ExpType_MI_0492">
+ <bp:id rdf:datatype = "xsd:string">MI:0492</bp:id>
+ <bp:db rdf:datatype = "xsd:string">MOLECULAR INTERACTIONS ONTOLOGY</bp:db>
+</bp:UnificationXref>
+
+<bp:UnificationXref rdf:about="ExpType_MI_0493">
+ <bp:id rdf:datatype = "xsd:string">MI:0493</bp:id>
+ <bp:db rdf:datatype = "xsd:string">MOLECULAR INTERACTIONS ONTOLOGY</bp:db>
+</bp:UnificationXref>
+
+<bp:SequenceSite rdf:about="SeqSite_992">
+ <bp:sequencePosition rdf:datatype = "xsd:int">992</bp:sequencePosition>
+ <bp:positionStatus rdf:datatype = "xsd:string">EQUAL</bp:positionStatus>
+</bp:SequenceSite>
+
+<bp:RelationshipXref rdf:about="Entrez_STAT5B">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">6777</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:ProteinReference rdf:about="ProteinRef_PTK2__9606">
+ <bp:xref rdf:resource="Entrez_PTK2" />
+ <bp:xref rdf:resource="OMIM_PTK2" />
+ <bp:xref rdf:resource="HPRD_PTK2" />
+ <bp:xref rdf:resource="UniProt_PTK2" />
+ <bp:sequence rdf:datatype = "xsd:string">MISADCNLCLPEYDRYLASSKIMAAAYLDPNLNHTPNSSTKTHLGTGMERSPGAMERVLKVFHYFESNSEPTTWASIIRHGDATDVRGIIQKIVDSHKVKHVACYGFRLSHLRSEEVHWLHVDMGVSSVREKYELAHPPEEWKYELRIRYLPKGFLNQFTEDKPTLNFFYQQVKSDYMLEIADQVDQEIALKLGCLEIRRSYWEMRGNALEKKSNYEVLEKDVGLKRFFPKSLLDSVKAKTLRKLIQQTFRQFANLNREESILKFFEILSPVYRFDKECFKCALGSSWIISVELAIGPEEGISYLTDKGCNPTHLADFTQVQTIQYSNSEDKDRKGMLQLKIAGAPEPLTVTAPSLTIAENMADLIDGYCRLVNGTSQSFIIRPQKEGERALPSIPKLANSEKQGMRTHAVSVSETDDYAEIIDEEDTYTMPSTRDYEIQRERIELGRCIGEGQFGDVHQGIYMSPENPALAVAIKTCKNCTSDSVREKFLQEALTMRQFDHPHIVKLIGVITENPVWIIMELCTLGELRSFLQVRKYSLDLASLILYAYQLSTALAYLESKRFVHRDIAARNVLVSSNDCVKLGDFGLSRYMEDSTYYKASKGKLPIKWMAPESINFRRFTSASDVWMFGVCMWEILMHGVKPFQGVKNNDVIGRIENGERLPMPPNCPPTLYSLMTKCWAYDPSRRPRFTELKAQLSTILEEEKAQQEERMRMESRRQATVSWDSGGSDEAPPKPSRPGYPSPRSSEGFYPSPQHMVQTNHYQVSGYPGSHGITAMAGSIYPGQASLLDQTDSWNHRPQEIAMWQPNVEDSTVLDLRGIGQVLPTHLMEERLIRQQQEMEEDQRWLEKEERFLKPDVRLSRGSIDREDGSLQGPIGNQHIYQPVGKPDPAAPPKKPPRPGAPGHLGSLASLSSPADSYNEGVKLQPQEISPPPTANLDRSNDKVYENVTGLVKAVIEMSSKIQPAPPEEYVPMVKEVGLALRTLLATVDETIPLLPASTHREIEMAQKLLNSDLGELINKMKLAQQYVMTSLQQEYKKQMLTAAHALAVDAKNLLDVIDQARLKMLGQTRPH</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">PTK2</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">FADK 1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">FAK1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">EC 2.7.1.112</bp:name>
+ <bp:name rdf:datatype = "xsd:string">PTK2 protein tyrosine kinase 2 isoform b</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Protein tyrosine kinase 2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Focal adhesion kinase 1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">PTK2 protein tyrosine kinase 2 isoform a</bp:name>
+ <bp:name rdf:datatype = "xsd:string">pp125FAK</bp:name>
+</bp:ProteinReference>
+
+<bp:BiochemicalReaction rdf:about="BiochemReaction_294__Cytoplasm">
+ <bp:left rdf:resource="DOK2__9606__Cytoplasm" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:right rdf:resource="DOK2__MI__0217__9606__Cytoplasm__EMPTYRIGHT" />
+ <bp:interactionType rdf:resource="Interaction_Phosphorylation" />
+</bp:BiochemicalReaction>
+
+<bp:Protein rdf:about="TIE1__9606__PlasmaMembrane">
+ <bp:displayName rdf:datatype = "xsd:string">TIE1</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">TIE1__9606</bp:name>
+</bp:Protein>
+
+<bp:ProteinReference rdf:about="ProteinRef_AKT1__9606">
+ <bp:xref rdf:resource="UniProt_AKT1" />
+ <bp:xref rdf:resource="OMIM_AKT1" />
+ <bp:xref rdf:resource="Entrez_AKT1" />
+ <bp:xref rdf:resource="HPRD_AKT1" />
+ <bp:sequence rdf:datatype = "xsd:string">MSDVAIVKEGWLHKRGEYIKTWRPRYFLLKNDGTFIGYKERPQDVDQREAPLNNFSVAQCQLMKTERPRPNTFIIRCLQWTTVIERTFHVETPEEREEWTTAIQTVADGLKKQEEEEMDFRSGSPSDNSGAEEMEVSLAKPKHRVTMNEFEYLKLLGKGTFGKVILVKEKATGRYYAMKILKKEVIVAKDEVAHTLTENRVLQNSRHPFLTALKYSFQTHDRLCFVMEYANGGELFFHLSRERVFSEDRARFYGAEIVSALDYLHSEKNVVYRDLKLENLMLDKDGHIKITDFGLCKEGIKDGATMKTFCGTPEYLAPEVLEDNDYGRAVDWWGLGVVMYEMMCGRLPFYNQDHEKLFELILMEEIRFPRTLGPEAKSLLSGLLKKDPKQRLGGGSEDAKEIMQHRFFAGIVWQHVYEKKLSPPFKPQVTSETDTRYFDEEFTAQMITITPPDQDDSMECVDSERRPHFPQFSYSASGTA</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">AKT1</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">Protein kinase B</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Oncogene AKT1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">PKB</bp:name>
+ <bp:name rdf:datatype = "xsd:string">C-AKT</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Protein kinase B alpha</bp:name>
+ <bp:name rdf:datatype = "xsd:string">RAC protein kinase alpha</bp:name>
+ <bp:name rdf:datatype = "xsd:string">AKT</bp:name>
+ <bp:name rdf:datatype = "xsd:string">PRKBA</bp:name>
+ <bp:name rdf:datatype = "xsd:string">RAC</bp:name>
+ <bp:name rdf:datatype = "xsd:string">MGC99656</bp:name>
+ <bp:name rdf:datatype = "xsd:string">RAC PK alpha</bp:name>
+ <bp:name rdf:datatype = "xsd:string">EC 2.7.1.37</bp:name>
+ <bp:name rdf:datatype = "xsd:string">RAC serine/threonine protein kinase</bp:name>
+ <bp:name rdf:datatype = "xsd:string">RAC alpha serine/threonine protein kinase</bp:name>
+ <bp:name rdf:datatype = "xsd:string">PKB alpha</bp:name>
+ <bp:name rdf:datatype = "xsd:string">V-akt murine thymoma viral oncogene homolog 1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">RAC alpha</bp:name>
+</bp:ProteinReference>
+
+<bp:RelationshipXref rdf:about="Entrez_STAT5A">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">6776</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:Protein rdf:about="ELK1__MI__0217__9606____EMPTYRIGHT">
+ <bp:entityReference rdf:resource="ProteinRef_ELK1__9606" />
+ <bp:displayName rdf:datatype = "xsd:string">ELK1</bp:displayName>
+ <bp:feature rdf:resource="ModificationEmptyFeature_MI_0217" />
+ <bp:xref rdf:resource="PTM_ID_MI_0217" />
+ <bp:name rdf:datatype = "xsd:string">ELK1__MI__0217</bp:name>
+</bp:Protein>
+
+<bp:RelationshipXref rdf:about="Entrez_GRB7">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">2886</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:Protein rdf:about="MAPK1__MI__0217__9606____EMPTYRIGHT">
+ <bp:entityReference rdf:resource="ProteinRef_MAPK1__9606" />
+ <bp:displayName rdf:datatype = "xsd:string">MAPK1</bp:displayName>
+ <bp:feature rdf:resource="ModificationEmptyFeature_MI_0217" />
+ <bp:xref rdf:resource="PTM_ID_MI_0217" />
+ <bp:name rdf:datatype = "xsd:string">MAPK1__MI__0217</bp:name>
+</bp:Protein>
+
+<bp:PublicationXref rdf:about="Pubmed_10807867">
+ <bp:id rdf:datatype = "xsd:string">10807867</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:SequenceSite rdf:about="SeqSite_897">
+ <bp:sequencePosition rdf:datatype = "xsd:int">897</bp:sequencePosition>
+ <bp:positionStatus rdf:datatype = "xsd:string">EQUAL</bp:positionStatus>
+</bp:SequenceSite>
+
+<bp:ProteinReference rdf:about="ProteinRef_MAPK1__9606">
+ <bp:xref rdf:resource="Entrez_MAPK1" />
+ <bp:xref rdf:resource="HPRD_MAPK1" />
+ <bp:xref rdf:resource="OMIM_MAPK1" />
+ <bp:xref rdf:resource="UniProt_MAPK1" />
+ <bp:sequence rdf:datatype = "xsd:string">MAAAAAAGAGPEMVRGQVFDVGPRYTNLSYIGEGAYGMVCSAYDNVNKVRVAIKKISPFEHQTYCQRTLREIKILLRFRHENIIGINDIIRAPTIEQMKDVYIVQDLMETDLYKLLKTQHLSNDHICYFLYQILRGLKYIHSANVLHRDLKPSNLLLNTTCDLKICDFGLARVADPDHDHTGFLTEYVATRWYRAPEIMLNSKGYTKSIDIWSVGCILAEMLSNRPIFPGKHYLDQLNHILGILGSPSQEDLNCIINLKARNYLLSLPHKNKVPWNRLFPNADSKALDLLDKMLTFNPHKRIEVEQALAHPYLEQYYDPSDEPIAEAPFKFDMELDDLPKEKLKELIFEETARFQPGYRS</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">MAPK1</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">p41mapk</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Mitogen activated protein kinase 1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">ERK</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Mitogen activated protein kinase 2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">p40</bp:name>
+ <bp:name rdf:datatype = "xsd:string">p41</bp:name>
+ <bp:name rdf:datatype = "xsd:string">ERT1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">MAPK2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Protein kinase, mitogen activated, 2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">EC 2.7.1.37</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Extracellular signal regulated kinase 2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">p42MAPK</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Protein tyrosine kinase ERK2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">MAP kinase 2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">p38</bp:name>
+ <bp:name rdf:datatype = "xsd:string">PRKM2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">PRKM1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Protein kinase, mitogen activated, 1</bp:name>
+</bp:ProteinReference>
+
+<bp:RelationshipXref rdf:about="Entrez_BMX">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">660</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:PublicationXref rdf:about="Pubmed_10051567">
+ <bp:id rdf:datatype = "xsd:string">10051567</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:RelationshipXref rdf:about="GO_Nucleus">
+ <bp:id rdf:datatype = "xsd:string">GO:0005634</bp:id>
+ <bp:db rdf:datatype = "xsd:string">GENE ONTOLOGY</bp:db>
+</bp:RelationshipXref>
+
+<bp:Protein rdf:about="PXN__MI__0217__40674____EMPTYRIGHT">
+ <bp:entityReference rdf:resource="ProteinRef_PXN__40674" />
+ <bp:displayName rdf:datatype = "xsd:string">PXN</bp:displayName>
+ <bp:feature rdf:resource="ModificationEmptyFeature_MI_0217" />
+ <bp:xref rdf:resource="PTM_ID_MI_0217" />
+ <bp:name rdf:datatype = "xsd:string">PXN__MI__0217</bp:name>
+</bp:Protein>
+
+<bp:ModificationFeature rdf:about="S402">
+ <bp:featureLocation rdf:resource="SeqSite_204" />
+ <bp:modificationType rdf:resource="SeqModVocab_S__MI_0217" />
+</bp:ModificationFeature>
+
+<bp:Protein rdf:about="MAP2K2__9606__">
+ <bp:displayName rdf:datatype = "xsd:string">MAP2K2</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">MAP2K2__9606</bp:name>
+</bp:Protein>
+
+<bp:RelationshipXref rdf:about="Entrez_PXN">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">5829</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:UnificationXref rdf:about="UniProt_MAP2K2">
+ <bp:id rdf:datatype = "xsd:string">P36507</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:UnificationXref rdf:about="UniProt_MAP2K1">
+ <bp:id rdf:datatype = "xsd:string">Q02750</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:BioSource rdf:about="biosource_9606">
+ <bp:standardName rdf:datatype = "xsd:string">Homo sapiens</bp:standardName>
+ <bp:xref rdf:resource="Taxonomy_UnificationXref_9606" />
+ <bp:displayName rdf:datatype = "xsd:string">Human</bp:displayName>
+</bp:BioSource>
+
+<bp:RelationshipXref rdf:about="Entrez_ITGA5">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">3678</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:Catalysis rdf:about="Catalysis_362__Cytoplasm">
+ <bp:xref rdf:resource="Pubmed_15132996" />
+ <bp:controlled rdf:resource="BiochemReaction_362__Cytoplasm" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:Catalysis>
+
+<bp:ProteinReference rdf:about="ProteinRef_ELK1__9606">
+ <bp:xref rdf:resource="UniProt_ELK1" />
+ <bp:xref rdf:resource="HPRD_ELK1" />
+ <bp:xref rdf:resource="Entrez_ELK1" />
+ <bp:xref rdf:resource="OMIM_ELK1" />
+ <bp:sequence rdf:datatype = "xsd:string">MDPSVTLWQFLLQLLREQGNGHIISWTSRDGGEFKLVDAEEVARLWGLRKNKTNMNYDKLSRALRYYYDKNIIRKVSGQKFVYKFVSYPEVAGCSTEDCPPQPEVSVTSTMPNVAPAAIHAAPGDTVSGKPGTPKGAGMAGPGGLARSSRNEYMRSGLYSTFTIQSLQPQPPPHPRPAVVLPNAAPAGAAAPPSGSRSTSPSPLEACLEAEEAGLPLQVILTPPEAPNLKSEELNVEPGLGRALPPEVKVEGPKEELEVAGERGFVPETTKAEPEVPPQEGVPARLPAVVMDTAGQAGGHAASSPEISQPQKGRKPRDLELPLSPSLLGGPGPERTPGSGSGSGLQAPGPALTPSLLPTHTLTPVLLTPSSLPPSIHFWSTLSPIAPRSPAKLSFQFPSSGSAQVHIPSISVDGLSTPVVLSPGPQKP</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">ELK1</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">ELK1, member of ets oncogene family</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Transforming protein elk-1</bp:name>
+</bp:ProteinReference>
+
+<bp:UnificationXref rdf:about="HPRD_AKT1">
+ <bp:id rdf:datatype = "xsd:string">01261</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:SequenceSite rdf:about="SeqSite_256">
+ <bp:sequencePosition rdf:datatype = "xsd:int">256</bp:sequencePosition>
+ <bp:positionStatus rdf:datatype = "xsd:string">EQUAL</bp:positionStatus>
+</bp:SequenceSite>
+
+<bp:Evidence rdf:about="Evidence_InVivo">
+ <bp:evidenceCode rdf:resource="EvidenceCodeVocab_2" />
+</bp:Evidence>
+
+<bp:Evidence rdf:about="Evidence_InVitro">
+ <bp:evidenceCode rdf:resource="EvidenceCodeVocab_1" />
+</bp:Evidence>
+
+<bp:UnificationXref rdf:about="HPRD_ANGPTL1">
+ <bp:id rdf:datatype = "xsd:string">04851</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:RelationshipXref rdf:about="Entrez_DOK2">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">9046</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:PublicationXref rdf:about="Pubmed_10521483">
+ <bp:id rdf:datatype = "xsd:string">10521483</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:Protein rdf:about="SHC1__MI__0217__9606__Cytoplasm__EMPTYRIGHT">
+ <bp:entityReference rdf:resource="ProteinRef_SHC1__9606" />
+ <bp:displayName rdf:datatype = "xsd:string">SHC1</bp:displayName>
+ <bp:feature rdf:resource="ModificationEmptyFeature_MI_0217" />
+ <bp:xref rdf:resource="PTM_ID_MI_0217" />
+ <bp:cellularLocation rdf:resource="CellularLocation_Cytoplasm" />
+ <bp:name rdf:datatype = "xsd:string">SHC1__MI__0217</bp:name>
+</bp:Protein>
+
+<bp:SequenceSite rdf:about="EmptySeqSite">
+</bp:SequenceSite>
+
+<bp:BiochemicalReaction rdf:about="BiochemReaction_360__">
+ <bp:left rdf:resource="MAP2K2__9606__" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:right rdf:resource="MAP2K2__MI__0217__9606____EMPTYRIGHT" />
+ <bp:interactionType rdf:resource="Interaction_Phosphorylation" />
+</bp:BiochemicalReaction>
+
+<bp:UnificationXref rdf:about="UniProt_GRB14">
+ <bp:id rdf:datatype = "xsd:string">Q14449</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:ProteinReference rdf:about="ProteinRef_PAK1__9606">
+ <bp:xref rdf:resource="UniProt_PAK1" />
+ <bp:xref rdf:resource="HPRD_PAK1" />
+ <bp:xref rdf:resource="OMIM_PAK1" />
+ <bp:xref rdf:resource="Entrez_PAK1" />
+ <bp:sequence rdf:datatype = "xsd:string">MSNNGLDIQDKPPAPPMRNTSTMIGVGSKDAGTLNHGSKPLPPNPEEKKKKDRFYRSILPGDKTNKKKEKERPEISLPSDFEHTIHVGFDAVTGEFTGMPEQWARLLQTSNITKSEQKKNPQAVLDVLEFYNSKKTSNSQKYMSFTDKSAEDYNSSNALNVKAVSETPAVPPVSEDEDDDDDDATPPPVIAPRPEHTKSVYTRSVIEPLPVTPTRDVATSPISPTENNTTPPDALTRNTEKQKKKPKMSDEEILEKLRSIVSVGDPKKKYTRFEKIGQGASGTVYTAMDVATGQEVAIKQMNLQQQPKKELIINEILVMRENKNPNIVNYLDSYLVGDELWVVMEYLAGGSLTDVVTETCMDEGQIAAVCRECLQALEFLHSNQVIHRDIKSDNILLGMDGSVKLTDFGFCAQITPEQSKRSTMVGTPYWMAPEVVTRKAYGPKVDIWSLGIMAIEMIEGEPPYLNENPLRALYLIATNGTPELQNPEKLSAIFRDFLNRCLEMDVEKRGSAKELLQVRKLRFQVFSNFSMIAASIPEDCQAPLQPHSTDCCS</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">PAK1</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:entityFeature rdf:resource="S402" />
+ <bp:entityFeature rdf:resource="S991" />
+ <bp:entityFeature rdf:resource="T324" />
+ <bp:name rdf:datatype = "xsd:string">Alpha PAK</bp:name>
+ <bp:name rdf:datatype = "xsd:string">EC 2.7.1.37</bp:name>
+ <bp:name rdf:datatype = "xsd:string">p21 activated kinase 1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">p21/CDC42/RAC1 activated kinase 1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">P65 PAK</bp:name>
+ <bp:name rdf:datatype = "xsd:string">PAK</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Serine/threonine kinase PAK 1</bp:name>
+</bp:ProteinReference>
+
+<bp:RelationshipXref rdf:about="Entrez_ITGB1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">3688</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:UnificationXref rdf:about="HPRD_MAPK14">
+ <bp:id rdf:datatype = "xsd:string">02619</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:ProteinReference rdf:about="ProteinRef_MAPK14__9606">
+ <bp:xref rdf:resource="OMIM_MAPK14" />
+ <bp:xref rdf:resource="HPRD_MAPK14" />
+ <bp:xref rdf:resource="Entrez_MAPK14" />
+ <bp:xref rdf:resource="UniProt_MAPK14" />
+ <bp:sequence rdf:datatype = "xsd:string">MSQERPTFYRQELNKTIWEVPERYQNLSPVGSGAYGSVCAAFDTKTGLRVAVKKLSRPFQSIIHAKRTYRELRLLKHMKHENVIGLLDVFTPARSLEEFNDVYLVTHLMGADLNNIVKCQKLTDDHVQFLIYQILRGLKYIHSADIIHRDLKPSNLAVNEDCELKILDFGLARHTDDEMTGYVATRWYRAPEIMLNWMHYNQTVDIWSVGCIMAELLTGRTLFPGTDHIDQLKLILRLVGTPGAELLKKISSESARNYIQSLTQMPKMNFANVFIGANPLAVDLLEKMLVLDSDKRITAAQALAHAYFAQYHDPDDEPVADPYDQSFESRDLLIDEWKSLTYDEVISFVPPPLDQEEMES</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">MAPK14</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">Cytokine suppressive antiinflammatory drug binding protein 2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Cytokine suppressive antiinflammatory drug binding protein 1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">SAPK2A</bp:name>
+ <bp:name rdf:datatype = "xsd:string">p38 MAP kinase</bp:name>
+ <bp:name rdf:datatype = "xsd:string">RK</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Mitogen activated protein kinase 14</bp:name>
+ <bp:name rdf:datatype = "xsd:string">mitogen activated protein kinase 14 isoform 1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Mitogen activated protein kinase 14 isoform 4</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Mitogen activated protein kinase 14 isoform 3</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Mitogen activated protein kinase 14 isoform 2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">p38</bp:name>
+ <bp:name rdf:datatype = "xsd:string">CSAID binding protein 1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">CSAID binding protein 2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Mxi2</bp:name>
+ <bp:name rdf:datatype = "xsd:string">p38 alpha</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Stress activated protein kinase 2A</bp:name>
+ <bp:name rdf:datatype = "xsd:string">CSBP2</bp:name>
+</bp:ProteinReference>
+
+<bp:MolecularInteraction rdf:about="Molecular_Interaction_Plasmamembrane__306">
+ <bp:xref rdf:resource="Pubmed_10521483" />
+ <bp:participant rdf:resource="TEK__9606__Plasmamembrane" />
+ <bp:participant rdf:resource="Plasmamembrane__Complex__306" />
+ <bp:evidence rdf:resource="Evidence_InVitro" />
+</bp:MolecularInteraction>
+
+<bp:Protein rdf:about="PIK3R2__9606__Plasmamembrane">
+ <bp:displayName rdf:datatype = "xsd:string">PIK3R2</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">PIK3R2__9606</bp:name>
+</bp:Protein>
+
+<bp:MolecularInteraction rdf:about="Molecular_Interaction_Plasmamembrane__308">
+ <bp:xref rdf:resource="Pubmed_11080633" />
+ <bp:participant rdf:resource="TEK__10090__Plasmamembrane" />
+ <bp:evidence rdf:resource="Evidence_InVitro" />
+</bp:MolecularInteraction>
+
+<bp:UnificationXref rdf:about="HPRD_MAP2K2">
+ <bp:id rdf:datatype = "xsd:string">03164</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:RelationshipXref rdf:about="OMIM_MAP2K1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">176872</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:RelationshipXref rdf:about="OMIM_MAP2K2">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">601263</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:UnificationXref rdf:about="HPRD_MAP2K1">
+ <bp:id rdf:datatype = "xsd:string">01469</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:UnificationXref rdf:about="UniProt_ANGPTL1">
+ <bp:id rdf:datatype = "xsd:string">O95841</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:UnificationXref rdf:about="UniProt_FES">
+ <bp:id rdf:datatype = "xsd:string">P07332</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:UnificationXref rdf:about="UniProt_RHOA">
+ <bp:id rdf:datatype = "xsd:string">P61586</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:BiochemicalReaction rdf:about="BiochemReaction_3416__">
+ <bp:left rdf:resource="NCK1__9606__" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:right rdf:resource="NCK1__MI__0217__9606____EMPTYRIGHT" />
+ <bp:interactionType rdf:resource="Interaction_Phosphorylation" />
+</bp:BiochemicalReaction>
+
+<bp:RelationshipXref rdf:about="OMIM_GRB14">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">601524</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:MolecularInteraction rdf:about="Molecular_Interaction_Plasmamembrane__305">
+ <bp:xref rdf:resource="Pubmed_7478529" />
+ <bp:xref rdf:resource="Pubmed_10521483" />
+ <bp:participant rdf:resource="GRB2__9606__Plasmamembrane" />
+ <bp:participant rdf:resource="TEK__9606__Plasmamembrane" />
+ <bp:evidence rdf:resource="Evidence_InVitro" />
+</bp:MolecularInteraction>
+
+<bp:PublicationXref rdf:about="Pubmed_12609966">
+ <bp:id rdf:datatype = "xsd:string">12609966</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:Catalysis rdf:about="Catalysis_291__Plasmamembrane">
+ <bp:xref rdf:resource="Pubmed_9723709" />
+ <bp:xref rdf:resource="Pubmed_10521483" />
+ <bp:xref rdf:resource="Pubmed_11513602" />
+ <bp:xref rdf:resource="Pubmed_12665569" />
+ <bp:xref rdf:resource="Pubmed_11801735" />
+ <bp:xref rdf:resource="Pubmed_11080633" />
+ <bp:controlled rdf:resource="BiochemReaction_291__Plasmamembrane" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+ <bp:controller rdf:resource="TEK__9606__Plasmamembrane" />
+</bp:Catalysis>
+
+<bp:CellularLocationVocabulary rdf:about="CellularLocation_Extracellular">
+ <bp:xref rdf:resource="urn:biopax:UnificationXref:GO_GO%3A0005576" />
+ <bp:term rdf:datatype = "xsd:string">Extracellular</bp:term>
+</bp:CellularLocationVocabulary>
+
+<bp:Protein rdf:about="ANGPT4__9606__Extracellular">
+ <bp:displayName rdf:datatype = "xsd:string">ANGPT4</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">ANGPT4__9606</bp:name>
+</bp:Protein>
+
+<bp:ModificationFeature rdf:about="T42">
+ <bp:featureLocation rdf:resource="SeqSite_24" />
+ <bp:modificationType rdf:resource="SeqModVocab_T__MI_0217" />
+</bp:ModificationFeature>
+
+<bp:Protein rdf:about="PXN__40674__">
+ <bp:displayName rdf:datatype = "xsd:string">PXN</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">PXN__40674</bp:name>
+</bp:Protein>
+
+<bp:RelationshipXref rdf:about="OMIM_PXN">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">602505</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:BiochemicalReaction rdf:about="BiochemReaction_356__">
+ <bp:left rdf:resource="RAF1__9606__" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:right rdf:resource="RAF1__MI__0217__9606____EMPTYRIGHT" />
+ <bp:interactionType rdf:resource="Interaction_Phosphorylation" />
+</bp:BiochemicalReaction>
+
+<bp:PublicationXref rdf:about="Pubmed_11689432">
+ <bp:id rdf:datatype = "xsd:string">11689432</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:Catalysis rdf:about="Catalysis_334__">
+ <bp:xref rdf:resource="Pubmed_15132996" />
+ <bp:xref rdf:resource="Pubmed_12824293" />
+ <bp:xref rdf:resource="Pubmed_16049136" />
+ <bp:xref rdf:resource="Pubmed_10734041" />
+ <bp:xref rdf:resource="Pubmed_12074640" />
+ <bp:xref rdf:resource="Pubmed_14726409" />
+ <bp:xref rdf:resource="Pubmed_11002428" />
+ <bp:xref rdf:resource="Pubmed_15284220" />
+ <bp:controlled rdf:resource="BiochemReaction_334__" />
+ <bp:evidence rdf:resource="Evidence_InVitro" />
+</bp:Catalysis>
+
+<bp:RelationshipXref rdf:about="Entrez_RASA1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">5921</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:Protein rdf:about="FOXO1__9913__Nucleus">
+ <bp:displayName rdf:datatype = "xsd:string">FOXO1</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">FOXO1__9913</bp:name>
+</bp:Protein>
+
+<bp:MolecularInteraction rdf:about="Molecular_Interaction_Plasmamembrane__324">
+ <bp:xref rdf:resource="Pubmed_11689432" />
+ <bp:xref rdf:resource="Pubmed_10521483" />
+ <bp:xref rdf:resource="Pubmed_12665569" />
+ <bp:xref rdf:resource="Pubmed_9764820" />
+ <bp:participant rdf:resource="DOK2__9606__Plasmamembrane" />
+ <bp:participant rdf:resource="TEK__9606__Plasmamembrane" />
+ <bp:evidence rdf:resource="Evidence_InVitro" />
+</bp:MolecularInteraction>
+
+<bp:Protein rdf:about="MAPK14__9606__">
+ <bp:displayName rdf:datatype = "xsd:string">MAPK14</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">MAPK14__9606</bp:name>
+</bp:Protein>
+
+<bp:UnificationXref rdf:about="HPRD_FES">
+ <bp:id rdf:datatype = "xsd:string">01814</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:RelationshipXref rdf:about="OMIM_PIK3R1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">171833</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:RelationshipXref rdf:about="OMIM_PIK3R2">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">603157</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:BiochemicalReaction rdf:about="BiochemReaction_393__">
+ <bp:left rdf:resource="NOS3__9606__" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:right rdf:resource="NOS3__Phosphorylation__S1177__9606__" />
+ <bp:interactionType rdf:resource="Interaction_Phosphorylation" />
+</bp:BiochemicalReaction>
+
+<bp:BiochemicalReaction rdf:about="BiochemReaction_362__Cytoplasm">
+ <bp:left rdf:resource="FOXO1__9913__Cytoplasm" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:right rdf:resource="FOXO1__Phosphorylation__T__S24__256" />
+ <bp:interactionType rdf:resource="Interaction_Phosphorylation" />
+</bp:BiochemicalReaction>
+
+<bp:UnificationXref rdf:about="HPRD_RAF1">
+ <bp:id rdf:datatype = "xsd:string">01265</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:UnificationXref rdf:about="UniProt_STAT5A">
+ <bp:id rdf:datatype = "xsd:string">P42229</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:UnificationXref rdf:about="UniProt_STAT5B">
+ <bp:id rdf:datatype = "xsd:string">P51692</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:Protein rdf:about="PTPN11__9606__Cytoplasm">
+ <bp:displayName rdf:datatype = "xsd:string">PTPN11</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">PTPN11__9606</bp:name>
+</bp:Protein>
+
+<bp:UnificationXref rdf:about="UniProt_ELK1">
+ <bp:id rdf:datatype = "xsd:string">P19419</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:Protein rdf:about="ANGPT4__10090__Extracellular">
+ <bp:displayName rdf:datatype = "xsd:string">ANGPT4</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">ANGPT4__10090</bp:name>
+</bp:Protein>
+
+<bp:BiochemicalReaction rdf:about="BiochemReaction_365__">
+ <bp:left rdf:resource="PTK2__9606__" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:right rdf:resource="PTK2__MI__0217__9606____EMPTYRIGHT" />
+ <bp:interactionType rdf:resource="Interaction_Phosphorylation" />
+</bp:BiochemicalReaction>
+
+<bp:RelationshipXref rdf:about="OMIM_DOK2">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">604997</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:RelationshipXref rdf:about="OMIM_ANGPT2">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">601922</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:RelationshipXref rdf:about="OMIM_ANGPT1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">601667</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:RelationshipXref rdf:about="OMIM_ANGPT4">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">603705</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:UnificationXref rdf:about="HPRD_PTPN11">
+ <bp:id rdf:datatype = "xsd:string">01470</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:MolecularInteraction rdf:about="Molecular_Interaction_Cytoplasm__6052">
+ <bp:xref rdf:resource="Pubmed_9764820" />
+ <bp:participant rdf:resource="DOK2__9606__Cytoplasm" />
+ <bp:participant rdf:resource="RASA1__9606__Cytoplasm" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:MolecularInteraction>
+
+<bp:MolecularInteraction rdf:about="Molecular_Interaction_Cytoplasm__6051">
+ <bp:xref rdf:resource="Pubmed_11689432" />
+ <bp:participant rdf:resource="Cytoplasm__Complex__6051" />
+ <bp:participant rdf:resource="DOK2__9606__Cytoplasm" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:MolecularInteraction>
+
+<bp:Protein rdf:about="RHOA__9606__Plasmamembrane">
+ <bp:displayName rdf:datatype = "xsd:string">RHOA</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">RHOA__9606</bp:name>
+</bp:Protein>
+
+<bp:SequenceModificationVocabulary rdf:about="SeqModVocab_T__MI_0217">
+ <bp:term rdf:datatype = "xsd:string">O-phospho-threonine</bp:term>
+</bp:SequenceModificationVocabulary>
+
+<bp:Catalysis rdf:about="Catalysis_294__Cytoplasm">
+ <bp:xref rdf:resource="Pubmed_11689432" />
+ <bp:xref rdf:resource="Pubmed_12665569" />
+ <bp:xref rdf:resource="Pubmed_9764820" />
+ <bp:controlled rdf:resource="BiochemReaction_294__Cytoplasm" />
+ <bp:evidence rdf:resource="Evidence_InVitro" />
+ <bp:controller rdf:resource="TEK__9606__Cytoplasm" />
+</bp:Catalysis>
+
+<bp:ModificationFeature rdf:about="S652">
+ <bp:featureLocation rdf:resource="SeqSite_256" />
+ <bp:modificationType rdf:resource="SeqModVocab_S__MI_0217" />
+</bp:ModificationFeature>
+
+<bp:UnificationXref rdf:about="urn:biopax:UnificationXref:MI_MI%3A0251">
+ <bp:id rdf:datatype = "xsd:string">MI:0251</bp:id>
+ <bp:db rdf:datatype = "xsd:string">MI</bp:db>
+</bp:UnificationXref>
+
+<bp:Protein rdf:about="ANGPT2__10090__Extracellular">
+ <bp:displayName rdf:datatype = "xsd:string">ANGPT2</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">ANGPT2__10090</bp:name>
+</bp:Protein>
+
+<bp:SequenceSite rdf:about="SeqSite_204">
+ <bp:sequencePosition rdf:datatype = "xsd:int">204</bp:sequencePosition>
+ <bp:positionStatus rdf:datatype = "xsd:string">EQUAL</bp:positionStatus>
+</bp:SequenceSite>
+
+<bp:RelationshipXref rdf:about="Entrez_ANGPTL1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">9068</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:CellularLocationVocabulary rdf:about="CellularLocation_Plasma_Membrane">
+ <bp:xref rdf:resource="urn:biopax:UnificationXref:GO_GO%3A0005886" />
+ <bp:term rdf:datatype = "xsd:string">Plasma Membrane</bp:term>
+</bp:CellularLocationVocabulary>
+
+<bp:UnificationXref rdf:about="HPRD_RAC1">
+ <bp:id rdf:datatype = "xsd:string">03627</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:ProteinReference rdf:about="ProteinRef_ANGPT1__10090">
+ <bp:xref rdf:resource="HPRD_ANGPT1" />
+ <bp:xref rdf:resource="OMIM_ANGPT1" />
+ <bp:xref rdf:resource="UniProt_ANGPT1" />
+ <bp:xref rdf:resource="Entrez_ANGPT1" />
+ <bp:sequence rdf:datatype = "xsd:string">MTVFLSFAFLAAILTHIGCSNQRRSPENSGRRYNRIQHGQCAYTFILPEHDGNCRESTTDQYNTNALQRDAPHVEPDFSSQKLQHLEHVMENYTQWLQKLENYIVENMKSEMAQIQQNAVQNHTATMLEIGTSLLSQTAEQTRKLTDVETQVLNQTSRLEIQLLENSLSTYKLEKQLLQQTNEILKIHEKNSLLEHKILEMEGKHKEELDTLKEEKENLQGLVTRQTYIIQELEKQLNRATTNNSVLQKQQLELMDTVHNLVNLCTKEGVLLKGGKREEEKPFRDCADVYQAGFNKSGIYTIYINNMPEPKKVFCNMDVNGGGWTVIQHREDGSLDFQRGWKEYKMGFGNPSGEYWLGNEFIFAITSQRQYMLRIELMDWEGNRAYSQYDRFHIGNEKQNYRLYLKGHTGTAGKQSSLILHGADFSTKDADNDNCMCKCALMLTGGWWFDACGPSNLNGMFYTAGQNHGKLNGIKWHYFKGPSYSLRSTTMMIRPLDF</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">ANGPT1</bp:displayName>
+ <bp:organism rdf:resource="biosource_10090" />
+ <bp:name rdf:datatype = "xsd:string">Angiopoietin 1 isoform b</bp:name>
+ <bp:name rdf:datatype = "xsd:string">AGPT</bp:name>
+ <bp:name rdf:datatype = "xsd:string">ANG1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">AGP1</bp:name>
+</bp:ProteinReference>
+
+<bp:ProteinReference rdf:about="ProteinRef_RAF1__9606">
+ <bp:xref rdf:resource="OMIM_RAF1" />
+ <bp:xref rdf:resource="Entrez_RAF1" />
+ <bp:xref rdf:resource="UniProt_RAF1" />
+ <bp:xref rdf:resource="HPRD_RAF1" />
+ <bp:sequence rdf:datatype = "xsd:string">MEHIQGAWKTISNGFGFKDAVFDGSSCISPTIVQQFGYQRRASDDGKLTDPSKTSNTIRVFLPNKQRTVVNVRNGMSLHDCLMKALKVRGLQPECCAVFRLLHEHKGKKARLDWNTDAASLIGEELQVDFLDHVPLTTHNFARKTFLKLAFCDICQKFLLNGFRCQTCGYKFHEHCSTKVPTMCVDWSNIRQLLLFPNSTIGDSGVPALPSLTMRRMRESVSRMPVSSQHRYSTPHAFTFNTSSPSSEGSLSQRQRSTSTPNVHMVSTTLPVDSRMIEDAIRSHSESASPSALSSSPNNLSPTGWSQPKTPVPAQRERAPVSGTQEKNKIRPRGQRDSSYYWEIEASEVMLSTRIGSGSFGTVYKGKWHGDVAVKILKVVDPTPEQFQAFRNEVAVLRKTRHVNILLFMGYMTKDNLAIVTQWCEGSSLYKHLHVQETKFQMFQLIDIARQTAQGMDYLHAKNIIHRDMKSNNIFLHEGLTVKIGDFGLATVKSRWSGSQQVEQPTGSVLWMAPEVIRMQDNNPFSFQSDVYSYGIVLYELMTGELPYSHINNRDQIIFMVGRGYASPDLSKLYKNCPKAMKRLVADCVKKVKEERPLFPQILSSIELLQHSLPKINRSASEPSLHRAAHTEDINACTLTTSPRLPVF</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">RAF1</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">Oncogene MIL</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Oncogene RAF1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Transforming replication defective murine retrovirus 3611-MSV</bp:name>
+</bp:ProteinReference>
+
+<bp:UnificationXref rdf:about="UniProt_GRB2">
+ <bp:id rdf:datatype = "xsd:string">P62993</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:MolecularInteraction rdf:about="Molecular_Interaction_Extracellular__424">
+ <bp:xref rdf:resource="Pubmed_15284220" />
+ <bp:participant rdf:resource="ANGPT4__10090__Extracellular" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:MolecularInteraction>
+
+<bp:RelationshipXref rdf:about="Entrez_PTPN11">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">5781</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:UnificationXref rdf:about="HPRD_PAK1">
+ <bp:id rdf:datatype = "xsd:string">03995</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:Protein rdf:about="GRB7__9606__">
+ <bp:displayName rdf:datatype = "xsd:string">GRB7</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">GRB7__9606</bp:name>
+</bp:Protein>
+
+<bp:RelationshipXref rdf:about="OMIM_RASA1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">139150</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:UnificationXref rdf:about="UniProt_GRB7">
+ <bp:id rdf:datatype = "xsd:string">Q14451</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:RelationshipXref rdf:about="Entrez_GRB14">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">2888</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:BiochemicalReaction rdf:about="BiochemReaction_359__">
+ <bp:left rdf:resource="MAP2K1__9606__" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:right rdf:resource="MAP2K1__MI__0217__9606____EMPTYRIGHT" />
+ <bp:interactionType rdf:resource="Interaction_Phosphorylation" />
+</bp:BiochemicalReaction>
+
+<bp:UnificationXref rdf:about="urn:biopax:UnificationXref:GO_GO%3A0005576">
+ <bp:id rdf:datatype = "xsd:string">GO:0005576</bp:id>
+ <bp:db rdf:datatype = "xsd:string">GO</bp:db>
+</bp:UnificationXref>
+
+<bp:MolecularInteraction rdf:about="Molecular_Interaction_Extracellular__423">
+ <bp:xref rdf:resource="Pubmed_15284220" />
+ <bp:participant rdf:resource="ANGPTL1__10090__Extracellular" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:MolecularInteraction>
+
+<bp:Catalysis rdf:about="Catalysis_354__">
+ <bp:xref rdf:resource="Pubmed_15132996" />
+ <bp:xref rdf:resource="Pubmed_12824293" />
+ <bp:xref rdf:resource="Pubmed_16049136" />
+ <bp:xref rdf:resource="Pubmed_14726409" />
+ <bp:controlled rdf:resource="BiochemReaction_354__" />
+ <bp:evidence rdf:resource="Evidence_InVivo" />
+</bp:Catalysis>
+
+<bp:PublicationXref rdf:about="Pubmed_11801735">
+ <bp:id rdf:datatype = "xsd:string">11801735</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:ProteinReference rdf:about="ProteinRef_PXN__40674">
+ <bp:xref rdf:resource="Entrez_PXN" />
+ <bp:xref rdf:resource="OMIM_PXN" />
+ <bp:xref rdf:resource="UniProt_PXN" />
+ <bp:xref rdf:resource="HPRD_PXN" />
+ <bp:sequence rdf:datatype = "xsd:string">MDDLDALLADLESTTSHISKRPVFLSEETPYSYPTGNHTYQEIAVPPPVPPPPSSEALNGTILDPLDQWQPSGSRFIHQQPQSSSPVYGSSAKTSSVSNPQDSVGSPCSRVGEEEHVYSFPNKQKSAEPSPTVMSTSLGSNLSELDRLLLELNAVQHNPPGFPADEANSSPPLPGALSPLYGVPETNSPLGGKAGPLTKEKPKRNGGRGLEDVRPSVESLLDELESSVPSPVPAITVNQGEMSSPQRVTSTQQQTRISASSATRELDELMASLSDFKGSWPLEEVVLLVSISSSVQEGEKYPHPCAARHRTPSLRSPDQPPPCPQFMAQGKTGSSSPPGGPPKPGSQLDSMLGSLQSDLNKLGVATVAKGVCGACKKPIAGQVVTAMGKTWHPEHFVCTHCQEEIGSRNFFERDGQPYCEKDYHNLFSPRCYYCNGPILDKVVTALDRTWHPEHFFCAQCGAFFGPEGFHEKDGKAYCRKDYFDMFAPKCGGCARAILENYISALNTLWHPECFVCRECFTPFVNGSFFEHDGQPYCEVHYHERRGSLCSGCQKPITGRCITAMAKKFHPEHFVCAFCLKQLNKGTFKEQNDKPYCQNCFLKLFC</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">PXN</bp:displayName>
+ <bp:organism rdf:resource="biosource_40674" />
+</bp:ProteinReference>
+
+<bp:Protein rdf:about="TEK__9606__Plasmamembrane">
+ <bp:displayName rdf:datatype = "xsd:string">TEK</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">TEK__9606</bp:name>
+</bp:Protein>
+
+<bp:RelationshipXref rdf:about="Entrez_ANGPT1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">284</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:RelationshipXref rdf:about="Entrez_ANGPT2">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">285</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:Protein rdf:about="AKT1__9606__">
+ <bp:displayName rdf:datatype = "xsd:string">AKT1</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">AKT1__9606</bp:name>
+</bp:Protein>
+
+<bp:BiochemicalReaction rdf:about="BiochemReaction_355__">
+ <bp:left rdf:resource="MAPK1__9606__" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:right rdf:resource="MAPK1__MI__0217__9606____EMPTYRIGHT" />
+ <bp:interactionType rdf:resource="Interaction_Phosphorylation" />
+</bp:BiochemicalReaction>
+
+<bp:RelationshipXref rdf:about="Entrez_ANGPT4">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">51378</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:UnificationXref rdf:about="UniProt_PTPN11">
+ <bp:id rdf:datatype = "xsd:string">Q06124</bp:id>
+ <bp:db rdf:datatype = "xsd:string">UniProt</bp:db>
+</bp:UnificationXref>
+
+<bp:BiochemicalReaction rdf:about="BiochemReaction_357__">
+ <bp:left rdf:resource="ELK1__9606__" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:right rdf:resource="ELK1__MI__0217__9606____EMPTYRIGHT" />
+ <bp:interactionType rdf:resource="Interaction_Phosphorylation" />
+</bp:BiochemicalReaction>
+
+<bp:UnificationXref rdf:about="HPRD_MAPK3">
+ <bp:id rdf:datatype = "xsd:string">03479</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:ProteinReference rdf:about="ProteinRef_RASA1__9606">
+ <bp:xref rdf:resource="Entrez_RASA1" />
+ <bp:xref rdf:resource="HPRD_RASA1" />
+ <bp:xref rdf:resource="UniProt_RASA1" />
+ <bp:xref rdf:resource="OMIM_RASA1" />
+ <bp:sequence rdf:datatype = "xsd:string">MMAAEAGSEEGGPVTAGAGGGGAAAGSSAYPAVCRVKIPAALPVAAAPYPGLVETGVAGTLGGGAALGSEFLGAGSVAGALGGAGLTGGGTAAGVAGAAAGVAGAAVAGPSGDMALTKLPTSLLAETLGPGGGFPPLPPPPYLPPLGAGLGTVDEGDSLDGPEYEEEEVAIPLTAPPTNQWYHGKLDRTIAEERLRQAGKSGSYLIRESDRRPGSFVLSFLSQMNVVNHFRIIAMCGDYYIGGRRFSSLSDLIGYYSHVSCLLKGEKLLYPVAPPEPVEDRRRVRAILPYTKVPDTDEISFLKGDMFIVHNELEDGWMWVTNLRTDEQGLIVEDLVEEVGREEDPHEGKIWFHGKISKQEAYNLLMTVGQVCSFLVRPSDNTPGDYSLYFRTNENIQRFKICPTPNNQFMMGGRYYNSIGDIIDHYRKEQIVEGYYLKEPVPMQDQEQVLNDTVDGKEIYNTIRRKTKDAFYKNIVKKGYLLKKGKGKRWKNLYFILEGSDAQLIYFESEKRATKPKGLIDLSVCSVYVVHDSLFGRPNCFQIVVQHFSEEHYIFYFAGETPEQAEDWMKGLQAFCNLRKSSPGTSNKRLRQVSSLVLHIEEAHKLPVKHFTNPYCNIYLNSVQVAKTHAREGQNPVWSEEFVFDDLPPDINRFEITLSNKTKKSKDPDILFMRCQLSRLQKGHATDEWFLLSSHIPLKGIEPGSLRVRARYSMEKIMPEEEYSEFKELILQKELHVVYALSHVCGQDRTLLASILLRIFLHEKLESLLLCTLNDREISMEDEATTLFRATTLASTLMEQYMKATATQFVHHALKDSILKIMESKQSCELSPSKLEKNEDVNTNLTHLLNILSELVEKIFMASEILPPTLRYIYGCLQKSVQHKWPTNTTMRTRVVSGFVFLRLICPAILNPRMFNIISDSPSPIAARTLILVAKSVQNLANLVEFGAKEPYMEGVNPFIKSNKHRMIMFLDELGNVPELPDTTEHSRTDLSRDLAALHEICVAHSDELRTLSNERGAQQHVLKKLLAITELLQQKQNQYTKTNDVR</bp:sequence>
+ <bp:displayName rdf:datatype = "xsd:string">RASA1</bp:displayName>
+ <bp:organism rdf:resource="biosource_9606" />
+ <bp:name rdf:datatype = "xsd:string">GTPase activating protein</bp:name>
+ <bp:name rdf:datatype = "xsd:string">RAS p21 protein activator 1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">p120GAP</bp:name>
+ <bp:name rdf:datatype = "xsd:string">GAP</bp:name>
+ <bp:name rdf:datatype = "xsd:string">RAS p21 protein activator 1 isoform 1</bp:name>
+ <bp:name rdf:datatype = "xsd:string">Guanosine triphosphatase activating protein</bp:name>
+ <bp:name rdf:datatype = "xsd:string">RAS p21 protein activator 1 isoform 2</bp:name>
+</bp:ProteinReference>
+
+<bp:PublicationXref rdf:about="Pubmed_12824293">
+ <bp:id rdf:datatype = "xsd:string">12824293</bp:id>
+ <bp:db rdf:datatype = "xsd:string">PubMed</bp:db>
+</bp:PublicationXref>
+
+<bp:UnificationXref rdf:about="HPRD_MAPK1">
+ <bp:id rdf:datatype = "xsd:string">01496</bp:id>
+ <bp:db rdf:datatype = "xsd:string">HPRD</bp:db>
+</bp:UnificationXref>
+
+<bp:RelationshipXref rdf:about="OMIM_STAT5A">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">601511</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:RelationshipXref rdf:about="OMIM_MAPK3">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">601795</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:RelationshipXref rdf:about="Entrez_NOS3">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">4846</bp:id>
+ <bp:db rdf:datatype = "xsd:string">Entrez Gene</bp:db>
+</bp:RelationshipXref>
+
+<bp:RelationshipXref rdf:about="OMIM_MAPK1">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">176948</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:RelationshipXref rdf:about="OMIM_STAT5B">
+ <bp:relationshipType rdf:resource="RelType_1" />
+ <bp:id rdf:datatype = "xsd:string">604260</bp:id>
+ <bp:db rdf:datatype = "xsd:string">OMIM</bp:db>
+</bp:RelationshipXref>
+
+<bp:BiochemicalReaction rdf:about="BiochemReaction_293__Cytoplasm">
+ <bp:left rdf:resource="SHC1__9606__Cytoplasm" />
+ <bp:conversionDirection rdf:datatype = "xsd:string">LEFT_TO_RIGHT</bp:conversionDirection>
+ <bp:right rdf:resource="SHC1__MI__0217__9606__Cytoplasm__EMPTYRIGHT" />
+ <bp:interactionType rdf:resource="Interaction_Phosphorylation" />
+</bp:BiochemicalReaction>
+
+<bp:Protein rdf:about="TEK__9606__">
+ <bp:displayName rdf:datatype = "xsd:string">TEK</bp:displayName>
+ <bp:name rdf:datatype = "xsd:string">TEK__9606</bp:name>
+</bp:Protein>
+</rdf:RDF>
