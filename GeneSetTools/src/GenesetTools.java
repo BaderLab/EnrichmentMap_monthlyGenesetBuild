@@ -187,7 +187,7 @@ public class GenesetTools {
 		        {public void run(String[] argv) throws IOException{compare(Arrays.copyOfRange(argv,1,argv.length));} },
         createGo("Species Branch File", 3)
                 {public void run(String[] argv) throws IOException,SQLException{createGo(Arrays.copyOfRange(argv,1,argv.length));} },
-        toGSEA("owl_filename outfile id speciescheck\t\t\t convert biopax file to gmt file",4)
+        toGSEA("owl_filename outfile id speciescheck\t\t\t convert biopax file to gmt file",5)
                 {public void run(String[] argv) throws IOException{toGSEA(Arrays.copyOfRange(argv,1,argv.length));} },
         bulk("owldir outdir id speciescheck\t\t\t converts all biopax files in a directory to gmt files",4)
                 { public void run(String[] argv) throws IOException{bulk(Arrays.copyOfRange(argv,1,argv.length));} },

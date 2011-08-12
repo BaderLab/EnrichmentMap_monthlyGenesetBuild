@@ -53,6 +53,9 @@ public class GSEAConverter implements Visitor {
      @Option(name = "--id", usage = "type of id grab from the biopax file", required = true)
     private String id;
 
+    @Option(name = "--source", usage = "name of the source, if it is not encoded in biopax file ability for the user to specify it")
+    private String source;
+
     @Option(name = "--speciescheck", usage = "TRUE/FALSE - check that all ids are from one species", required = true)
     private String speciescheck;
 
@@ -66,13 +69,13 @@ public class GSEAConverter implements Visitor {
 	Traverser traverser;
     private int proteinref_count = 0;
 
-    public static String DBSOURCE_SEPARATOR = "*";
+    public static String DBSOURCE_SEPARATOR = "?";
 
 	/**
 	 * Constructor.
 	 */
 	public GSEAConverter() {
-		this("", true);
+		this("", true, "");
 	}
 
     /**
@@ -91,6 +94,14 @@ public class GSEAConverter implements Visitor {
         this.speciescheck = speciescheck;
     }
 
+    public GSEAConverter(String owl_filename, String outFilename, String id, String source, String speciescheck) {
+        this.owl_filename = owl_filename;
+        OutFilename = outFilename;
+        this.id = id;
+        this.source = source;
+        this.speciescheck = speciescheck;
+    }
+
     /**
 	 * Constructor.
 	 *
@@ -100,8 +111,9 @@ public class GSEAConverter implements Visitor {
 	 * @param crossSpeciesCheck - if true, enforces no cross species participants in output
 	 *
 	 */
-	public GSEAConverter(String database, boolean crossSpeciesCheck) {
-		this.database = database;
+	public GSEAConverter(String database, boolean crossSpeciesCheck, String source) {
+		this.source = source;
+        this.database = database;
     	this.crossSpeciesCheck = crossSpeciesCheck;
     	this.traverser = new Traverser(SimpleEditorMap.L3, this);
 	}
@@ -109,7 +121,7 @@ public class GSEAConverter implements Visitor {
     public void toGSEA() throws IOException{
         SimpleIOHandler io = new SimpleIOHandler();
         Model model = io.convertFromOWL(new FileInputStream(owl_filename));
-        (new GSEAConverter(id, new Boolean(speciescheck))).writeToGSEA(model, new FileOutputStream(OutFilename));
+        (new GSEAConverter(id, new Boolean(speciescheck),source)).writeToGSEA(model, new FileOutputStream(OutFilename));
     }
 
 	/**
@@ -203,7 +215,14 @@ public class GSEAConverter implements Visitor {
 		toReturn.setTaxID(taxID);
 		// data source
 		String dataSource = getDataSource(aPathway.getDataSource());
-		dataSource = (dataSource == null) ? "N/A" : dataSource;
+        if(dataSource == null || dataSource.equals("")){
+            if (source != null || !source.equals(""))
+                dataSource = source;
+            else
+                dataSource = "N/A";
+        }
+
+		//dataSource = (dataSource == null) ? "N/A" : dataSource;
 		//toReturn.setDataSource(dataSource);
 
         //If there is an ID available for this pathway we want to use the pathway ID as
@@ -240,7 +259,7 @@ public class GSEAConverter implements Visitor {
             pathwayID = dataSource + DBSOURCE_SEPARATOR + tempID;
         }
 
-        name = (pathwayID.equalsIgnoreCase(dataSource)) ? name : pathwayID;
+        name = (pathwayID.equalsIgnoreCase(dataSource)) ? dataSource + DBSOURCE_SEPARATOR + name : pathwayID;
         toReturn.setName(name);
 
 		// genes

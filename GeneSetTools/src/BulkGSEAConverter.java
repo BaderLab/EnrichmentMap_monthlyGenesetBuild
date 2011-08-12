@@ -56,7 +56,7 @@ public class BulkGSEAConverter {
                 }
             }
         }
-
+/*
         //create all the GO subsets
         //human - mf
         current_outfilename = outdir.getAbsolutePath() + File.separator +"GOMF_human_symbol.gmt";
@@ -134,6 +134,6 @@ public class BulkGSEAConverter {
         //convert symbols to entrez gene ids
         translator = new GeneSetTranslator(current_outfilename,10090, "symbol");
         translator.translate();
-
+*/
     }
 }
