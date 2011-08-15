@@ -1,12 +1,6 @@
 
-import org.biopax.paxtools.io.SimpleIOHandler;
-import org.biopax.paxtools.io.gsea.*;
-import org.biopax.paxtools.model.Model;
-import org.json.JSONException;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
-import org.kohsuke.args4j.Option;
-import synergizer.SynergizerClient;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -116,7 +110,7 @@ public class GenesetTools {
     public static void toGSEA(String[] argv) throws IOException
     {
 
-        GSEAConverter converter = new GSEAConverter();
+        Biopax2GMT converter = new Biopax2GMT();
         CmdLineParser parser = new CmdLineParser(converter);
         try {
            parser.parseArgument(argv);

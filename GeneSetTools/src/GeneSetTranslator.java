@@ -1,4 +1,5 @@
 import com.sun.org.apache.xalan.internal.xsltc.compiler.Template;
+import com.sun.org.apache.xpath.internal.FoundIndex;
 import org.json.JSONException;
 import org.kohsuke.args4j.Option;
 import synergizer.SynergizerClient;
@@ -146,21 +147,17 @@ public class GeneSetTranslator {
 
 
         System.out.println("Querying Synergizer...");
-        int count = 0;
+
+        //to slow to query synergizer for each geneset.  We need to query synergizer once for each id conversion
         //Go through each geneset and translate the ids.
+        Set GeneQuerySet = new HashSet<String>();
          for(Iterator k = genesets.keySet().iterator(); k.hasNext(); ){
-
-             count++;
-
-            String geneset_name = k.next().toString();
+         String geneset_name = k.next().toString();
             GeneSet current_set =  genesets.get(geneset_name);
-            if(count%10 == 0)
-                System.out.println("Queried " + count + " genesets.");
 
             //get the genes in this geneset
             HashSet<Integer> geneset_genes = current_set.getGenes();
 
-            Set GeneQuerySet = new HashSet<String>();
 
             for(Iterator j = geneset_genes.iterator();j.hasNext();){
                 //get corresponding Gene from hash key
@@ -170,9 +167,20 @@ public class GeneSetTranslator {
                     GeneQuerySet.add(current_id);
                 }
             }
+         }
+
+        //convert all the identifiers
+        HashMap<String, Set<String>> translations_id1 = convert(GeneQuerySet,conversions_id1, unfoundIds_id1,logs_id1);
+        HashMap<String, Set<String>> translations_id2 = convert(GeneQuerySet,conversions_id2, unfoundIds_id2,logs_id2);
+
+        //Go through each geneset and translate the ids.
+         for(Iterator k = genesets.keySet().iterator(); k.hasNext(); ){
+
+            String geneset_name = k.next().toString();
+            GeneSet current_set =  genesets.get(geneset_name);
 
             //convert this geneset to id1
-            HashSet<String> new_genes_id1 = convert(current_set,GeneQuerySet,conversions_id1, unfoundIds_id1,logs_id1);
+            HashSet<String> new_genes_id1 = convertGeneSet(current_set,translations_id1,hash2gene,unfoundIds_id1,logs_id1);
             String[] new_genes_string_id1 = new String[new_genes_id1.size()];
             new_genes_id1.toArray(new_genes_string_id1);
 
@@ -182,7 +190,7 @@ public class GeneSetTranslator {
             translated_genesets_id1.put(new_set_id1.getName(), new_set_id1);
 
             //convert this geneset to id12
-            HashSet<String> new_genes_id2 = convert(current_set,GeneQuerySet,conversions_id2, unfoundIds_id2,logs_id2);
+            HashSet<String> new_genes_id2 = convertGeneSet(current_set,translations_id2,hash2gene,unfoundIds_id2,logs_id2);
             String[] new_genes_string_id2 = new String[new_genes_id2.size()];
             new_genes_id2.toArray(new_genes_string_id2);
 
@@ -194,13 +202,13 @@ public class GeneSetTranslator {
          }
 
          //output id1 file
-        outputFiles(translated_genesets_id1,id1,unfoundIds_id1,logs_id1,params);
+        outputFiles(translated_genesets_id1,id1,translations_id1,unfoundIds_id1,logs_id1,params);
 
         //output id2 file
-        outputFiles(translated_genesets_id2,id2,unfoundIds_id2,logs_id2,params);
+        outputFiles(translated_genesets_id2,id2,translations_id2,unfoundIds_id2,logs_id2,params);
     }
 
-    public void outputFiles(HashMap<String, GeneSet> translated_genesets, String id,
+    public void outputFiles(HashMap<String, GeneSet> translated_genesets, String id, HashMap<String,Set<String>> translations,
                             HashSet<String> unfoundIds, HashMap<String, logInfo> logs,GMTParameters params)throws IOException{
         //open output file
         String baseFilename = gmt_filename.split(".gmt")[0];
@@ -224,21 +232,17 @@ public class GeneSetTranslator {
             for(Iterator j = logs.keySet().iterator();j.hasNext();)
                  log.write((logs.get(j.next())).toString());
             //add to the log file the set of all IDs that weren't successfully converted
-            log.write("total Number of genes in file:\t" + params.getHashkey2gene().size() + "\n");
+            log.write("total Number of genes in file:\t" + translations.keySet().size() + "\n");
             log.write("All source Identifiers unable to map\t" + unfoundIds.size() + "\t" + unfoundIds.toString() +"\n");
             log.flush();
             log.close();
         }
     }
 
-    public HashSet<String> convert(GeneSet current_set, Set GeneQuerySet, HashMap<Integer,SynergizerParams> conversions,
+    public HashMap<String, Set<String>> convert(Set GeneQuerySet, HashMap<Integer,SynergizerParams> conversions,
                                    HashSet<String> unfoundIds, HashMap<String, logInfo> logs ) throws IOException{
-        //put in a pause so we don't hit the server too often
-        int temp = 0;
-        for(int r = 0; r<1000000;r++)
-            temp = temp + r;
 
-        HashSet<String> new_genes = new HashSet<String>();
+        HashMap<String,Set<String>> new_genes = new HashMap<String,Set<String>>();
         try{
                  //convert the first ID
                  SynergizerParams syparams_id1 = conversions.get(1);
@@ -253,7 +257,7 @@ public class GeneSetTranslator {
                  for(Iterator b = translation.keySet().iterator();b.hasNext();){
                      String current = (String) b.next();
                      if(current != null && translation.containsKey(current) && translation.get(current) != null)
-                        new_genes.addAll(translation.get(current));
+                        new_genes.put(current, translation.get(current));
                  }
 
 
@@ -284,7 +288,7 @@ public class GeneSetTranslator {
                             for(Iterator b = translation_missing.keySet().iterator();b.hasNext();){
                                 String current = (String) b.next();
                                  if(current != null && translation_missing.containsKey(current) && translation_missing.get(current) != null)
-                                    new_genes.addAll(translation_missing.get(current));
+                                    new_genes.put(current, translation_missing.get(current));
                             }
 
                              //add all the unfound ids to the missing set
@@ -297,11 +301,7 @@ public class GeneSetTranslator {
                          }
                      }
 
-                     logs.put(current_set.getName(), new logInfo(current_set.getName(),GeneQuerySet.size(),
-                             missingQuerySet.size(),
-                             missingQuerySet.toString()) );
-                            //res.foundSourceIDsWithUnfoundTargetIDs().size(),
-                             //res.foundSourceIDsWithUnfoundTargetIDs().toString()));
+
 
                     unfoundIds.addAll(missingQuerySet);
                     //unfoundtargetIds.addAll(res.foundSourceIDsWithUnfoundTargetIDs());
@@ -310,6 +310,37 @@ public class GeneSetTranslator {
 
         }
         return new_genes;
+  }
+
+  public HashSet<String> convertGeneSet(GeneSet current_set, HashMap<String, Set<String>> conversions, HashMap<Integer, String> hash2gene,
+                                   HashSet<String> unfoundIds, HashMap<String, logInfo> logs){
+
+      //go through all the genes in this geneset
+      //and convert them with the conversion map.
+      HashSet<String> convertedGenes = new HashSet<String>();
+      HashSet<String> missingQuerySet = new HashSet<String>();
+
+      Set geneset_genes = current_set.getGenes();
+      for(Iterator j = geneset_genes.iterator();j.hasNext();){
+            //get corresponding Gene from hash key
+            Integer current_key = (Integer)j.next();
+            if(hash2gene.containsKey(current_key)){
+                String current_id = hash2gene.get(current_key);
+                //is this id converted or not
+                if(conversions.containsKey(current_id))
+                    convertedGenes.addAll(conversions.get(current_id));
+                else if(unfoundIds.contains(current_id))
+                    missingQuerySet.add(current_id);
+
+            }
+      }
+
+
+      logs.put(current_set.getName(), new logInfo(current_set.getName(),geneset_genes.size(),
+    missingQuerySet.size(),
+    missingQuerySet.toString()) );
+
+      return convertedGenes;
   }
 
     class logInfo{

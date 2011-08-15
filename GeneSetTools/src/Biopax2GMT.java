@@ -42,7 +42,7 @@ import java.util.*;
  * Note this code assumes that the model has successfully been validated
  * using the BioPAX validator.
  */
-public class GSEAConverter implements Visitor {
+public class Biopax2GMT implements Visitor {
 
     @Option(name = "--biopax", usage = "name of biopax file to convert", required = true)
     private String owl_filename;
@@ -74,7 +74,7 @@ public class GSEAConverter implements Visitor {
 	/**
 	 * Constructor.
 	 */
-	public GSEAConverter() {
+	public Biopax2GMT() {
 		this("", true, "");
 	}
 
@@ -87,14 +87,14 @@ public class GSEAConverter implements Visitor {
      * @param speciescheck
      */
 
-    public GSEAConverter(String owl_filename, String outFilename, String id, String speciescheck) {
+    public Biopax2GMT(String owl_filename, String outFilename, String id, String speciescheck) {
         this.owl_filename = owl_filename;
         OutFilename = outFilename;
         this.id = id;
         this.speciescheck = speciescheck;
     }
 
-    public GSEAConverter(String owl_filename, String outFilename, String id, String source, String speciescheck) {
+    public Biopax2GMT(String owl_filename, String outFilename, String id, String source, String speciescheck) {
         this.owl_filename = owl_filename;
         OutFilename = outFilename;
         this.id = id;
@@ -111,7 +111,7 @@ public class GSEAConverter implements Visitor {
 	 * @param crossSpeciesCheck - if true, enforces no cross species participants in output
 	 *
 	 */
-	public GSEAConverter(String database, boolean crossSpeciesCheck, String source) {
+	public Biopax2GMT(String database, boolean crossSpeciesCheck, String source) {
 		this.source = source;
         this.database = database;
     	this.crossSpeciesCheck = crossSpeciesCheck;
@@ -121,7 +121,7 @@ public class GSEAConverter implements Visitor {
     public void toGSEA() throws IOException{
         SimpleIOHandler io = new SimpleIOHandler();
         Model model = io.convertFromOWL(new FileInputStream(owl_filename));
-        (new GSEAConverter(id, new Boolean(speciescheck),source)).writeToGSEA(model, new FileOutputStream(OutFilename));
+        (new Biopax2GMT(id, new Boolean(speciescheck),source)).writeToGSEA(model, new FileOutputStream(OutFilename));
     }
 
 	/**
