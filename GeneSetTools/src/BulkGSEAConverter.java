@@ -38,7 +38,7 @@ public class BulkGSEAConverter {
 
                     //create gsea file using Uniprot identifiers
                     id="UniProt";
-                    current_outfilename = outdir.getAbsolutePath() + File.separator + children[k].split(".owl")[0] + "_uniprot.gmt";
+                    current_outfilename = outdir.getAbsolutePath() + File.separator + children[k].split(".owl")[0] + "_UniProt.gmt";
                     Biopax2GMT converter = new Biopax2GMT(current_filename,current_outfilename,id,speciescheck);
                     converter.toGSEA();
 

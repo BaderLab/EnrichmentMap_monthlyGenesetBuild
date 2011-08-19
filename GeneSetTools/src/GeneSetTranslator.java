@@ -119,7 +119,7 @@ public class GeneSetTranslator {
         // if symbol convert to entrezgene(id1), uniprot (id2)
         if(oldID.equalsIgnoreCase("entrezgene")){
             //for each conversion place in oldID to newID into hashmap
-            id1="uniprot";
+            id1="UniProt";
             conversions_id1.put(1,new SynergizerParams("ensembl", "entrezgene","uniprot_swissprot_accession"));
             conversions_id1.put(2,new SynergizerParams("ensembl", "entrezgene","uniprot_sptrembl"));
             conversions_id1.put(3,new SynergizerParams("ncbi", "entrezgene","uniprot"));
@@ -140,7 +140,7 @@ public class GeneSetTranslator {
             id1="entrezgene";
             conversions_id1.put(1, new SynergizerParams("ensembl",symboldb, "entrezgene"));
 
-            id2="uniprot";
+            id2="UniProt";
             conversions_id2.put(1, new SynergizerParams("ensembl",symboldb,"uniprot_swissprot_accession"));
             conversions_id2.put(2, new SynergizerParams("ensembl",symboldb,"uniprot_sptrembl_accession"));
         }
@@ -215,8 +215,9 @@ public class GeneSetTranslator {
         String OutFilename = baseFilename + "_" + id + ".gmt";
         File newgsfile = new File(OutFilename);
         BufferedWriter newgs = new BufferedWriter(new FileWriter(newgsfile));
-        //write the file header
-        newgs.write(params.getVersion() + "\t" + params.getSource() + "\t" + "identifiers converted from " + oldID + " to " + id + "using Synergizer" + "\n" );
+        //write the file header -only if there is a header
+        if((params.getVersion() != null) && (params.getSource() != null))
+            newgs.write(params.getVersion() + "\t" + params.getSource() + "\t" + "identifiers converted from " + oldID + " to " + id + "using Synergizer" + "\n" );
         for(Iterator c = translated_genesets.keySet().iterator();c.hasNext();){
             newgs.write(translated_genesets.get(c.next()).toStringNames(params) + "\n");
             newgs.flush();

@@ -79,6 +79,20 @@ public class GenesetTools {
          }
 
 
+    public static void ecoliinteraction(String args[]) throws IOException{
+        EcoliInteractionGMT ecoli = new EcoliInteractionGMT();
+        CmdLineParser parser = new CmdLineParser(ecoli);
+            try {
+               parser.parseArgument(args);
+                } catch (CmdLineException e) {
+                System.err.println(e.getMessage());
+                help();
+                parser.printUsage(System.err);
+                return;
+            }
+            ecoli.create();
+    }
+
 
     /**
      * Given a gmt file, the current species, current identifier type, the desired identifier type
@@ -187,6 +201,8 @@ public class GenesetTools {
                 { public void run(String[] argv) throws IOException{bulk(Arrays.copyOfRange(argv,1,argv.length));} },
         compare2gmt("gmt1 gmt2 outfile dir cmd \t\t\t compares the contents or counts of two gmt files",5)
                 { public void run(String[] argv) throws IOException{compare2gmt(Arrays.copyOfRange(argv,1,argv.length));} },
+        ecoliinteraction("gmt1 outfile dir  \t\t\t creates ecoli interaction gmt",3)
+                { public void run(String[] argv) throws IOException{ecoliinteraction(Arrays.copyOfRange(argv,1,argv.length));} },
         help("\t\t\t\t\t\tprints this screen and exits", Integer.MAX_VALUE)
 		        {public void run(String[] argv) throws IOException{help();} };
 

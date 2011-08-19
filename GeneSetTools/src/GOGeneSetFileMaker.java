@@ -35,7 +35,7 @@ public class GOGeneSetFileMaker {
 
     @Option(name = "--organism", usage = "taxonomy id of organism", required = true)
     private int fTaxonomyId;
-    @Option(name = "--outfile", usage = "name of output file", required = true)
+    @Option(name = "--outfile", usage = "name of output file")
     private String fQueryFilename;
     @Option(name = "--infile", usage = "name of input gaf GO file to parse")
     private String gafFilename;
@@ -356,6 +356,13 @@ public class GOGeneSetFileMaker {
                 System.out.println("The file uses multiple taxons identifiers:" + taxons.toString());
             if(products.size() > 1)
                 System.out.println("The file uses multiple product types:" + products.toString());
+
+            if(fQueryFilename == null || fQueryFilename.equalsIgnoreCase("")){
+                if(exclude)
+                    fQueryFilename = gafFilename + "_noiea_UniProt.gmt";
+                else
+                    fQueryFilename = gafFilename + "_withiea_UniProt.gmt";
+            }
 
             PrintWriter writer = new PrintWriter(new File(fQueryFilename));
             PrintWriter writer_symbol = new PrintWriter(new File(fQueryFilename + "_symbol"));
