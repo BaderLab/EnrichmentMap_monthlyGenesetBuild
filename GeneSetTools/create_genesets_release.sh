@@ -52,7 +52,7 @@ function download_humancyc_data {
 function download_GOhuman_data {
 	echo "[Downloading current Go Human EBI data]"
 	URL="ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/HUMAN/"
-	curl ${URL}/gene_association.goa_human.gz -o ${GO}/gene_association.goa_human.gz
+	curl ${URL}/gene_association.goa_human.gz -o ${GOSRC}/gene_association.goa_human.gz
 	get_webfile_version ${URL}/gene_association.goa_human.gz "GO_Human"
 }
 
@@ -78,6 +78,18 @@ function process_biopax {
     java -Xmx2G -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.NoOpLog -jar ${TOOLDIR}/GenesetTools.jar toGSEA --biopax ${1}_updated_v1.owl --outfile ${1}_${2//[[:space:]]}.gmt --id "$2" --speciescheck FALSE --source "$3" 2>> biopax_process.err 1>> biopax_output.txt
 }
 
+#this function create gmt files from biopax files without validation and auto-fix.
+# argument 1 - biopax file name
+# argument 2 - identifier to extract from file
+# argument 3 - database source
+function process_biopax_novalidation {
+
+    #create gmt file from the given, autofixed biopax file
+    #make sure the the id searching for doesn't have any spaces for the file name
+    #long -D option turns off logging when using paxtool
+    java -Xmx2G -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.NoOpLog -jar ${TOOLDIR}/GenesetTools.jar toGSEA --biopax ${1} --outfile ${1}_${2//[[:space:]]}.gmt --id "$2" --speciescheck FALSE --source "$3" 2>> biopax_process.err 1>> biopax_output.txt
+}
+
 
 
 # argument 1 - gmt file name
@@ -100,27 +112,37 @@ function translate_gmt {
 # argument 2 - taxonomy id
 # argument 3 - branch of go (all, bp, mf or cc)
 function process_gaf_noiea {
-	java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar createGo --organism $2 --branch $3 --infile $1 --outfile ${1}_{$3}_noiea.gmt --exclude 2>> noiea_process.err 1>> noiea_output.txt 
+	java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar createGo --organism $2 --branch $3 --infile $1 --exclude 2>> noiea_process.err 1>> noiea_output.txt 
 }
 
 # argument 1 - gaf file name
 # argument 2 - taxonomy id
 # argument 3 - branch of go (all, bp, mf or cc)
 function process_gaf {
-	java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar createGo --organism $2 --branch $3 --infile $1 --outfile ${1}_${3}_withiea.gmt  2>> withiea_process.err 1>> withiea_output.txt 
+	java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar createGo --organism $2 --branch $3 --infile $1  2>> withiea_process.err 1>> withiea_output.txt 
 }
 
 # argument 1 - source to copy
+#argument 2 - species
+#argument 3 - division to put data into
 function copy2release {
-	cat *gene.gmt > ${1}_Entrezgene.gmt
-	cp ${1}_Entrezgene.gmt ${EG}/${1}_Entrezgene.gmt
+	cat *gene.gmt > ${2}_${1}_Entrezgene.gmt
+	cp ${2}_${1}_Entrezgene.gmt ${EG}/${3}/${2}_${1}_Entrezgene.gmt
 
-	cat *_uniprot.gmt > ${1}_uniprot.gmt
-	cp ${1}_uniprot.gmt ${UNIPROT}/${1}_uniprot.gmt
+	cat *_UniProt.gmt > ${2}_${1}_UniProt.gmt
+	cp ${2}_${1}_UniProt.gmt ${UNIPROT}/${3}/${2}_${1}_UniProt.gmt
 
-	cat *_symbol.gmt > ${1}_symbol.gmt
-	cp ${1}_symbol.gmt ${SYMBOL}/${1}_symbol.gmt
+	cat *_symbol.gmt > ${2}_${1}_symbol.gmt
+	cp ${2}_${1}_symbol.gmt ${SYMBOL}/${3}/${2}_${1}_symbol.gmt
 
+}
+
+# argument 1 - directory where you want the divisions created
+function createDivisionDirs {
+	cd ${1}
+	mkdir ${GO}
+	mkdir ${PATHWAYS}
+	mkdir ${SPECIAL}
 }
 
 
@@ -134,20 +156,28 @@ STATICDIR=/Users/risserlin/SourceCode/GeneSetTools/staticSrcFiles
 WORKINGDIR=`pwd`
 CUR_RELEASE=${WORKINGDIR}/${dir_name}
 OUTPUTDIR=${CUR_RELEASE}/Human
-UNIPROT=${OUTPUTDIR}/Uniprot
+UNIPROT=${OUTPUTDIR}/UniProt
 EG=${OUTPUTDIR}/Entrezgene
 SYMBOL=${OUTPUTDIR}/symbol
 SOURCE=${CUR_RELEASE}/SRC
-GMT=${CUR_RELEASE}/GMT
 VERSIONS=${CUR_RELEASE}/version
+
+#under each identifier type there are three different types of interactions
+GO=GO
+PATHWAYS=Pathways
+SPECIAL=Special
 
 mkdir ${CUR_RELEASE}
 mkdir ${SOURCE}
-mkdir ${GMT}
 mkdir ${VERSIONS}
 mkdir -p ${UNIPROT}
 mkdir -p ${EG}
 mkdir -p ${SYMBOL}
+
+createDivisionDirs ${UNIPROT}
+createDivisionDirs ${EG}
+createDivisionDirs ${SYMBOL}
+
 
 #There are three different types of files that we have to deal with during the download process:
 # 1. biopax - need to validated, autofixed, converted to gmt files, convert identifiers to other desirable identifiers
@@ -160,13 +190,14 @@ mkdir -p ${PATHWAYCOMMONS}
 download_pc_data
 cd ${PATHWAYCOMMONS}
 unzip *.zip
+mv nci-nature-entrez-gene-id.gmt nci-nature-entrezgene.gmt
 #modify gmt file so the gmt conforms to our standard with name and description
 for file in *.gmt; do
 	awk 'BEGIN{FS="\t"} {$2 = $1; for (i=1; i<=NF; i++) printf("%s\t", $i); printf("\n");}' $file > temp.txt
 	awk 'BEGIN{FS="\t"} {sub(/^/,"PC_NCI?")};1' temp.txt > $file
 	translate_gmt $file "9606" "entrezgene"
 done 
-copy2release NCINature
+copy2release NCINature Human ${PATHWAYS}
 
 
 #Download all the biopax sources
@@ -190,7 +221,7 @@ for file in *.gmt; do
 	translate_gmt $file "9606" "entrezgene"
 done
 #merge all the gmt into one NetPath GMT
-copy2release NetPath
+copy2release NetPath Human ${PATHWAYS}
 
 #download humancyc
 HUMANCYC=${SOURCE}/Humancyc
@@ -198,7 +229,7 @@ mkdir ${HUMANCYC}
 download_humancyc_data
 cd ${HUMANCYC}
 #unzip and untar human.tar.gz file
-tar -xvzf human.tar.gz *.owl
+tar -xvzf human.tar.gz *level3.owl
 cd 15.1/data
 for file in *.owl; do
 	process_biopax $file "UniProt" "HumanCyc"
@@ -206,7 +237,7 @@ done
 for file in *.gmt; do
 	translate_gmt $file "9606" "UniProt"
 done
-copy2release HumanCyc
+copy2release HumanCyc Human ${PATHWAYS}
 
 
 #download Reactome biopax data
@@ -216,59 +247,85 @@ download_reactome_data
 cd ${REACTOME}
 unzip biopax3.zip *sapiens.owl
 mv Homo\ sapiens.owl Homosapiens.owl
+
+#for some reason the validated and fixed Reactome file hangs.
 for file in *sapiens.owl; do
-	process_biopax $file "UniProt" "Reactome"
+	process_biopax_novalidation $file "UniProt" "Reactome"
 done
 for file in *.gmt; do
 	translate_gmt $file "9606" "UniProt"
 done
-copy2release Reactome
+copy2release Reactome Human ${PATHWAYS}
 
 
 
 #process the static sources - currently KEGG and IOB
 cd ${STATICDIR}
-for dir in `ls -d`; do
+for dir in `ls`; do
 	#for each of directories in the static directory, create a directory in the src directory	
-	if [[ $dir -eq "IOB" ]]; then
+	if [[ $dir == "IOB" ]] ; then
 		cd $dir
 		mkdir ${SOURCE}/$dir
 		cp *.owl ${SOURCE}/$dir
+		cp *.txt ${VERSIONS}
 		cd ${SOURCE}/$dir
 		for file in *.owl; do
-			process_biopax $file "Entrez gene" "IOB"
+			process_biopax_novalidation $file "Entrez gene" "IOB"
 		done
 		for file in *.gmt; do
 			translate_gmt $file "9606" "Entrezgene"
 		done
 
-		copy2release IOB
+		copy2release IOB Human ${PATHWAYS}
 		
 		cd ${STATICDIR}
 	fi
 
-	if [[ $dir -eq "KEGG" ]]; then
+	if [[ $dir == "KEGG" ]] ; then
 		cd $dir
 		mkdir ${SOURCE}/$dir
 		cp *.gmt ${SOURCE}/$dir
+		cp *.txt ${VERSIONS}
 		cd ${SOURCE}/$dir
 		for file in *.gmt; do
 			translate_gmt $file "9606" "symbol"
 		done
-		copy2release KEGG
+		copy2release KEGG Human ${PATHWAYS}
+		cd ${STATICDIR}
+	fi
+	if [[ $dir == "msigdb_path" ]] ; then
+		cd $dir
+		mkdir ${SOURCE}/$dir
+		cp *.gmt ${SOURCE}/$dir
+		cp *.txt ${VERSIONS}
+		cd ${SOURCE}/$dir
+		for file in *.gmt; do
+			translate_gmt $file "9606" "Entrezgene"
+		done
+		copy2release MSigdb Human ${PATHWAYS}
+		cd ${STATICDIR}
+	fi
+	if [[ $dir == "msigdb_spec" ]] ; then
+		cd $dir
+		mkdir ${SOURCE}/$dir
+		cp *.gmt ${SOURCE}/$dir
+		cp *.txt ${VERSIONS}
+		cd ${SOURCE}/$dir
+		for file in *.gmt; do
+			translate_gmt $file "9606" "Entrezgene"
+		done
+		copy2release MSigdb Human ${SPECIAL}
 		cd ${STATICDIR}
 	fi
 done
 
 #process GO
-GO=${SOURCE}/GO
-mkdir ${GO}
+GOSRC=${SOURCE}/GO
+mkdir ${GOSRC}
 download_GOhuman_data
-cd ${GO}
+cd ${GOSRC}
 gunzip *.gz
 for file in *.goa*; do
-	process_gaf $file "9606" "all"
-	process_gaf_noiea  $file "9606" "all"
 	process_gaf $file "9606" "bp"
 	process_gaf_noiea  $file "9606" "bp"
 	process_gaf $file "9606" "mf"
@@ -280,7 +337,39 @@ for file in *.gmt; do
 	translate_gmt $file "9606" "UniProt"
 done
 
-cp *Entrezgene.gmt ${EG}/
-cp *uniprot.gmt ${UNIPROT}/
-cp *symbol.gmt ${SYMBOL}/
+#create  the compilation of all branches
+cat *_withiea*entrezgene.gmt > Human_GOALL_withiea_entrezgene.gmt
+cat *_withiea*UniProt.gmt > Human_GOALL_withiea_UniProt.gmt
+cat *_withiea*symbol.gmt > Human_GOALL_withiea_symbol.gmt
 
+cat *_noiea*entrezgene.gmt > Human_GOALL_noiea_entrezgene.gmt
+cat *_noiea*UniProt.gmt > Human_GOALL_noiea_UniProt.gmt
+cat *_noiea*symbol.gmt > Human_GOALL_noiea_symbol.gmt
+
+cp *entrezgene.gmt ${EG}/${GO}
+cp *UniProt.gmt ${UNIPROT}/${GO}
+cp *symbol.gmt ${SYMBOL}/${GO}
+
+#compile all the different versions
+cd ${VERSIONS}
+cat *.txt > ${OUTPUTDIR}/${dir_name}_versions.txt
+
+
+#create all the different distributions
+cd ${EG}/${PATHWAYS}
+cat *.gmt > ../Human_AllPathways_entrezgene.gmt
+cd ${EG}/${GO}
+cat ../Human_AllPathways_entrezgene.gmt Human_GOALL_withiea_entrezgene.gmt > ../Human_AllGenesets_withiea_entrezgene.gmt
+cat ../Human_AllPathways_entrezgene.gmt Human_GOALL_noiea_entrezgene.gmt > ../Human_AllGenesets_noiea_entrezgene.gmt
+
+cd ${SYMBOL}/${PATHWAYS}
+cat *.gmt > ../Human_AllPathways_symbol.gmt
+cd ${SYMBOL}/${GO}
+cat ../Human_AllPathways_symbol.gmt Human_GOALL_withiea_symbol.gmt > ../Human_AllGenesets_withiea_symbol.gmt
+cat ../Human_AllPathways_symbol.gmt Human_GOALL_noiea_symbol.gmt > ../Human_AllGenesets_noiea_symbol.gmt
+
+cd ${UNIPROT}/${PATHWAYS}
+cat *.gmt > ../Human_AllPathways_UniProt.gmt
+cd ${UNIPROT}/${GO}
+cat ../Human_AllPathways_UniProt.gmt Human_GOALL_withiea_UniProt.gmt > ../Human_AllGenesets_withiea_UniProt.gmt
+cat ../Human_AllPathways_UniProt.gmt Human_GOALL_noiea_UniProt.gmt > ../Human_AllGenesets_noiea_UniProt.gmt

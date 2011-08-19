@@ -358,10 +358,18 @@ public class GOGeneSetFileMaker {
                 System.out.println("The file uses multiple product types:" + products.toString());
 
             if(fQueryFilename == null || fQueryFilename.equalsIgnoreCase("")){
+		
+		if(fTaxonomyId == 9606)
+			fQueryFilename = "Human_GO";
+		else if(fTaxonomyId == 10090)
+			fQueryFilename = "MOUSE_GO";
+		else
+			fQueryFilename = fTaxonomyId + "_GO";
+
                 if(exclude)
-                    fQueryFilename = gafFilename + "_noiea_UniProt.gmt";
+                    fQueryFilename = fQueryFilename + "_" + fBranch + "_noiea_UniProt.gmt";
                 else
-                    fQueryFilename = gafFilename + "_withiea_UniProt.gmt";
+                    fQueryFilename = fQueryFilename + "_" + fBranch + "_withiea_UniProt.gmt";
             }
 
             PrintWriter writer = new PrintWriter(new File(fQueryFilename));
