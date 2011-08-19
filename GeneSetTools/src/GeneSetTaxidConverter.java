@@ -1,6 +1,8 @@
 import cytoscape.data.readers.TextFileReader;
 import org.kohsuke.args4j.Option;
 
+import java.util.HashMap;
+
 /**
  * Created by IntelliJ IDEA.
  * User: risserlin
@@ -54,6 +56,13 @@ public class GeneSetTaxidConverter {
 
             String []lines = fullText.split("\n");
 
+            //create a bunch of parameters to store the homologys
+            HashMap<Integer, HashMap<Integer, HomoloGene>> homologGroups = new  HashMap<Integer, HashMap<Integer, HomoloGene>>();
+
+            //also track the entrez gene id to the homolog group it belongs to
+            //hashmap of eg to homolog group
+            HashMap<Integer, Integer> eg2homologgroup = new HashMap<Integer, Integer>();
+
             for (int i = 0; i < lines.length; i++) {
 
                String line = lines[i];
@@ -68,6 +77,18 @@ public class GeneSetTaxidConverter {
                     Integer gi= Integer.parseInt(tokens[4]);
                     String accession= tokens[5];
 
+                    //create a homoloGene
+                    HomoloGene newhomolog = new HomoloGene(homologGroup,taxid,entrezgeneid,symbol,gi,accession);
+
+                    //check to see if this homologGroup has already been added to the homolog groups
+                    if(homologGroups.containsKey(homologGroup)){
+                        HashMap<Integer, HomoloGene> curHomologs = homologGroups.get(homologGroup);
+                        curHomologs.put(taxid,newhomolog);
+                        homologGroups.put(homologGroup,curHomologs);
+                    }
+                    else{
+
+                    }
 
                 }
 
