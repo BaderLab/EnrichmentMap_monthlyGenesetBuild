@@ -48,6 +48,9 @@ public class GOGeneSetFileMaker {
 
 	private String fConnectionString = "jdbc:mysql://mysql.ebi.ac.uk:4085/go_latest?user=go_select&password=amigo"; //$NON-NLS-1$
 
+    private static String noiea = "no_GO_iea";
+    private static String withiea = "with_GO_iea";
+
     public GOGeneSetFileMaker() {
     }
 
@@ -367,9 +370,9 @@ public class GOGeneSetFileMaker {
 			fQueryFilename = fTaxonomyId + "_GO";
 
                 if(exclude)
-                    fQueryFilename = fQueryFilename + "_" + fBranch + "_noiea_UniProt.gmt";
+                    fQueryFilename = fQueryFilename + "_" + fBranch + "_" + noiea +"_UniProt.gmt";
                 else
-                    fQueryFilename = fQueryFilename + "_" + fBranch + "_withiea_UniProt.gmt";
+                    fQueryFilename = fQueryFilename + "_" + fBranch + "_"+ withiea + "_UniProt.gmt";
             }
 
             PrintWriter writer = new PrintWriter(new File(fQueryFilename));

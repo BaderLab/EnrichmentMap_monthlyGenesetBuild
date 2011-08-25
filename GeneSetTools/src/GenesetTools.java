@@ -188,6 +188,23 @@ public class GenesetTools {
 
     }
 
+    public static void convertGeneSets(String args[]) throws IOException {
+        GeneSetTaxidConverter converter = new GeneSetTaxidConverter();
+
+        CmdLineParser parser = new CmdLineParser(converter);
+        try {
+           parser.parseArgument(args);
+	        } catch (CmdLineException e) {
+            System.err.println(e.getMessage());
+            help();
+            parser.printUsage(System.err);
+            return;
+        }
+
+        converter.taxidconverter();
+
+    }
+
      enum Command {
         translate("fileIn fileOut species currentID newID\t\ttakes gmt file and translates all of it ids to new id", 3)
 		        {public void run(String[] argv) throws IOException{translate(Arrays.copyOfRange(argv,1,argv.length));} },
@@ -203,6 +220,8 @@ public class GenesetTools {
                 { public void run(String[] argv) throws IOException{compare2gmt(Arrays.copyOfRange(argv,1,argv.length));} },
         ecoliinteraction("gmt1 outfile dir  \t\t\t creates ecoli interaction gmt",3)
                 { public void run(String[] argv) throws IOException{ecoliinteraction(Arrays.copyOfRange(argv,1,argv.length));} },
+        convertGeneSets("gmt homolog newtaxid outputfile \t\t\t converts gmt file from one species to antoher", 4)
+                 { public void run(String[] argv) throws IOException{ convertGeneSets(Arrays.copyOfRange(argv,1,argv.length));} },
         help("\t\t\t\t\t\tprints this screen and exits", Integer.MAX_VALUE)
 		        {public void run(String[] argv) throws IOException{help();} };
 

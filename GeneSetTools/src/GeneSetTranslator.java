@@ -212,31 +212,56 @@ public class GeneSetTranslator {
                             HashSet<String> unfoundIds, HashMap<String, logInfo> logs,GMTParameters params)throws IOException{
         //open output file
         String baseFilename = gmt_filename.split(".gmt")[0];
-        String OutFilename = baseFilename + "_" + id + ".gmt";
-        File newgsfile = new File(OutFilename);
-        BufferedWriter newgs = new BufferedWriter(new FileWriter(newgsfile));
-        //write the file header -only if there is a header
-        if((params.getVersion() != null) && (params.getSource() != null))
-            newgs.write(params.getVersion() + "\t" + params.getSource() + "\t" + "identifiers converted from " + oldID + " to " + id + "using Synergizer" + "\n" );
-        for(Iterator c = translated_genesets.keySet().iterator();c.hasNext();){
-            newgs.write(translated_genesets.get(c.next()).toStringNames(params) + "\n");
-            newgs.flush();
-        }
-        newgs.close();
+
+        //if the baseFileName has the old id in the name then take it out
+        String baseFilename_nooldid = "";
+        int index_Start = baseFilename.toLowerCase().indexOf(oldID.toLowerCase());
+
+        for(int r =0 ; r< baseFilename.length(); r++)
+            if(r < index_Start || r > index_Start+oldID.length() )
+                baseFilename_nooldid += baseFilename.toCharArray()[r];
+
+        String OutFilename = baseFilename_nooldid  + id + ".gmt";
+
+        params.printGenesets(translated_genesets,OutFilename);
 
         //only create a log file if it isn't empty.
         if(!logs.isEmpty()){
-            //create a log file with the same name as the output file but append .log
-            File logfile = new File(baseFilename+"_" + id + ".log");
-            BufferedWriter log = new BufferedWriter(new FileWriter(logfile));
+            //create two log file with the same name as the output file but append .log
+            //one log file has the detailed missing conversions
+            //one log file has just the summary
+            File logfile_detailed = new File(baseFilename_nooldid + id + "_detailed.log");
+            BufferedWriter log = new BufferedWriter(new FileWriter(logfile_detailed));
+            File logfile_summary = new File(baseFilename_nooldid + id + "_summary.log");
+            BufferedWriter log_sum = new BufferedWriter(new FileWriter(logfile_summary));
             log.write("GeneSetName \t Number of genes queried \t Number of unfound source ids \t list of unfound source ids \n");
-            for(Iterator j = logs.keySet().iterator();j.hasNext();)
-                 log.write((logs.get(j.next())).toString());
+            int totalUnfoundAnnotations = 0;
+            int totalAnnotations = 0;
+            for(Iterator j = logs.keySet().iterator();j.hasNext();){
+                //only write the log out if the number of
+                logInfo current = logs.get(j.next());
+                totalAnnotations += current.total;
+                if(current.numunfound > 0){
+                    totalUnfoundAnnotations+=current.numunfound;
+                    log.write(current.toString());
+                }
+            }
+
             //add to the log file the set of all IDs that weren't successfully converted
-            log.write("total Number of genes in file:\t" + translations.keySet().size() + "\n");
-            log.write("All source Identifiers unable to map\t" + unfoundIds.size() + "\t" + unfoundIds.toString() +"\n");
+            log_sum.write("File name:\t" + gmt_filename + "\n");
+            log_sum.write("original Identifier\t" + oldID + "\n");
+            log_sum.write("ID translated to\t" + id + "\n");
+            log_sum.write("total Number of genes in file:\t" + translations.keySet().size() + "\n");
+            log_sum.write("total Number Identifiers unable to map\t" + unfoundIds.size() + "\n");
+            log_sum.write("Percentage ids not translated\t" + (((unfoundIds.size()/1.0) / (translations.keySet().size()/1.0)) * 100) + "%\n" );
+            log_sum.write("Total annotations in the file\t" + totalAnnotations + "\n");
+            log_sum.write("Total Untranslated annotations\t" + totalUnfoundAnnotations + "\n");
+            log_sum.write("Percentage annotations not translated\t" + (((totalUnfoundAnnotations/1.0)/(totalAnnotations/1.0)) * 100) + "%\n");
+
             log.flush();
             log.close();
+            log_sum.flush();
+            log_sum.close();
         }
     }
 
@@ -277,7 +302,7 @@ public class GeneSetTranslator {
                              Integer currentkey = (Integer)h.next();
                              if(currentkey == 1)
                                  continue;
-                             SynergizerParams syparams_id1_cur = conversions.get(1);
+                             SynergizerParams syparams_id1_cur = conversions.get(currentkey);
 
                             SynergizerClient.TranslateResult res_missing =
                                 client.translate(syparams_id1_cur.db, taxon, syparams_id1_cur.oldID,

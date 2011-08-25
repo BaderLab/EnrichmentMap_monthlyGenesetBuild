@@ -69,7 +69,7 @@ public class Biopax2GMT implements Visitor {
 	Traverser traverser;
     private int proteinref_count = 0;
 
-    public static String DBSOURCE_SEPARATOR = "?";
+    public static String DBSOURCE_SEPARATOR = "|";
 
 	/**
 	 * Constructor.
@@ -135,7 +135,9 @@ public class Biopax2GMT implements Visitor {
     	if (entries.size() > 0) {
     		Writer writer = new OutputStreamWriter(out);
     		for (GeneSet entry : entries) {
-    			writer.write(entry.rdftoString() + "\n");
+                //only write out the geneset if it has genes
+                if((entry.getGenes() != null && entry.getGenes().size() > 0) || (entry.getrdfGenes() != null && entry.getrdfGenes().size() > 0))
+    			    writer.write(entry.rdftoString() + "\n");
     		}
     		writer.close();
     	}
@@ -165,7 +167,10 @@ public class Biopax2GMT implements Visitor {
 
         // iterate over all pathways in the model
         for (Pathway aPathway : l3Model.getObjects(Pathway.class)) {
-        	toReturn.add(getGSEAEntry(model, aPathway, database));
+            //only add the geneset is it has genes
+            GeneSet current = getGSEAEntry(model, aPathway, database);
+            //if(current.getGenes() != null && current.getGenes().size() >0 )
+        	    toReturn.add(current);
         }
 
         // outta here
@@ -275,8 +280,8 @@ public class Biopax2GMT implements Visitor {
 		}
 		toReturn.setRDFToGeneMap(this.rdfToGenes);
 
-        System.out.println("Number ProteinRefs:\t"+ proteinref_count
-                + "\tNumber of GMT proteins:\t" + rdfToGenes.size());
+        //System.out.println("Number ProteinRefs:\t"+ proteinref_count
+        //        + "\tNumber of GMT proteins:\t" + rdfToGenes.size());
 
         proteinref_count=0;
 

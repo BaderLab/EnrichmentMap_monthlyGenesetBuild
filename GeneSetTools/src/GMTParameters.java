@@ -1,5 +1,10 @@
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * Created by
@@ -160,5 +165,16 @@ public class GMTParameters {
 
     public void setGenesets_2(HashMap<String, GeneSet> genesets_2) {
         this.genesets_2 = genesets_2;
+    }
+
+    public void printGenesets(HashMap<String, GeneSet> genesets, String outputFile) throws IOException{
+        //print out the new gmt
+        File newgsfile = new File(outputFile);
+        BufferedWriter newgs = new BufferedWriter(new FileWriter(newgsfile));
+        for(Iterator c = genesets.keySet().iterator();c.hasNext();){
+            newgs.write(genesets.get(c.next()).toStringNames(this) + "\n");
+            newgs.flush();
+        }
+        newgs.close();
     }
 }

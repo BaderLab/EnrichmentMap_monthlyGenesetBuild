@@ -1,7 +1,13 @@
 import cytoscape.data.readers.TextFileReader;
 import org.kohsuke.args4j.Option;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,7 +21,7 @@ public class GeneSetTaxidConverter {
      @Option(name = "--gmt", usage = "name of gmt file to convert to new species", required = true)
     private String gmt_filename;
 
-    @Option(name = "--homologys", usage = "name of file from homologene with all homolog conversions", required = true)
+    @Option(name = "--homology", usage = "name of file from homologene with all homolog conversions", required = true)
     private String homolog_file;
 
     @Option(name = "--newtaxid", usage = "taxid to convert gmt file to.", required = true)
@@ -25,7 +31,7 @@ public class GeneSetTaxidConverter {
     private String outfile;
 
 
-    public void taxidconverter(){
+    public void taxidconverter() throws IOException{
         //load in the gmt file.
         //create parameters
          GMTParameters params = new GMTParameters();
@@ -49,19 +55,19 @@ public class GeneSetTaxidConverter {
          }
 
         //open homolog file
+         //create a bunch of parameters to store the homologys
+         HashMap<Integer, HashMap<Integer, HomoloGene>> homologGroups = new  HashMap<Integer, HashMap<Integer, HomoloGene>>();
+
+         //also track the entrez gene id to the homolog group it belongs to
+         //hashmap of eg to homolog group
+         HashMap<Integer, Integer> eg2homologgroup = new HashMap<Integer, Integer>();
+
         if(homolog_file != null || !homolog_file.equalsIgnoreCase("")){
             TextFileReader reader = new TextFileReader(homolog_file);
             reader.read();
             String fullText = reader.getText();
 
             String []lines = fullText.split("\n");
-
-            //create a bunch of parameters to store the homologys
-            HashMap<Integer, HashMap<Integer, HomoloGene>> homologGroups = new  HashMap<Integer, HashMap<Integer, HomoloGene>>();
-
-            //also track the entrez gene id to the homolog group it belongs to
-            //hashmap of eg to homolog group
-            HashMap<Integer, Integer> eg2homologgroup = new HashMap<Integer, Integer>();
 
             for (int i = 0; i < lines.length; i++) {
 
@@ -80,20 +86,122 @@ public class GeneSetTaxidConverter {
                     //create a homoloGene
                     HomoloGene newhomolog = new HomoloGene(homologGroup,taxid,entrezgeneid,symbol,gi,accession);
 
+                    //add entrezgene to eg 2 homolog id map
+                    eg2homologgroup.put(entrezgeneid,homologGroup);
+
                     //check to see if this homologGroup has already been added to the homolog groups
                     if(homologGroups.containsKey(homologGroup)){
                         HashMap<Integer, HomoloGene> curHomologs = homologGroups.get(homologGroup);
                         curHomologs.put(taxid,newhomolog);
                         homologGroups.put(homologGroup,curHomologs);
                     }
+                    //otherwise create a new group
                     else{
+                        HashMap<Integer, HomoloGene> curHomologs = new HashMap<Integer,HomoloGene>();
 
+                        curHomologs.put(taxid, newhomolog);
+
+                        homologGroups.put(homologGroup, curHomologs);
                     }
 
                 }
 
             }
         }
+
+        //once all the homologs have been stored
+        //go through the gmt file and convert all the ids.
+        HashMap<String, GeneSet> genesets = params.getGenesets();
+        HashMap<Integer, String> hash2gene = params.getHashkey2gene();
+        HashMap<String, Integer> genes = params.getGenes();
+        HashMap<String, GeneSet> converted_genesets = new HashMap<String, GeneSet>();
+
+        //get the number of unique genes in the original gmt file
+        int num_genes_original = genes.size();
+        int num_annotations_original = 0;
+        int num_missing_annotations = 0;
+
+        HashSet<Integer> all_missing_genes = new HashSet<Integer>();
+
+        for(Iterator k = genesets.keySet().iterator(); k.hasNext(); ){
+            String geneset_name = k.next().toString();
+            GeneSet current_set =  genesets.get(geneset_name);
+
+            //create a new geneset
+            GeneSet new_geneset = new GeneSet(geneset_name, current_set.getDescription());
+
+            //get the genes in this geneset
+            HashSet<Integer> geneset_genes = current_set.getGenes();
+            num_annotations_original += geneset_genes.size();
+
+            int num_missing_genes = 0;
+            HashSet<Integer> missing_egs = new HashSet<Integer>();
+
+            for(Iterator j = geneset_genes.iterator();j.hasNext();){
+                //get corresponding Gene from hash key
+                Integer current_key = (Integer)j.next();
+                if(hash2gene.containsKey(current_key)){
+                    Integer current_id = Integer.parseInt(hash2gene.get(current_key));
+
+                    //get the homolog of this gene
+                    if(eg2homologgroup.containsKey(current_id)){
+                        Integer homologgroup = eg2homologgroup.get(current_id);
+
+                        if(homologGroups.containsKey(homologgroup)){
+                            HashMap<Integer, HomoloGene> homologs = homologGroups.get(homologgroup);
+
+                            //check to see if there is a homolog in the set from the desired species.
+                            if(homologs.containsKey(newtaxid)){
+                                HomoloGene homolog = homologs.get(newtaxid);
+
+                                if (genes.containsKey(homolog.getEntrezgeneid().toString())) {
+                                    new_geneset.addGene(genes.get(homolog.getEntrezgeneid().toString()));
+                                }
+
+                                //If the gene is not in the list then get the next value to be used and put it in the list
+                                else{
+                                    //add the gene to the master list of genes
+                                    int value = params.getNumberOfGenes();
+                                    genes.put(homolog.getEntrezgeneid().toString(), value);
+                                    hash2gene.put(value,homolog.getEntrezgeneid().toString());
+                                    params.setNumberOfGenes(value+1);
+
+                                    //add the gene to the genelist
+                                    new_geneset.addGene(genes.get(homolog.getEntrezgeneid().toString()));
+                                }
+                            }
+                        }
+                    }
+                    else{
+                        num_missing_genes++;
+                        missing_egs.add(current_id);
+                        all_missing_genes.add(current_id);
+                        num_missing_annotations++;
+
+                    }
+                }
+            }
+            //add converted genesets to the set of new genesets
+            converted_genesets.put(geneset_name, new_geneset);
+            if(num_missing_genes > 0)
+                System.out.println(geneset_name + "\t" + current_set.getGenes().size() + "\t" + num_missing_genes + "\t" + missing_egs.toString());
+         }
+
+        params.printGenesets(converted_genesets, outfile);
+
+        //print a log file
+        File logfile = new File(outfile + newtaxid + "_conversion.log");
+        BufferedWriter log = new BufferedWriter(new FileWriter(logfile));
+        log.write("GMT file input\t" + gmt_filename + "\n");
+        log.write("New Taxid\t" + newtaxid+ "\n");
+        log.write("Number of genes (original gmt)\t" + num_genes_original+ "\n");
+        log.write("Number of genes with no homolog\t" + all_missing_genes.size()+ "\n");
+        log.write("Percentage of missing homologs\t" + ((all_missing_genes.size()/1.0)/(num_genes_original/1.0)) * 100 + "%\n" );
+        log.write("Number of annotations (original gmt)\t" + num_annotations_original+ "\n");
+        log.write("Number of lost annotations\t" +num_missing_annotations + "\n");
+        log.write("Percentage of missing annotations\t" + ((num_missing_annotations/1.0)/(num_annotations_original/1.0)) * 100 + "%\n" );
+        log.flush();
+        log.close();
 
     }
 }
