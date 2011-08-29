@@ -183,8 +183,8 @@ public class GeneSetTaxidConverter {
             }
             //add converted genesets to the set of new genesets
             converted_genesets.put(geneset_name, new_geneset);
-            if(num_missing_genes > 0)
-                System.out.println(geneset_name + "\t" + current_set.getGenes().size() + "\t" + num_missing_genes + "\t" + missing_egs.toString());
+            //if(num_missing_genes > 0)
+                //System.out.println(geneset_name + "\t" + current_set.getGenes().size() + "\t" + num_missing_genes + "\t" + missing_egs.toString());
          }
 
         params.printGenesets(converted_genesets, outfile);

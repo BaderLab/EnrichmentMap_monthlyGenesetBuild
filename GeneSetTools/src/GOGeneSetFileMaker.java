@@ -260,13 +260,13 @@ public class GOGeneSetFileMaker {
                String line = lines[i];
                String[] tokens = line.split("\t");
 
-               //if the first line starts with "!" make sure it is a gaf-version 2.0
-               if(i ==0 && line.startsWith("!")){
-                    if(!line.equalsIgnoreCase("!gaf-version: 2.0")){
+               //if the first line starts with "!" then it is a commented line - ignore it.
+               if(line.startsWith("!")){
+                   /* if(!line.equalsIgnoreCase("!gaf-version: 2.0")){
                         System.out.println("The files is in the wrong format.  It should be gaf-version: 2.0 but +" +
                                 "the header specifies that it is " + line);
                         return;
-                    }
+                    }*/
                     continue;
                }
 
@@ -361,18 +361,23 @@ public class GOGeneSetFileMaker {
                 System.out.println("The file uses multiple product types:" + products.toString());
 
             if(fQueryFilename == null || fQueryFilename.equalsIgnoreCase("")){
-		
-		if(fTaxonomyId == 9606)
+
+                String id = "";
+		if(fTaxonomyId == 9606){
 			fQueryFilename = "Human_GO";
-		else if(fTaxonomyId == 10090)
+            id = "UniProt";
+        }
+		else if(fTaxonomyId == 10090){
 			fQueryFilename = "MOUSE_GO";
+            id = "MGI";
+        }
 		else
 			fQueryFilename = fTaxonomyId + "_GO";
 
-                if(exclude)
-                    fQueryFilename = fQueryFilename + "_" + fBranch + "_" + noiea +"_UniProt.gmt";
-                else
-                    fQueryFilename = fQueryFilename + "_" + fBranch + "_"+ withiea + "_UniProt.gmt";
+        if(exclude)
+            fQueryFilename = fQueryFilename + "_" + fBranch + "_" + noiea +"_"+id+".gmt";
+        else
+            fQueryFilename = fQueryFilename + "_" + fBranch + "_"+ withiea + "_"+id+".gmt";
             }
 
             PrintWriter writer = new PrintWriter(new File(fQueryFilename));

@@ -83,25 +83,21 @@ public class GeneSetTranslator {
             return;
         }
 
-
-        //create a set to store the genes that aren't found
-        HashSet<String> unfoundIds_id1 = new HashSet<String>();
-        HashMap<String, logInfo> logs_id1 = new HashMap<String, logInfo>();
-        HashSet<String> unfoundIds_id2 = new HashSet<String>();
-        HashMap<String, logInfo> logs_id2 = new HashMap<String, logInfo>();
-
+        HashMap<String, HashSet<String>> unfoundIds = new HashMap<String, HashSet<String>>();
+        HashMap<String, HashMap<String, logInfo>> logs = new HashMap<String, HashMap<String, logInfo>>();
 
 
         //get the Genesets
         HashMap<String,GeneSet> genesets = params.getGenesets();
-        //create a new set of Geneset with the converted identifiers
-        HashMap<String, GeneSet> translated_genesets_id1 = new HashMap<String, GeneSet>();
-        HashMap<String, GeneSet> translated_genesets_id2 = new HashMap<String, GeneSet>();
 
+        HashMap<String, HashMap<String, GeneSet>> translated_genesets = new HashMap<String, HashMap<String, GeneSet>>();
 
         //get the gene to hash key conversions
         HashMap<Integer, String> hash2gene = params.getHashkey2gene();
 
+        //create a hashmap to store all the conversions.
+        //the key for the hashmap is the id and the object is the set of conversions to get that id
+        HashMap<String, HashMap<Integer, SynergizerParams>> conversions = new HashMap<String,HashMap<Integer, SynergizerParams>>();
 
         HashMap<Integer, SynergizerParams> conversions_id1 = new HashMap<Integer,SynergizerParams>();
         HashMap<Integer, SynergizerParams> conversions_id2 = new HashMap<Integer,SynergizerParams>();
@@ -144,7 +140,30 @@ public class GeneSetTranslator {
             conversions_id2.put(1, new SynergizerParams("ensembl",symboldb,"uniprot_swissprot_accession"));
             conversions_id2.put(2, new SynergizerParams("ensembl",symboldb,"uniprot_sptrembl_accession"));
         }
+        //Mouse go files use mgi ids, we need to convert the mgi to three different dbs , instead of the standard 2
+        else if(oldID.equalsIgnoreCase("mgi")){
+            id1="entrezgene";
+            conversions_id1.put(1,new SynergizerParams("ncbi", "mgi", "entrezgene"));
+            conversions_id1.put(2,new SynergizerParams("ensembl", "mgi_id", "entrezgene"));
 
+            id2="symbol";
+            conversions_id2.put(1,new SynergizerParams("ensembl", "mgi_id", symboldb));
+
+            //add an additional id.
+            String id3="UniProt";
+            HashMap<Integer, SynergizerParams> conversions_id3 = new HashMap<Integer,SynergizerParams>();
+            conversions_id3.put(1,new SynergizerParams("ensembl", "mgi_id", "uniprot_swissprot_accession") );
+             conversions_id3.put(2,new SynergizerParams("ensembl", "mgi_id", "uniprot_sptrembl_accession") );
+             conversions_id3.put(3,new SynergizerParams("ncbi", "mgi", "uniprot"));
+            conversions.put(id3, conversions_id3);
+            createNewIdTracker(id3,unfoundIds,logs,translated_genesets );
+        }
+
+        //there will always be at least 2 ids.
+        conversions.put(id1, conversions_id1);
+        createNewIdTracker(id1, unfoundIds,logs,translated_genesets);
+        conversions.put(id2, conversions_id2);
+        createNewIdTracker(id2,unfoundIds,logs, translated_genesets);
 
         System.out.println("Querying Synergizer...");
 
@@ -170,42 +189,65 @@ public class GeneSetTranslator {
          }
 
         //convert all the identifiers
-        HashMap<String, Set<String>> translations_id1 = convert(GeneQuerySet,conversions_id1, unfoundIds_id1,logs_id1);
-        HashMap<String, Set<String>> translations_id2 = convert(GeneQuerySet,conversions_id2, unfoundIds_id2,logs_id2);
+        //create a set of translations
+        HashMap<String, HashMap<String, Set<String>>> translations = new HashMap<String, HashMap<String, Set<String>>>();
 
+
+        //go through each of the conversions and get the translations for them
+        for(Iterator r = conversions.keySet().iterator(); r.hasNext();){
+            String current_id = r.next().toString();
+            HashMap<String, Set<String>> translations_id = convert(GeneQuerySet,conversions.get(current_id), unfoundIds.get(current_id),logs.get(current_id));
+
+            translations.put(current_id, translations_id);
+        }
         //Go through each geneset and translate the ids.
          for(Iterator k = genesets.keySet().iterator(); k.hasNext(); ){
 
             String geneset_name = k.next().toString();
             GeneSet current_set =  genesets.get(geneset_name);
 
-            //convert this geneset to id1
-            HashSet<String> new_genes_id1 = convertGeneSet(current_set,translations_id1,hash2gene,unfoundIds_id1,logs_id1);
-            String[] new_genes_string_id1 = new String[new_genes_id1.size()];
-            new_genes_id1.toArray(new_genes_string_id1);
+            //for each conversion - create converted genesets
+             for(Iterator p = conversions.keySet().iterator();p.hasNext();){
+                 String current_id = p.next().toString();
+                 HashSet<String> new_genes_id1 = convertGeneSet(current_set,translations.get(current_id),
+                            hash2gene,unfoundIds.get(current_id),logs.get(current_id));
+                 String[] new_genes_string_id1 = new String[new_genes_id1.size()];
+                 new_genes_id1.toArray(new_genes_string_id1);
 
-            GeneSet new_set_id1 = new GeneSet(current_set.getName(), current_set.getDescription());
-            new_set_id1.addGeneList(new_genes_string_id1,params);
+                 GeneSet new_set_id1 = new GeneSet(current_set.getName(), current_set.getDescription());
+                 new_set_id1.addGeneList(new_genes_string_id1,params);
 
-            translated_genesets_id1.put(new_set_id1.getName(), new_set_id1);
 
-            //convert this geneset to id12
-            HashSet<String> new_genes_id2 = convertGeneSet(current_set,translations_id2,hash2gene,unfoundIds_id2,logs_id2);
-            String[] new_genes_string_id2 = new String[new_genes_id2.size()];
-            new_genes_id2.toArray(new_genes_string_id2);
+                 //for this id get the hash of the translated genesets
+                 HashMap<String, GeneSet> translated_genesets_id = translated_genesets.get(current_id);
+                 translated_genesets_id.put(new_set_id1.getName(), new_set_id1);
 
-            GeneSet new_set_id2 = new GeneSet(current_set.getName(), current_set.getDescription());
-            new_set_id2.addGeneList(new_genes_string_id2,params);
+             }
 
-            translated_genesets_id2.put(new_set_id2.getName(), new_set_id2);
 
          }
 
-         //output id1 file
-        outputFiles(translated_genesets_id1,id1,translations_id1,unfoundIds_id1,logs_id1,params);
+         //go through all the translated sets and output them
+        for(Iterator q = translated_genesets.keySet().iterator();q.hasNext();){
+            String current_id = q.next().toString();
+            outputFiles(translated_genesets.get(current_id),current_id,translations.get(current_id),
+                    unfoundIds.get(current_id),logs.get(current_id),params);
+        }
+    }
 
-        //output id2 file
-        outputFiles(translated_genesets_id2,id2,translations_id2,unfoundIds_id2,logs_id2,params);
+
+    /* for each new id that we are going to convert we need to store the unfoundids, log messages, and translated genesets
+        create all the objects needed for a new identifier in a set of hashmaps where the key is the identifier converting to.
+
+        given - the new id, and references to the the hashs for unfoundids, logs, and translated geneset
+     */
+    private void createNewIdTracker(String id, HashMap<String, HashSet<String>> unfoundIds,HashMap<String,
+            HashMap<String, logInfo>> logs, HashMap<String, HashMap<String, GeneSet>> translated_genesets){
+
+        unfoundIds.put(id, new HashSet<String>());
+        logs.put(id, new HashMap<String, logInfo>());
+        translated_genesets.put(id, new HashMap<String, GeneSet>());
+
     }
 
     public void outputFiles(HashMap<String, GeneSet> translated_genesets, String id, HashMap<String,Set<String>> translations,
