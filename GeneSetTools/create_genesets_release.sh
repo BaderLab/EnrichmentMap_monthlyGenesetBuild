@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 function get_pc_version {
 	    # pathway commons uses a release date instead of a version
 	    curl -s http://www.pathwaycommons.org/pc-snapshot/ | grep "current-release" | awk '{print $6}' > ${VERSIONS}/pathwaycommons.txt
@@ -19,8 +20,10 @@ function download_pc_data {
 # argument 1 - name of the file
 # argument 2 - datasource to add it to
 function get_webfile_version {
+	echo "$2" >> ${VERSIONS}/${2}.txt
 	echo "$1" >> ${VERSIONS}/${2}.txt
 	curl $1 -I | grep "Last-Modified" >> ${VERSIONS}/${2}.txt
+	echo "========" >> ${VERSIONS}/${2}.txt
 }
 
 #download NCI from PID
@@ -49,14 +52,17 @@ function download_reactome_data {
 	get_webfile_version ${URL}/biopax3.zip "Reactome"
 }
 
-function download_humancyc_data {
-	echo "[Downloading current HumanCyc data]"
+#argument 1 - species, either human or mouse
+#argument 2 - directory to put the file
+function download_biocyc_data {
+	echo "[Downloading current BioCyc data - for species $1]"
 	URL="http://bioinformatics.ai.sri.com/ecocyc/dist/flatfiles-52983746/"
-	echo "${URL}/human.tar.gz" >> ${VERSIONS}/Humancyc.txt
-	curl ${URL}/human.tar.gz -u biocyc-flatfiles:data-20541 -I | grep "Last-Modified" >> ${VERSIONS}/Humancyc.txt
-	curl ${URL}/human.tar.gz -o ${HUMANCYC}/human.tar.gz -u biocyc-flatfiles:data-20541
+	echo "${URL}/${1}.tar.gz" >> ${VERSIONS}/${1}cyc.txt
+	curl ${URL}/${1}.tar.gz -u biocyc-flatfiles:data-20541 -I | grep "Last-Modified" >> ${VERSIONS}/${1}cyc.txt
+	curl ${URL}/${1}.tar.gz -o ${2}/${1}.tar.gz -u biocyc-flatfiles:data-20541
 }
 
+# Go human data comes directly from ebi as they are the primary curators of human GO annotations
 function download_GOhuman_data {
 	echo "[Downloading current Go Human EBI data]"
 	URL="ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/HUMAN/"
@@ -64,6 +70,13 @@ function download_GOhuman_data {
 	get_webfile_version ${URL}/gene_association.goa_human.gz "GO_Human"
 }
 
+#Mouse data is downloaded from the Gene ontology website and comes from MGI
+function download_GOmouse_data {
+	echo "[Downloading current Go Mouse MGI  data]"
+	URL="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.mgi.gz?rev=HEAD"
+	curl $URL -o ${GOSRC}/gene_association.mgi.gz
+	get_webfile_version ${URL} "GO_Mouse"
+}
 
 #this function will validate, autofix and create gmt files from biopax files.
 # argument 1 - biopax file name
@@ -92,10 +105,10 @@ java -Xmx2G -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.NoO
 # argument 3 - database source
 function process_biopax_novalidation {
 
-#create gmt file from the given, autofixed biopax file
-#make sure the the id searching for doesn't have any spaces for the file name
-#long -D option turns off logging when using paxtool
-java -Xmx2G -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.NoOpLog -jar ${TOOLDIR}/GenesetTools.jar toGSEA --biopax ${1} --outfile ${1}_${2//[[:space:]]}.gmt --id "$2" --speciescheck FALSE --source "$3" 2>> biopax_process.err 1>> biopax_output.txt
+	#create gmt file from the given, autofixed biopax file
+	#make sure the the id searching for doesn't have any spaces for the file name
+	#long -D option turns off logging when using paxtool
+	java -Xmx2G -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.NoOpLog -jar ${TOOLDIR}/GenesetTools.jar toGSEA --biopax ${1} --outfile ${1}_${2//[[:space:]]}.gmt --id "$2" --speciescheck FALSE --source "$3" 2>> biopax_process.err 1>> biopax_output.txt
 }
 
 
@@ -104,7 +117,12 @@ java -Xmx2G -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.NoO
 # argument 2 - Source Name
 # argument 3 - if 1 replace second column with value of first column 
 function process_gmt {
-		
+	
+        #ticket #202 there are issues with some of the gmt files have \r instaed of \n as end of line
+        # make sure we replace all \r with \n
+	cat $1 | tr '\r' '\n' > temp.txt
+	mv temp.txt $1        
+	
 	#replace the second column with the first column if the third argument is 1
 	if [[ $3 == 1 ]] ; then
 		awk 'BEGIN{FS="\t"} {$2 = $1; for (i=1; i<=NF; i++) printf("%s\t", $i); printf("\n");}' $1 > temp.txt
@@ -122,6 +140,13 @@ function process_gmt {
 # argument 3 - id found in gmt file
 function translate_gmt {
 	java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 2>> translate_process.err 1>> translate_output.txt 
+}
+
+# argument 1 - gmt file name
+# argument 2 - taxonomy id
+# argument 3 - taxonomy name
+function convert_gmt {
+	java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar convertGeneSets --gmt $1 --homology ${TOOLDIR}/testFiles/homologene.data --newtaxid $2 --outfile ${3}_${1//[[:Human:]]} 2>> convert_process.err 1>> convert_output.txt 
 }
 
 #exclude Inferred by electronic annotations
@@ -186,6 +211,13 @@ function createDivisionDirs {
 	mkdir ${DISEASE}
 }
 
+#concatenate all the translation summary logs and place in main directory
+#argument 1 - directory to comile from
+#argument 2 - identifier this directory contains.
+function mergesummaries {
+	cat ${1}/${GO}/*summary.log ${1}/${PATHWAYS}/*summary.log ${1}/${MIR}/*summary.log ${1}/${TF}/*summary.log ${1}/${DISEASE}/*summary.log > ${1}/${2}_translation_summary.log   
+}
+
 
 #source all configuration parameters we need (contains paths to output directories and the like)
 
@@ -237,18 +269,18 @@ createDivisionDirs ${SYMBOL}
 # 3. GAF (Gene ontology flat file format) - create gmt files, convert identifiers to other desirable identifiers
 
 #download NCI from pathway commons - will replace with direct download once we get them working.
-PATHWAYCOMMONS=${SOURCE}/pathwaycommons
-mkdir -p ${PATHWAYCOMMONS}
-download_pc_data
-cd ${PATHWAYCOMMONS}
-unzip *.zip
-mv nci-nature-entrez-gene-id.gmt nci-nature-entrezgene.gmt
+#PATHWAYCOMMONS=${SOURCE}/pathwaycommons
+#mkdir -p ${PATHWAYCOMMONS}
+#download_pc_data
+#cd ${PATHWAYCOMMONS}
+#unzip *.zip
+#mv nci-nature-entrez-gene-id.gmt nci-nature-entrezgene.gmt
 #modify gmt file so the gmt conforms to our standard with name and description
-for file in *.gmt; do
-	process_gmt $file "PC_NCI" 1
-	translate_gmt $file "9606" "entrezgene"
-done 
-copy2release PC_NCI_Nature Human ${PATHWAYS}
+#for file in *.gmt; do
+#	process_gmt $file "PC_NCI" 1
+#	translate_gmt $file "9606" "entrezgene"
+#done 
+#copy2release PC_NCI_Nature Human ${PATHWAYS}
 
 #download NCI from NCI database.
 NCI=${SOURCE}/NCI
@@ -291,7 +323,7 @@ copy2release NetPath Human ${PATHWAYS}
 #download humancyc
 HUMANCYC=${SOURCE}/Humancyc
 mkdir ${HUMANCYC}
-download_humancyc_data
+download_biocyc_data "human" ${HUMANCYC}
 cd ${HUMANCYC}
 #unzip and untar human.tar.gz file
 tar -xvzf human.tar.gz *level3.owl
@@ -427,8 +459,16 @@ cat *_${NOIEA}*UniProt.gmt > Human_GOALL_${NOIEA}_UniProt.gmt
 cat *_${NOIEA}*symbol.gmt > Human_GOALL_${NOIEA}_symbol.gmt
 
 cp *entrezgene.gmt ${EG}/${GO}
+#create report of translations
+cat *gene_summary.log > ${EG}/${GO}/Human_GO_entrezgene_translation_summary.log
+
 cp *UniProt.gmt ${UNIPROT}/${GO}
+#create report of translations
+cat *UniProt_summary.log > ${UNIPROT}/${GO}/Human_GO_UniProt_translation_summary.log
+
 cp *symbol.gmt ${SYMBOL}/${GO}
+#create report of translations
+cat *UniProt_summary.log > ${UNIPROT}/${GO}/Human_GO_UniProt_translation_summary.log
 
 #compile all the different versions
 cd ${VERSIONS}
@@ -441,33 +481,40 @@ cat *.gmt > ../Human_AllPathways_entrezgene.gmt
 cd ${EG}/${GO}
 cat ../Human_AllPathways_entrezgene.gmt Human_GOALL_${WITHIEA}_entrezgene.gmt > ../Human_GO_AllPathways_${WITHIEA}_entrezgene.gmt
 cat ../Human_AllPathways_entrezgene.gmt Human_GOALL_${NOIEA}_entrezgene.gmt > ../Human_GO_AllPathways_${NOIEA}_entrezgene.gmt
+#merge all the summaries
+mergesummaries ${EG} entrezgene
 
 cd ${SYMBOL}/${PATHWAYS}
 cat *.gmt > ../Human_AllPathways_symbol.gmt
 cd ${SYMBOL}/${GO}
 cat ../Human_AllPathways_symbol.gmt Human_GOALL_${WITHIEA}_symbol.gmt > ../Human_GO_AllPathways_${WITHIEA}_symbol.gmt
 cat ../Human_AllPathways_symbol.gmt Human_GOALL_${NOIEA}_symbol.gmt > ../Human_GO_AllPathways_${NOIEA}_symbol.gmt
+#merge all the summaries
+mergesummaries ${SYMBOL} symbol
 
 cd ${UNIPROT}/${PATHWAYS}
 cat *.gmt > ../Human_AllPathways_UniProt.gmt
 cd ${UNIPROT}/${GO}
 cat ../Human_AllPathways_UniProt.gmt Human_GOALL_${WITHIEA}_UniProt.gmt > ../Human_GO_AllPathways_${WITHIEA}_UniProt.gmt
 cat ../Human_AllPathways_UniProt.gmt Human_GOALL_${NOIEA}_UniProt.gmt > ../Human_GO_AllPathways_${NOIEA}_UniProt.gmt
-
-
+#merge all the summaries
+mergesummaries ${UNIPROT} UniProt
 
 #################################################################
 # Create Mouse Genesets.
 ##########################################################
+#get the directory where the pathways to be converted are
+HUMANGMTS=${EG}
+HUMANVERSIONS=${VERSIONS}
 
 OUTPUTDIR=${CUR_RELEASE}/Mouse
 UNIPROT=${OUTPUTDIR}/UniProt
 EG=${OUTPUTDIR}/Entrezgene
 SYMBOL=${OUTPUTDIR}/symbol
-SOURCE=${CUR_RELEASE}/SRC_Mouse
+MOUSESOURCE=${CUR_RELEASE}/SRC_Mouse
 VERSIONS=${CUR_RELEASE}/version_mouse
 
-mkdir ${SOURCE}
+mkdir ${MOUSESOURCE}
 mkdir ${VERSIONS}
 mkdir -p ${UNIPROT}
 mkdir -p ${EG}
@@ -476,3 +523,172 @@ mkdir -p ${SYMBOL}
 createDivisionDirs ${UNIPROT}
 createDivisionDirs ${EG}
 createDivisionDirs ${SYMBOL}
+
+
+#Direct source for mouse come from GO, Mousecyc, Reactome, Kegg
+
+#download Mousecyc --get from human instead, there is nothing in the Mousecyc
+#MOUSECYC=${MOUSESOURCE}/Mousecyc
+#mkdir ${MOUSECYC}
+#download_biocyc_data "mouse" ${MOUSECYC}
+#cd ${MOUSECYC}
+#unzip and untar mouse biopax level 3 file
+#tar -xvzf mouse.tar.gz *level3.owl
+#cd 1.36/data
+#for file in *.owl; do
+#	process_biopax $file "UniProt" "MouseCyc"
+#done
+#for file in *.gmt; do
+#	translate_gmt $file "10090" "UniProt"
+#done
+#copy2release MouseCyc Mouse ${PATHWAYS}
+
+
+#download Reactome biopax data
+REACTOME=${MOUSESOURCE}/Reactome
+mkdir ${REACTOME}
+#copy reactome file from human src directory
+cp ${SOURCE}/Reactome/*.zip ${REACTOME}/
+#copy reactome version into mouse_versions directory.
+cp ${HUMANVERSIONS}/Reactome.txt ${VERSIONS}
+cd ${REACTOME}
+unzip biopax3.zip *musculus.owl
+mv Mus\ musculus.owl Musmusculus.owl
+
+#for some reason the validated and fixed Reactome file hangs.
+for file in *.owl; do
+	process_biopax_novalidation $file "UniProt" "Reactome"
+done
+for file in *.gmt; do
+	translate_gmt $file "10090" "UniProt"
+done
+copy2release Reactome Mouse ${PATHWAYS}
+
+
+#process GO
+GOSRC=${MOUSESOURCE}/GO
+mkdir ${GOSRC}
+download_GOmouse_data
+cd ${GOSRC}
+gunzip *.gz
+for file in *.mgi*; do
+	process_gaf $file "10090" "bp"
+	process_gaf_noiea  $file "10090" "bp"
+	process_gaf $file "10090" "mf"
+	process_gaf_noiea  $file "10090" "mf"
+	process_gaf $file "10090" "cc"
+	process_gaf_noiea  $file "10090" "cc"
+done
+for file in *.gmt; do
+	translate_gmt $file "10090" "MGI"
+done
+
+#create  the compilation of all branches
+cat *_${WITHIEA}*entrezgene.gmt > Mouse_GOALL_${WITHIEA}_entrezgene.gmt
+cat *_${WITHIEA}*UniProt.gmt > Mouse_GOALL_${WITHIEA}_UniProt.gmt
+cat *_${WITHIEA}*symbol.gmt > Mouse_GOALL_${WITHIEA}_symbol.gmt
+
+cat *_${NOIEA}*entrezgene.gmt > Mouse_GOALL_${NOIEA}_entrezgene.gmt
+cat *_${NOIEA}*UniProt.gmt > Mouse_GOALL_${NOIEA}_UniProt.gmt
+cat *_${NOIEA}*symbol.gmt > Mouse_GOALL_${NOIEA}_symbol.gmt
+
+cp *entrezgene.gmt ${EG}/${GO}
+#create report of translations
+cat *gene_summary.log > ${EG}/${GO}/Mouse_GO_entrezgene_translation_summary.log
+
+cp *UniProt.gmt ${UNIPROT}/${GO}
+#create report of translations
+cat *UniProt_summary.log > ${UNIPROT}/${GO}/Mouse_GO_UniProt_translation_summary.log
+
+cp *symbol.gmt ${SYMBOL}/${GO}
+#create report of translations
+cat *UniProt_summary.log > ${UNIPROT}/${GO}/Mouse_GO_UniProt_translation_summary.log
+
+
+#create a directory will all the gmt from human we want to convert to mouse
+CONV=${MOUSESOURCE}/ToBeConverted
+mkdir ${CONV}
+
+#copy the following files to mouse directory to be converted from human to mouse
+cd ${CONV}
+cp ${HUMANGMTS}/${PATHWAYS}/*NetPath*.gmt ./
+cp ${HUMANGMTS}/${PATHWAYS}/*IOB*.gmt ./
+cp ${HUMANGMTS}/${PATHWAYS}/*MSig*.gmt ./
+cp ${HUMANGMTS}/${PATHWAYS}/*NCI*.gmt ./
+cp ${HUMANGMTS}/${PATHWAYS}/*HumanCyc*.gmt ./
+cp ${HUMANGMTS}/${PATHWAYS}/*KEGG*.gmt ./
+
+#copy all version into mouse_versions directory.
+cp ${HUMANVERSIONS}/NetPath.txt ${VERSIONS}
+cp ${HUMANVERSIONS}/IOB.txt ${VERSIONS}
+cp ${HUMANVERSIONS}/msigdb_path.txt ${VERSIONS}
+cp ${HUMANVERSIONS}/NCI_Nature.txt ${VERSIONS}
+cp ${HUMANVERSIONS}/humancyc.txt ${VERSIONS}
+cp ${HUMANVERSIONS}/KEGG.txt ${VERSIONS}
+
+#cp ${HUMANGMTS}/${MIRS}/*.gmt ./
+#cp ${HUMANGMTS}/${TF}/*.gmt ./
+
+#go through each of the gmt file and convert to mouse entrez genes
+for file in Human*.gmt ; do
+	convert_gmt $file "10090" "Mouse"
+done
+
+#got through all the newly created Mouse gmt file and translate them from eg to uniprot and symbol
+for file in Mouse*.gmt ; do
+	translate_gmt $file "10090" "entrezgene"
+done
+
+#copy all the pathway file - can't use the copy function because there are multiple pathway datasets in this set. 
+cp Mouse*_Entrezgene.gmt ${EG}/${PATHWAYS}/
+cp Mouse*_UniProt.gmt ${UNIPROT}/${PATHWAYS}/
+cp Mouse*_symbol.gmt ${SYMBOL}/${PATHWAYS}/
+
+#concatenate all the translation summaries	
+files=$(ls *10090_conversion.log 2> /dev/null | wc -l)
+if [ $files != 0 ] ; then
+	cat *10090_conversion.log > Mouse_translatedPathways_Entrezgene_translation_summary.log
+	cp Mouse_translatedPathways_Entrezgene_translation_summary.log ${EG}/${PATHWAYS}/Mouse_translatedPathways_Entrezgene_translation_summary.log
+fi
+	
+files=$(ls *UniProt_summary.log 2> /dev/null | wc -l)
+if [ $files != 0 ] ; then
+	cat *UniProt_summary.log > Mouse_translatedPathways_UniProt_translation_summary.log
+	cp Mouse_translatedPathways_UniProt_translation_summary.log ${UNIPROT}/${PATHWAYS}/Mouse_translatedPathways_UniProt_translation_summary.log
+fi
+		
+files=$(ls *symbol_summary.log 2> /dev/null | wc -l)
+if [ $files != 0 ] ; then
+	cat *symbol_summary.log > Mouse_translatedPathways_symbol_translation_summary.log
+	cp $Mouse_translatedPathways_symbol_translation_summary.log ${SYMBOL}/${PATHWAYS}/Mouse_translatedPathways_symbol_translation_summary.log
+fi
+
+
+#compile all the different versions
+cd ${VERSIONS}
+cat *.txt > ${OUTPUTDIR}/${dir_name}_versions.txt
+
+#create all the different distributions
+cd ${EG}/${PATHWAYS}
+cat *.gmt > ../Mouse_AllPathways_entrezgene.gmt
+cd ${EG}/${GO}
+cat ../Mouse_AllPathways_entrezgene.gmt Mouse_GOALL_${WITHIEA}_entrezgene.gmt > ../Mouse_GO_AllPathways_${WITHIEA}_entrezgene.gmt
+cat ../Mouse_AllPathways_entrezgene.gmt Mouse_GOALL_${NOIEA}_entrezgene.gmt > ../Mouse_GO_AllPathways_${NOIEA}_entrezgene.gmt
+#merge all the summaries
+mergesummaries ${EG} entrezgene
+
+cd ${SYMBOL}/${PATHWAYS}
+cat *.gmt > ../Mouse_AllPathways_symbol.gmt
+cd ${SYMBOL}/${GO}
+cat ../Mouse_AllPathways_symbol.gmt Mouse_GOALL_${WITHIEA}_symbol.gmt > ../Mouse_GO_AllPathways_${WITHIEA}_symbol.gmt
+cat ../Mouse_AllPathways_symbol.gmt Mouse_GOALL_${NOIEA}_symbol.gmt > ../Mouse_GO_AllPathways_${NOIEA}_symbol.gmt
+#merge all the summaries
+mergesummaries ${SYMBOL} symbol
+
+cd ${UNIPROT}/${PATHWAYS}
+cat *.gmt > ../Mouse_AllPathways_UniProt.gmt
+cd ${UNIPROT}/${GO}
+cat ../Mouse_AllPathways_UniProt.gmt Mouse_GOALL_${WITHIEA}_UniProt.gmt > ../Mouse_GO_AllPathways_${WITHIEA}_UniProt.gmt
+cat ../Mouse_AllPathways_UniProt.gmt Mouse_GOALL_${NOIEA}_UniProt.gmt > ../Mouse_GO_AllPathways_${NOIEA}_UniProt.gmt
+#merge all the summaries
+mergesummaries ${UNIPROT} UniProt
