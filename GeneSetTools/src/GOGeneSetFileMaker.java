@@ -180,7 +180,7 @@ public class GOGeneSetFileMaker {
 	                     String branch = results.getString("ancestor_term_type");
 	                     String id = results.getString("ancestor_acc");
                          String name = results.getString("term_name");
-                         String name_descr = "GO?" + id + "\t" + name;
+                         String name_descr = "GO"+ Biopax2GMT.DBSOURCE_SEPARATOR + id + "\t" + name;
 	                     String gene = results.getString("symbol");
                          String uniprot = "";
                          if(id_type.equalsIgnoreCase("uniprot"))
@@ -328,6 +328,10 @@ public class GOGeneSetFileMaker {
                    //GAFGeneset current_set_symbol = new GAFGeneset(goid,product,"symbol",taxon);
                    String current_set = goid;
 
+		   //if the current_set is "All" then ignore it
+		   if(current_set.equalsIgnoreCase("all"))
+			continue;
+
                    if(file_gs.containsKey(current_set)){
                         HashSet<String> current_list = file_gs.get(current_set);
                         current_list.add(dbid);
@@ -392,8 +396,12 @@ public class GOGeneSetFileMaker {
                 String current = (String)j.next();
                 Set<String> genes = file_gs.get(current);
                 Set<String> genes_symbol = file_gs_symbol.get(current);
-                //gs name = GO?goid
-                String name = "GO?" + current;
+                //gs name = GO|goid
+                String name = "GO" +Biopax2GMT.DBSOURCE_SEPARATOR + current;
+
+                //if current is the set name "All" ignore it.
+                if(current.equalsIgnoreCase("all"))
+                    continue;
 
                 //up propagate the annotations for the terms that have descendants
                 HashSet<String> children = null;
@@ -446,11 +454,16 @@ public class GOGeneSetFileMaker {
             for(Iterator j = missingGoSets.iterator();j.hasNext();){
 
                 String current = (String)j.next();
+
+		//if the current_set is "All" then ignore it
+		if(current.equalsIgnoreCase("all"))
+			continue;
+
                 //there are no genes associated with these terms that is why we have to go through them.
                 Set<String> genes = new HashSet<String>();
                 Set<String> genes_symbol = new HashSet<String>();
-                //gs name = GO?goid
-                String name = "GO?" + current;
+                //gs name = GO|goid
+                String name = "GO" + Biopax2GMT.DBSOURCE_SEPARATOR + current;
 
                 //up propagate the annotations for the terms that have descendants
                 HashSet<String> children = null;

@@ -200,6 +200,7 @@ public class GeneSetTaxidConverter {
         log.write("Number of annotations (original gmt)\t" + num_annotations_original+ "\n");
         log.write("Number of lost annotations\t" +num_missing_annotations + "\n");
         log.write("Percentage of missing annotations\t" + ((num_missing_annotations/1.0)/(num_annotations_original/1.0)) * 100 + "%\n" );
+        log.write("===================================\n");
         log.flush();
         log.close();
 

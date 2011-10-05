@@ -299,7 +299,7 @@ public class GeneSetTranslator {
             log_sum.write("Total annotations in the file\t" + totalAnnotations + "\n");
             log_sum.write("Total Untranslated annotations\t" + totalUnfoundAnnotations + "\n");
             log_sum.write("Percentage annotations not translated\t" + (((totalUnfoundAnnotations/1.0)/(totalAnnotations/1.0)) * 100) + "%\n");
-
+            log_sum.write("===================================\n");
             log.flush();
             log.close();
             log_sum.flush();

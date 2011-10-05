@@ -10,16 +10,14 @@
  */
 // imports
 
-import org.biopax.paxtools.controller.PropertyEditor;
-import org.biopax.paxtools.controller.SimpleEditorMap;
-import org.biopax.paxtools.controller.Traverser;
-import org.biopax.paxtools.controller.Visitor;
+import org.biopax.paxtools.controller.*;
 import org.biopax.paxtools.converter.OneTwoThree;
 import org.biopax.paxtools.io.SimpleIOHandler;
 import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.*;
+import org.biopax.paxtools.util.Filter;
 import org.kohsuke.args4j.Option;
 
 import java.io.*;
@@ -42,7 +40,7 @@ import java.util.*;
  * Note this code assumes that the model has successfully been validated
  * using the BioPAX validator.
  */
-public class Biopax2GMT implements Visitor {
+public class Biopax2GMT  {
 
     @Option(name = "--biopax", usage = "name of biopax file to convert", required = true)
     private String owl_filename;
@@ -115,7 +113,34 @@ public class Biopax2GMT implements Visitor {
 		this.source = source;
         this.database = database;
     	this.crossSpeciesCheck = crossSpeciesCheck;
-    	this.traverser = new Traverser(SimpleEditorMap.L3, this);
+    	//this.traverser = new Traverser(SimpleEditorMap.L3, this);
+        final String db = this.database;
+        this.traverser = new AbstractTraverser(SimpleEditorMap.L3,new Filter<PropertyEditor>() {
+            public boolean filter(PropertyEditor editor) {
+                			return !editor.getProperty().equals("nextStep");
+                 		}
+
+
+        })
+        {
+            protected void visit(Object range, BioPAXElement domain, Model model,
+    					PropertyEditor editor) {
+    				boolean checkDatabase = (db != null && db.length() > 0 && !db.equals("NONE"));
+
+    	        if (range != null && range instanceof BioPAXElement && !visited.contains(range)) {
+    		        if (visitProtein) {
+    			        visitProtein(range, checkDatabase);
+    		        }
+    		        else {
+    			        visitProteinReference(range, checkDatabase);
+    		        }
+    		        visited.add((BioPAXElement)range);
+			        traverse((BioPAXElement)range, model);
+    	        }
+    		}
+
+        };
+
 	}
 
     public void toGSEA() throws IOException{
@@ -178,7 +203,7 @@ public class Biopax2GMT implements Visitor {
     }
 
 
-    public void visit(BioPAXElement domain, Object range, Model model, PropertyEditor editor) {
+ /*   public void visit(BioPAXElement domain, Object range, Model model, PropertyEditor editor) {
 
     	boolean checkDatabase = (this.database != null && this.database.length() > 0 && !this.database.equals("NONE"));
 
@@ -193,7 +218,7 @@ public class Biopax2GMT implements Visitor {
 			this.traverser.traverse((BioPAXElement)range, model);
     	}
     }
-
+   */
 	private GeneSet getGSEAEntry(final Model model, final Pathway aPathway, final String database) {
 
 		// the GSEAEntry to return
@@ -334,8 +359,10 @@ public class Biopax2GMT implements Visitor {
 				else {
 					for (Xref aXref: aProteinRef.getXref()) {
 						if (aXref.getDb() != null && aXref.getDb().equalsIgnoreCase(database)) {
-							this.rdfToGenes.put(aProteinRef.getRDFId(), aXref.getId());
-							break;
+							if(!aXref.getId().equalsIgnoreCase("--") && !aXref.getId().equalsIgnoreCase("---") && !aXref.getId().equalsIgnoreCase("null")){
+                                this.rdfToGenes.put(aProteinRef.getRDFId(), aXref.getId());
+							    break;
+                            }
 						}
 					}
 				}
