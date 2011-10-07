@@ -1,6 +1,5 @@
 import com.hp.hpl.jena.reasoner.rulesys.builtins.Remove;
 import org.kohsuke.args4j.Option;
-import sun.rmi.rmic.Names;
 
 import java.io.BufferedWriter;
 import java.io.File;
