@@ -129,8 +129,9 @@ function process_gmt {
 		mv temp.txt $1
 	fi
 	
-	#add the gmt source to the front of every geneset name	
-	awk -v name="${2}" 'BEGIN{FS="\t"} {sub(/^/,name"|")};1' $1 > temp.txt
+	#add the gmt source to the front of every geneset name
+        #change of naming format.  Geneset name | Geneset source | Geneset ID	
+	awk -v name="${2}" 'BEGIN{FS="\t"} {sub(/^/,$1"|"name"|")};1' $1 > temp.txt
 	#sed 's/^${2}\|//g' $1 > temp.gmt
 	mv temp.txt $1 
 }
@@ -215,9 +216,96 @@ function createDivisionDirs {
 #argument 1 - directory to comile from
 #argument 2 - identifier this directory contains.
 function mergesummaries {
-	cat ${1}/${GO}/*summary.log ${1}/${PATHWAYS}/*summary.log ${1}/${MIR}/*summary.log ${1}/${TF}/*summary.log ${1}/${DISEASE}/*summary.log > ${1}/${2}_translation_summary.log   
+	go_files=$(ls ${1}/${GO}/*summary.log 2> /dev/null | wc -l)
+	path_files=$(ls ${1}/${PATHWAYS}/*summary.log 2> /dev/null | wc -l)
+	mir_files=$(ls ${1}/${MIR}/*summary.log 2> /dev/null | wc -l)
+	tf_files=$(ls ${1}/${TF}/*summary.log 2> /dev/null | wc -l)
+	dis_files=$(ls ${1}/${DISEASE}/*summary.log 2> /dev/null | wc -l)
+
+	if [ $go_files != 0 ] ; then
+		cat ${1}/${GO}/*summary.log > temp.log   
+	fi
+	if [ $path_files != 0 ] ; then
+		cat temp.log ${1}/${PATHWAYS}/*summary.log > temp.log   
+	fi
+        if [ $mir_files != 0 ] ; then
+		cat temp.log ${1}/${MIR}/*summary.log > temp.log   
+	fi
+	if [ $tf_files != 0 ] ; then
+		cat temp.log ${1}/${TF}/*summary.log > temp.log   
+	fi
+	if [ $dis_files != 0 ] ; then
+		cat temp.log ${1}/${DISEASE}/*summary.log > temp.log   
+	fi
+
+	mv temp.log ${1}/${2}_translation_summary.log 
+
+	#cat ${1}/${GO}/*summary.log ${1}/${PATHWAYS}/*summary.log ${1}/${MIR}/*summary.log ${1}/${TF}/*summary.log ${1}/${DISEASE}/*summary.log > ${1}/${2}_translation_summary.log   
+
 }
 
+#summarize the number of genesets in one file
+#argument 1 - directory to comile from
+function getstats {
+      echo 'Gene Set Statistics for Release ' ${dir_name} > ${1}/Summary_GeneSet_Counts.txt
+        cd ${1}/${GO}
+        files=$(ls *.gmt 2> /dev/null | wc -l)
+        if [ $files != 0 ] ; then
+
+                echo 'GO with IEA Stats:' >> ${1}/Summary_Geneset_Counts.txt
+                wc -l *bp_with* >> ${1}/Summary_Geneset_Counts.txt
+                wc -l *mf_with* >> ${1}/Summary_Geneset_Counts.txt
+                wc -l *cc_with* >> ${1}/Summary_Geneset_Counts.txt
+                echo 'Total GO with IEA:' >> ${1}/Summary_Geneset_Counts.txt
+                wc -l *ALL_with* >> ${1}/Summary_Geneset_Counts.txt
+                echo '------------------'  >> ${1}/Summary_Geneset_Counts.txt
+                echo 'GO no IEA Stats:' >> ${1}/Summary_Geneset_Counts.txt
+                wc -l *bp_no* >> ${1}/Summary_Geneset_Counts.txt
+                wc -l *mf_no* >> ${1}/Summary_Geneset_Counts.txt
+                wc -l *cc_no* >> ${1}/Summary_Geneset_Counts.txt
+                echo 'Total GO no IEA:' >> ${1}/Summary_Geneset_Counts.txt
+                wc -l *ALL_no* >> ${1}/Summary_Geneset_Counts.txt
+                echo '------------------'  >> ${1}/Summary_Geneset_Counts.txt
+        fi
+
+        cd ${1}/${PATHWAYS}
+        files=$(ls *.gmt 2> /dev/null | wc -l)
+        if [ $files != 0 ] ; then
+
+                echo 'Pathway Stats:' >> ${1}/Summary_Geneset_Counts.txt
+                wc -l *.gmt >> ${1}/Summary_Geneset_Counts.txt
+                echo '------------------'  >> ${1}/Summary_Geneset_Counts.txt
+        fi
+
+	 cd ${1}/${MIR}
+        files=$(ls *.gmt 2> /dev/null | wc -l)
+        if [ $files != 0 ] ; then
+                echo 'miR Stats:' >> ${1}/Summary_Geneset_Counts.txt
+                wc -l *.gmt >> ${1}/Summary_Geneset_Counts.txt
+                echo '------------------'  >> ${1}/Summary_Geneset_Counts.txt
+        fi
+
+        cd ${1}/${TF}
+        files=$(ls *.gmt 2> /dev/null | wc -l)
+        if [ $files != 0 ] ; then
+
+                echo 'Transcription Factor Stats:' >> ${1}/Summary_Geneset_Counts.txt
+                wc -l *.gmt >> ${1}/Summary_Geneset_Counts.txt
+                echo '------------------'  >> ${1}/Summary_Geneset_Counts.txt
+        fi
+
+        cd ${1}/${DISEASE}
+        files=$(ls *.gmt 2> /dev/null | wc -l)
+        if [ $files != 0 ] ; then
+
+                echo 'Disease Phenotypes Stats:' >> ${1}/Summary_Geneset_Counts.txt
+                wc -l *.gmt >> ${1}/Summary_Geneset_Counts.txt
+        fi
+
+        mv ${1}/Summary_Geneset_Counts.txt ${OUTPUTDIR}
+
+
+}
 
 #source all configuration parameters we need (contains paths to output directories and the like)
 
@@ -327,7 +415,10 @@ download_biocyc_data "human" ${HUMANCYC}
 cd ${HUMANCYC}
 #unzip and untar human.tar.gz file
 tar -xvzf human.tar.gz *level3.owl
-cd 15.1/data
+#the release number keeps changing - need a way to change into the right directory without knowing what the new number is
+# instead of specifying the name of the directory put *.  This will break if
+# they change the data directory structure though.
+cd */data
 for file in *.owl; do
 	process_biopax $file "UniProt" "HumanCyc"
 done
@@ -499,6 +590,9 @@ cat ../Human_AllPathways_UniProt.gmt Human_GOALL_${WITHIEA}_UniProt.gmt > ../Hum
 cat ../Human_AllPathways_UniProt.gmt Human_GOALL_${NOIEA}_UniProt.gmt > ../Human_GO_AllPathways_${NOIEA}_UniProt.gmt
 #merge all the summaries
 mergesummaries ${UNIPROT} UniProt
+
+#create the stats summary
+getstats ${EG}
 
 #################################################################
 # Create Mouse Genesets.
@@ -692,3 +786,10 @@ cat ../Mouse_AllPathways_UniProt.gmt Mouse_GOALL_${WITHIEA}_UniProt.gmt > ../Mou
 cat ../Mouse_AllPathways_UniProt.gmt Mouse_GOALL_${NOIEA}_UniProt.gmt > ../Mouse_GO_AllPathways_${NOIEA}_UniProt.gmt
 #merge all the summaries
 mergesummaries ${UNIPROT} UniProt
+
+getstats ${EG}
+
+#copy the files over the webserver
+mkdir /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name
+cp -R ${CUR_RELEASE}/Human /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name/Human
+cp -R ${CUR_RELEASE}/Mouse /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name/Mouse
