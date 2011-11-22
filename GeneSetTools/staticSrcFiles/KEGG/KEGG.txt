@@ -1,0 +1,3 @@
+KEGG
+Kegg was downloaded from the previously public ftp site on July 1, 2011
+============

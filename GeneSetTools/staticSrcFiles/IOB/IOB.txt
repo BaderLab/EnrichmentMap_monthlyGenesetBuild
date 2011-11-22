@@ -1,0 +1,3 @@
+IOB
+IOB pathways were recieved from IOB in July 2011, validated and autofixed using the biopax validator.
+=====================
