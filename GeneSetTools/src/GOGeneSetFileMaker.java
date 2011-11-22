@@ -180,7 +180,7 @@ public class GOGeneSetFileMaker {
 	                     String branch = results.getString("ancestor_term_type");
 	                     String id = results.getString("ancestor_acc");
                          String name = results.getString("term_name");
-                         String name_descr = "GO"+ Biopax2GMT.DBSOURCE_SEPARATOR + id + "\t" + name;
+                         String name_descr = name + Biopax2GMT.DBSOURCE_SEPARATOR + "GO"+ Biopax2GMT.DBSOURCE_SEPARATOR + id + "\t" + name;
 	                     String gene = results.getString("symbol");
                          String uniprot = "";
                          if(id_type.equalsIgnoreCase("uniprot"))
@@ -422,7 +422,7 @@ public class GOGeneSetFileMaker {
                     descrip = goterms.get(current);
                 else
                     descrip = "GO ID not found in EBI mysql db";
-                writer.print(name + "\t" + descrip);
+                writer.print(descrip + Biopax2GMT.DBSOURCE_SEPARATOR + name + "\t" + descrip);
 
                 //list of genes
                 for (String gene : genes) {

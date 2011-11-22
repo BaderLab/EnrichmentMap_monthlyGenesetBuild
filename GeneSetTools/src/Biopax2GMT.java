@@ -265,13 +265,16 @@ public class Biopax2GMT  {
             if(aXref.getClass().getSimpleName().equalsIgnoreCase( "UnificationXrefImpl")){
 
 				if (aXref.getDb() != null && aXref.getId() != null && aXref.getIdVersion() != null) {
-                    pathwayID = aXref.getDb() + DBSOURCE_SEPARATOR + aXref.getId() + "." + aXref.getIdVersion() ;
+                    //pathwayID = aXref.getDb() + DBSOURCE_SEPARATOR + aXref.getId() + "." + aXref.getIdVersion() ;
+                    pathwayID = name + DBSOURCE_SEPARATOR + aXref.getDb() + DBSOURCE_SEPARATOR + aXref.getId() + "." + aXref.getIdVersion() ;
                 }
                 else if(aXref.getDb() != null && aXref.getId() != null && aXref.getIdVersion() == null) {
-                     pathwayID = aXref.getDb() + DBSOURCE_SEPARATOR + aXref.getId();
+                     //pathwayID = aXref.getDb() + DBSOURCE_SEPARATOR + aXref.getId();
+                     pathwayID = name + DBSOURCE_SEPARATOR + aXref.getDb() + DBSOURCE_SEPARATOR + aXref.getId();
                 }
                 else if(aXref.getDb() == null && aXref.getId() != null) {
-                     pathwayID = "NO_DATABASE_DEFINED" + DBSOURCE_SEPARATOR + aXref.getId();
+                     //pathwayID = "NO_DATABASE_DEFINED" + DBSOURCE_SEPARATOR + aXref.getId();
+                     pathwayID = name + DBSOURCE_SEPARATOR + "NO_DATABASE_DEFINED" + DBSOURCE_SEPARATOR + aXref.getId();
                 }
 				//Making a very naive assumption that only stable identifiers start with "REACT_"
                 //as a hack to get the Reactome stable ID.
@@ -284,12 +287,14 @@ public class Biopax2GMT  {
 			}
         }
 		if(!stableID.equals("")){
-				pathwayID = dataSource + DBSOURCE_SEPARATOR + stableID;
+				//pathwayID = dataSource + DBSOURCE_SEPARATOR + stableID;
+				pathwayID =name + DBSOURCE_SEPARATOR + dataSource + DBSOURCE_SEPARATOR + stableID;
 		}else if(stableID.equals("") && !tempID.equals("")){
-            pathwayID = dataSource + DBSOURCE_SEPARATOR + tempID;
+            //pathwayID = dataSource + DBSOURCE_SEPARATOR + tempID;
+            pathwayID =name + DBSOURCE_SEPARATOR + dataSource + DBSOURCE_SEPARATOR + tempID;
         }
 
-        name = (pathwayID.equalsIgnoreCase(dataSource)) ? dataSource + DBSOURCE_SEPARATOR + name : pathwayID;
+        name = (pathwayID.equalsIgnoreCase(dataSource)) ? name + DBSOURCE_SEPARATOR + dataSource + DBSOURCE_SEPARATOR + name : pathwayID;
         toReturn.setName(name);
 
 		// genes
