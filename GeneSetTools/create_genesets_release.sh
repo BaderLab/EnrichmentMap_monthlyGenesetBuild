@@ -130,8 +130,8 @@ function process_gmt {
 	fi
 	
 	#add the gmt source to the front of every geneset name
-        #change of naming format.  Geneset name | Geneset source | Geneset ID	
-	awk -v name="${2}" 'BEGIN{FS="\t"} {sub(/^/,$1"|"name"|")};1' $1 > temp.txt
+        #change of naming format.  Geneset name % Geneset source % Geneset ID	
+	awk -v name="${2}" 'BEGIN{FS="\t"} {sub(/^/,$1"%"name"%")};1' $1 > temp.txt
 	#sed 's/^${2}\|//g' $1 > temp.gmt
 	mv temp.txt $1 
 }
@@ -309,11 +309,14 @@ function getstats {
 
 #source all configuration parameters we need (contains paths to output directories and the like)
 
+#make sure we are using Java 6
+export JAVA_HOME="/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home"
+
 #create a new directory for this release (the directory name will be the date that it was built)
 dir_name=`date '+%B_%d_%Y'`
-TOOLDIR=/Users/risserlin/SourceCode/GeneSetTools
-VALIDATORDIR=/Users/risserlin/SourceCode/GeneSetTools/biopax-validator-2.0.0beta4
-STATICDIR=/Users/risserlin/SourceCode/GeneSetTools/staticSrcFiles
+TOOLDIR=`pwd`
+VALIDATORDIR=${TOOLDIR}/biopax-validator-2.0.0beta4
+STATICDIR=${TOOLDIR}/staticSrcFiles
 WORKINGDIR=`pwd`
 CUR_RELEASE=${WORKINGDIR}/${dir_name}
 
@@ -793,3 +796,7 @@ getstats ${EG}
 mkdir /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name
 cp -R ${CUR_RELEASE}/Human /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name/Human
 cp -R ${CUR_RELEASE}/Mouse /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name/Mouse
+
+#create a symbolic link to the latest download indicating it as current_release
+ln -sf /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name/ /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name/current_release
+

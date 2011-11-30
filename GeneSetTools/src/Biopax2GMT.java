@@ -67,7 +67,7 @@ public class Biopax2GMT  {
 	Traverser traverser;
     private int proteinref_count = 0;
 
-    public static String DBSOURCE_SEPARATOR = "|";
+    public static String DBSOURCE_SEPARATOR = "%";
 
 	/**
 	 * Constructor.
