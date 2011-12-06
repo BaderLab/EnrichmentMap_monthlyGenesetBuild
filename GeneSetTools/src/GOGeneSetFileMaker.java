@@ -463,7 +463,8 @@ public class GOGeneSetFileMaker {
             //have annotations.
             //check to see which terms with descendants aren't in our file_gs set.
             Set<String> gafSets = file_gs.keySet();
-            Set<String> missingGoSets =  descendants.keySet();
+            //Set<String> missingGoSets =  descendants.keySet();
+            Set<String> missingGoSets =  new HashSet<String>(goterms.keySet());
 
             //calculate the missing genesets
             missingGoSets.removeAll(gafSets);
@@ -728,6 +729,7 @@ public class GOGeneSetFileMaker {
         else{
             //go through the list of children and children of those children
             for(Iterator<String> i = parent_Child.get(term).iterator(); i.hasNext();){
+                children.add(term);
                 children.addAll(getChildren(parent_Child,i.next()));
 
             }
