@@ -68,6 +68,14 @@ function download_GOhuman_data {
 	URL="ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/HUMAN/"
 	curl ${URL}/gene_association.goa_human.gz -o ${GOSRC}/gene_association.goa_human.gz
 	get_webfile_version ${URL}/gene_association.goa_human.gz "GO_Human"
+
+	#get the obo file from the gene ontology website
+	echo "[Downloading current GO OBO file]"
+	URL="ftp://ftp.geneontology.org/pub/go/ontology/obo_format_1_2/"
+	curl ${URL}/gene_ontology.1_2.obo -o ${GOSRC}/gene_ontology.1_2.obo
+	get_webfile_version ${URL}/gene_ontology.1_2.obo "GO_OBO_FILE"
+
+
 }
 
 #Mouse data is downloaded from the Gene ontology website and comes from MGI
@@ -154,15 +162,17 @@ function convert_gmt {
 # argument 1 - gaf file name
 # argument 2 - taxonomy id
 # argument 3 - branch of go (all, bp, mf or cc)
+# argument 4 - obo file name
 function process_gaf_noiea {
-	java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar createGo --organism $2 --branch $3 --infile $1 --exclude 2>> ${NOIEA}_process.err 1>> ${NOIEA}_output.txt 
+	java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar createGo --organism $2 --branch $3 --gaffile $1 --obofile $4 --exclude 2>> ${NOIEA}_process.err 1>> ${NOIEA}_output.txt 
 }
 
 # argument 1 - gaf file name
 # argument 2 - taxonomy id
 # argument 3 - branch of go (all, bp, mf or cc)
+# argument 4 - obo file name
 function process_gaf {
-	java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar createGo --organism $2 --branch $3 --infile $1  2>> ${WITHIEA}_process.err 1>> ${WITHIEA}_output.txt 
+	java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar createGo --organism $2 --branch $3 --gaffile $1 --obofile $4  2>> ${WITHIEA}_process.err 1>> ${WITHIEA}_output.txt 
 }
 
 # argument 1 - source to copy
@@ -529,15 +539,16 @@ done
 GOSRC=${SOURCE}/GO
 mkdir ${GOSRC}
 download_GOhuman_data
+GOOBO=${GOSRC}/gene_ontology.1_2.obo
 cd ${GOSRC}
 gunzip *.gz
 for file in *.goa*; do
-	process_gaf $file "9606" "bp"
-	process_gaf_noiea  $file "9606" "bp"
-	process_gaf $file "9606" "mf"
-	process_gaf_noiea  $file "9606" "mf"
-	process_gaf $file "9606" "cc"
-	process_gaf_noiea  $file "9606" "cc"
+	process_gaf $file "9606" "bp" ${GOOBO}
+	process_gaf_noiea  $file "9606" "bp" ${GOOBO}
+	process_gaf $file "9606" "mf" ${GOOBO}
+	process_gaf_noiea  $file "9606" "mf" ${GOOBO}
+	process_gaf $file "9606" "cc" ${GOOBO}
+	process_gaf_noiea  $file "9606" "cc" ${GOOBO}
 done
 for file in *.gmt; do
 	translate_gmt $file "9606" "UniProt"
@@ -669,12 +680,12 @@ download_GOmouse_data
 cd ${GOSRC}
 gunzip *.gz
 for file in *.mgi*; do
-	process_gaf $file "10090" "bp"
-	process_gaf_noiea  $file "10090" "bp"
-	process_gaf $file "10090" "mf"
-	process_gaf_noiea  $file "10090" "mf"
-	process_gaf $file "10090" "cc"
-	process_gaf_noiea  $file "10090" "cc"
+	process_gaf $file "10090" "bp" ${GOOBO}
+	process_gaf_noiea  $file "10090" "bp" ${GOOBO}
+	process_gaf $file "10090" "mf" ${GOOBO}
+	process_gaf_noiea  $file "10090" "mf" ${GOOBO}
+	process_gaf $file "10090" "cc" ${GOOBO}
+	process_gaf_noiea  $file "10090" "cc" ${GOOBO}
 done
 for file in *.gmt; do
 	translate_gmt $file "10090" "MGI"
