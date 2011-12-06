@@ -183,8 +183,8 @@ public class GenesetTools {
 
         if(maker.isInfile())
             maker.parseGAF2();
-        else
-            maker.queryEBI();
+        /*else
+            maker.queryEBI();*/
 
     }
 

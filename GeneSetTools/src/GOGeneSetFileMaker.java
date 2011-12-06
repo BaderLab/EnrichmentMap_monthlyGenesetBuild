@@ -2,15 +2,16 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+//import java.sql.Connection;
+//import java.sql.DriverManager;
+//import java.sql.ResultSet;
+//import java.sql.SQLException;
+//import java.sql.Statement;
 import java.util.*;
 
-import com.mysql.jdbc.Driver;
+//import com.mysql.jdbc.Driver;
 
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import cytoscape.data.readers.TextFileReader;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.CmdLineException;
@@ -37,8 +38,10 @@ public class GOGeneSetFileMaker {
     private int fTaxonomyId;
     @Option(name = "--outfile", usage = "name of output file")
     private String fQueryFilename;
-    @Option(name = "--infile", usage = "name of input gaf GO file to parse")
+    @Option(name = "--gaffile", usage = "name of input gaf GO file to parse")
     private String gafFilename;
+    @Option(name = "--obofile", usage = "name of input obo GO file to parse")
+    private String oboFilename;
     @Option(name = "--branch", usage = "Branch of GO to use (one of: bp, mf, cc, all) - defaults to all")
     private String fBranch = "all"; //$NON-NLS-1$
     @Option(name = "--idtype", usage = "type of id to use (one of: uniprot or symbol) - Defaults to symbol")
@@ -46,10 +49,14 @@ public class GOGeneSetFileMaker {
     @Option(name = "--exclude", usage = "exclude all annotation ids attributed to IEA, RCA, or ND - defaults to true")
     private boolean exclude = false;
 
-	private String fConnectionString = "jdbc:mysql://mysql.ebi.ac.uk:4085/go_latest?user=go_select&password=amigo"; //$NON-NLS-1$
+	//private String fConnectionString = "jdbc:mysql://mysql.ebi.ac.uk:4085/go_latest?user=go_select&password=amigo"; //$NON-NLS-1$
 
     private static String noiea = "no_GO_iea";
     private static String withiea = "with_GO_iea";
+
+    //create objects to hold all the terms in GO
+    HashMap<String, OBOTerm> terms ;
+    HashMap<String, HashSet<String>> descendants;
 
     public GOGeneSetFileMaker() {
     }
@@ -70,7 +77,7 @@ public class GOGeneSetFileMaker {
         return "select I.release_name, I.release_type from instance_data as I";
     }
 
-    private String createGoQuery(long taxId) {
+  /*  private String createGoQuery(long taxId) {
 	    String ignoreClause = " and evidence.code not in ('IEA', 'ND', 'RCA') ";
         String sql_stmt = "select" +
                       " ancestor_term.term_type as ancestor_term_type," +
@@ -92,9 +99,9 @@ public class GOGeneSetFileMaker {
         else
             return sql_stmt + ";";
 	    }
+    */
 
-
-    private String createGoQuery_uniprot(long taxId) {
+/*    private String createGoQuery_uniprot(long taxId) {
 	    String ignoreClause = "and evidence.code not in ('IEA', 'ND', 'RCA')";
         String sql_stmt = "select" +
                       " ancestor_term.term_type as ancestor_term_type," +
@@ -232,9 +239,13 @@ public class GOGeneSetFileMaker {
 	         e.printStackTrace();
 
 	     }
-	}
+	} */
 
-    public void parseGAF2()throws IOException,SQLException{
+    public void parseGAF2()throws IOException/*,SQLException*/{
+
+        //parse the GO information from the OBO file.
+        parseOBO();
+
         //track the distinct dbnames,products and taxons to make sure that if there are multiple dbs that we track them all.
         HashMap<String,Integer> dbnames = new HashMap<String,Integer>();
         HashMap<String,Integer> products = new HashMap<String,Integer>();
@@ -386,9 +397,14 @@ public class GOGeneSetFileMaker {
 
             PrintWriter writer = new PrintWriter(new File(fQueryFilename));
             PrintWriter writer_symbol = new PrintWriter(new File(fQueryFilename + "_symbol"));
-            HashMap<String,String> goterms = getGoterms();
+            //HashMap<String,String> goterms = getGoterms();
+
+            //use OBO instead of DB
+            HashMap<String,String> goterms = getGOTerms_OBO();
             //get all the descendants for the terms
-            HashMap<String, HashSet<String>> descendants = getDescendants();
+            //HashMap<String, HashSet<String>> descendants = getDescendants();
+
+
             //go through all the GAF genesets and create genesets for them.
             for(Iterator j = file_gs.keySet().iterator();j.hasNext();){
                 //GAFGeneset current = (GAFGeneset)j.next();
@@ -421,7 +437,7 @@ public class GOGeneSetFileMaker {
                 if(goterms.containsKey(current))
                     descrip = goterms.get(current);
                 else
-                    descrip = "GO ID not found in EBI mysql db";
+                    descrip = "GO ID not found in OBO file ontology definitions";
                 writer.print(descrip + Biopax2GMT.DBSOURCE_SEPARATOR + name + "\t" + descrip);
 
                 //list of genes
@@ -483,7 +499,7 @@ public class GOGeneSetFileMaker {
                 if(goterms.containsKey(current))
                     descrip = goterms.get(current);
                 else
-                    descrip = "GO ID not found in EBI mysql db";
+                    descrip = "GO ID not found in OBO ontology definition file";
 
                 if(genes != null && genes.size() > 0){
 
@@ -515,8 +531,20 @@ public class GOGeneSetFileMaker {
             return;
 
     }
+    private HashMap<String, String> getGOTerms_OBO(){
+        HashMap<String,String> goterms = new HashMap<String, String>();
+        if(!terms.isEmpty()){
+            for(Iterator<String> i = terms.keySet().iterator();i.hasNext();){
+                OBOTerm currentOboTerm = terms.get((String)i.next());
+                String acc = currentOboTerm.getId();
+                String name = currentOboTerm.getName();
+                goterms.put(acc,name);
+            }
+        }
+        return goterms;
+    }
 
-    private HashMap<String,String> getGoterms() throws SQLException{
+ /*   private HashMap<String,String> getGoterms() throws SQLException{
 
         HashMap<String,String> goterms = new HashMap<String, String>();
         String termquery = "select name,acc from term ;" ;
@@ -537,9 +565,9 @@ public class GOGeneSetFileMaker {
 
 
         return goterms;
-    }
+    }   */
 
-    private HashMap<String, HashSet<String>> getDescendants() throws SQLException{
+ /*   private HashMap<String, HashSet<String>> getDescendants() throws SQLException{
         HashMap<String, HashSet<String>> descendants = new HashMap<String, HashSet<String>>();
         String termquery = "select term.acc as parent, descendant.acc as child from term, graph_path, term as descendant " +
                 "where " +
@@ -571,7 +599,169 @@ public class GOGeneSetFileMaker {
 
 
         return descendants;
+    }   */
+
+    private void parseOBO(){
+        //create a new set of Terms.  The key is the GO:id
+        terms = new HashMap<String, OBOTerm>();
+
+        if(oboFilename != null || !oboFilename.equalsIgnoreCase("")){
+            TextFileReader reader = new TextFileReader(oboFilename);
+            reader.read();
+            String fullText = reader.getText();
+
+            String []lines = fullText.split("\n");
+            String current_id = "";
+            OBOTerm current_term = new OBOTerm();
+
+            for (int i = 0; i < lines.length; i++) {
+
+               String line = lines[i];
+
+                //read lines until we get to "[Term]"
+                //once we get to a line with "[Term]" we need to look for id, name, namespace,definition and is_a
+                //or if we come across an empty line
+                if(line.contains("[Term]") || line.equalsIgnoreCase("")){
+                    //add previous Term to our list of Terms
+                    if(!current_id.equalsIgnoreCase("")){
+                        terms.put(current_id, current_term);
+                        current_id = "";
+                        current_term = new OBOTerm();
+                    }
+                }
+
+                if(line.startsWith("id:")){
+                    String id = line.split("id:")[1].trim();
+                    current_id = id;
+                    current_term.setId(id);
+                }
+
+                if(line.startsWith("name:")){
+                    String name = line.split("name:")[1].trim();
+                    current_term.setName(name);
+                }
+                if(line.startsWith("namespace:")){
+                    String namespace = line.split("namespace:")[1].trim();
+                    current_term.setNamespace(namespace);
+                }
+                if(line.startsWith("def:")){
+                    String def = line.split("def:")[1].trim();
+                    current_term.setDefinition(def);
+                }
+                if(line.startsWith("is_a:")){
+                    String is_a = (line.split("is_a:")[1].trim()).split("!")[0].trim();
+                    current_term.addIsa(is_a);
+                }
+
+            }
+        }
+
+        //compute the descendants
+        descendants = computeDescendants(terms);
     }
+
+    private HashMap<String, HashSet<String>> computeDescendants(HashMap<String, OBOTerm> terms){
+        HashMap<String, HashSet<String>> descendants = new HashMap<String, HashSet<String>>();
+        HashMap<String, HashSet<String>> parent_Child = new HashMap<String, HashSet<String>>();
+        for(Iterator i = terms.keySet().iterator(); i.hasNext(); ){
+            OBOTerm current_term = terms.get((String) i.next());
+            String child = current_term.getId();
+            HashSet<String> parents = current_term.getIs_a();
+            for(Iterator<String> j = parents.iterator(); j.hasNext();){
+                String parent = (String)j.next();
+                if(parent_Child.containsKey(parent)){
+                    HashSet<String> list = parent_Child.get(parent);
+                    list.add(child);
+                    parent_Child.put(parent, list);
+                }
+                else{
+                    HashSet<String> newlist = new HashSet<String>();
+                    newlist.add(child);
+                    parent_Child.put(parent, newlist);
+                }
+            }
+        }
+
+        //Now go through the list of parents and add all the children of children to each parent
+        for(Iterator i = parent_Child.keySet().iterator(); i.hasNext(); ){
+
+            String parent = (String) i.next();
+            HashSet<String> children = getChildren(parent_Child,parent);
+            //for(Iterator<String> j = children.iterator(); j.hasNext();){
+                //String child = (String)j.next();
+                //if the parent is already in the list then add the descendant to its list
+            /*    if(descendants.containsKey(parent)){
+                    HashSet<String> list = descendants.get(parent);
+                    list.add(child);
+                    descendants.put(parent, list);
+                }
+                else{
+                    HashSet<String> newlist = new HashSet<String>();
+                    newlist.add(child);
+                    descendants.put(parent, newlist);
+                }
+            } */
+            //if the parent is already in the list then add the descendant to its list
+                if(descendants.containsKey(parent)){
+                    HashSet<String> list = descendants.get(parent);
+                    list.addAll(children);
+                    descendants.put(parent, list);
+                }
+                else{
+                    HashSet<String> newlist = new HashSet<String>();
+                    newlist.addAll(children);
+                    descendants.put(parent, newlist);
+                }
+            }
+        //}
+
+
+        return descendants;
+    }
+
+    private HashSet<String> getChildren(HashMap<String, HashSet<String>> parent_Child, String term){
+        HashSet<String> children = new HashSet<String>();
+        if(parent_Child.get(term) == null){
+            children.add(term);
+            return children;
+        }
+        else{
+            //go through the list of children and children of those children
+            for(Iterator<String> i = parent_Child.get(term).iterator(); i.hasNext();){
+                children.addAll(getChildren(parent_Child,i.next()));
+
+            }
+            return children;
+        }
+    }
+
+    private HashSet<String> getParents(String term){
+
+        HashSet<String> parents = new HashSet<String>();
+
+        OBOTerm current_term = terms.get(term);
+        if(current_term == null){
+            System.out.println("missing term:" + term);
+            parents.add(term);
+            return parents;
+        }
+        //if the term has no parents then return the term
+        else if(terms.get(term).getIs_a() == null || terms.get(term).getIs_a().isEmpty()){
+
+            parents.add(term);
+            return parents;
+        }
+        else{
+             //go through the list and get the parents of every term
+            for(Iterator<String> i = terms.get(term).getIs_a().iterator(); i.hasNext();){
+                parents.addAll(getParents(i.next()));
+            }
+            return parents;
+        }
+
+
+    }
+
 
     public class GAFGeneset{
         String goid;
@@ -596,6 +786,70 @@ public class GOGeneSetFileMaker {
             return this.goid.hashCode() + this.product.hashCode() + this.dbname.hashCode() + this.taxon.hashCode();
         }
 
+    }
+    //Object to store an OBO Term
+    public class OBOTerm{
+        String id;
+        String name;
+        String namespace;
+        String definition;
+        HashSet<String> is_a;
+
+        public OBOTerm(String id, String name, String namespace, String definition, HashSet<String> is_a) {
+            this.id = id;
+            this.name = name;
+            this.namespace = namespace;
+            this.definition = definition;
+            this.is_a = is_a;
+        }
+
+        public OBOTerm() {
+            this.is_a = new HashSet<String>();
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getNamespace() {
+            return namespace;
+        }
+
+        public void setNamespace(String namespace) {
+            this.namespace = namespace;
+        }
+
+        public String getDefinition() {
+            return definition;
+        }
+
+        public void setDefinition(String definition) {
+            this.definition = definition;
+        }
+
+        public HashSet<String> getIs_a() {
+            return is_a;
+        }
+
+        public void setIs_a(HashSet<String> is_a) {
+            this.is_a = is_a;
+        }
+
+        public void addIsa(String term){
+            this.is_a.add(term);
+        }
     }
 
 }
