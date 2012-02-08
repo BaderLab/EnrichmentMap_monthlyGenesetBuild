@@ -98,13 +98,19 @@ function process_biopax {
 	./validate.sh "file:${CURRENTDIR}/$1" --output=${CURRENTDIR}/${1}_validationresults_initial.xml --autofix  2>> biopax_process.err
 
 	#create an auto-fix biopax file to use to create the gmt file
-./validate.sh "file:${CURRENTDIR}/$1" --output=${CURRENTDIR}/${1}_updated_v1.owl --auto-fix --return-biopax 2>> biopax_process.err
+	./validate.sh "file:${CURRENTDIR}/$1" --output=${CURRENTDIR}/${1}_updated_v1.owl --auto-fix --return-biopax 2>> biopax_process.err
 
-cd ${CURRENTDIR}
-#create gmt file from the given, autofixed biopax file
-#make sure the the id searching for doesn't have any spaces for the file name
-#long -D option turns off logging when using paxtool
-java -Xmx2G -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.NoOpLog -jar ${TOOLDIR}/GenesetTools.jar toGSEA --biopax ${1}_updated_v1.owl --outfile ${1}_${2//[[:space:]]}.gmt --id "$2" --speciescheck FALSE --source "$3" 2>> biopax_process.err 1>> biopax_output.txt
+	cd ${CURRENTDIR}
+	#create gmt file from the given, autofixed biopax file
+	#make sure the the id searching for doesn't have any spaces for the file name
+	#long -D option turns off logging when using paxtool
+	java -Xmx2G -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.NoOpLog -jar ${TOOLDIR}/GenesetTools.jar toGSEA --biopax ${1}_updated_v1.owl --outfile ${1}_${2//[[:space:]]}.gmt --id "$2" --speciescheck FALSE --source "$3" 2>> biopax_process.err 1>> biopax_output.txt
+
+	#ticket #209
+        #get rid of forward slashes in the resutls gmt file (occurs in NCI, Reactome, and Humancyc) and causes
+	#GSEA to produce error when creating a details file.
+	sed 's/\// /g' ${1}_${2//[[:space:]]}.gmt > temp.txt
+	mv temp.txt ${1}_${2//[[:space:]]}.gmt
 }
 
 #this function create gmt files from biopax files without validation and auto-fix.
@@ -117,6 +123,13 @@ function process_biopax_novalidation {
 	#make sure the the id searching for doesn't have any spaces for the file name
 	#long -D option turns off logging when using paxtool
 	java -Xmx2G -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.NoOpLog -jar ${TOOLDIR}/GenesetTools.jar toGSEA --biopax ${1} --outfile ${1}_${2//[[:space:]]}.gmt --id "$2" --speciescheck FALSE --source "$3" 2>> biopax_process.err 1>> biopax_output.txt
+
+	#ticket #209
+        #get rid of forward slashes in the resutls gmt file (occurs in NCI, Reactome, and Humancyc) and causes
+	#GSEA to produce error when creating a details file.
+	sed 's/\// /g' ${1}_${2//[[:space:]]}.gmt > temp.txt
+	mv temp.txt ${1}_${2//[[:space:]]}.gmt
+
 }
 
 
@@ -804,12 +817,12 @@ mergesummaries ${UNIPROT} UniProt
 getstats ${EG}
 
 #copy the files over the webserver
-mkdir /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name
-cp -R ${CUR_RELEASE}/Human /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name/
-cp -R ${CUR_RELEASE}/Mouse /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name/
+#mkdir /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name
+#cp -R ${CUR_RELEASE}/Human /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name/
+#cp -R ${CUR_RELEASE}/Mouse /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name/
 
 #create a symbolic link to the latest download indicating it as current_release
-rm /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/current_release
-ln -sf /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name/ /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/current_release
+#rm /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/current_release
+#ln -sf /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name/ /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/current_release
 
-rm -rf ${CUR_RELEASE}
+#rm -rf ${CUR_RELEASE}
