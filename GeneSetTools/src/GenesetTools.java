@@ -188,6 +188,27 @@ public class GenesetTools {
 
     }
 
+    public static void createHPO(String args[]) throws IOException,SQLException {
+
+        HPO2GMT maker = new HPO2GMT();
+
+        CmdLineParser parser = new CmdLineParser(maker);
+        try {
+           parser.parseArgument(args);
+	        } catch (CmdLineException e) {
+            System.err.println(e.getMessage());
+            help();
+            parser.printUsage(System.err);
+            return;
+        }
+
+
+        maker.parseAnnotation();
+        /*else
+            maker.queryEBI();*/
+
+    }
+
     public static void convertGeneSets(String args[]) throws IOException {
         GeneSetTaxidConverter converter = new GeneSetTaxidConverter();
 
@@ -229,6 +250,8 @@ public class GenesetTools {
 		        {public void run(String[] argv) throws IOException{compare(Arrays.copyOfRange(argv,1,argv.length));} },
         createGo("Species Branch File", 3)
                 {public void run(String[] argv) throws IOException,SQLException{createGo(Arrays.copyOfRange(argv,1,argv.length));} },
+        createHPO("Annot OBO outFile", 3)
+                {public void run(String[] argv) throws IOException,SQLException{createHPO(Arrays.copyOfRange(argv,1,argv.length));} },
         toGSEA("owl_filename outfile id speciescheck\t\t\t convert biopax file to gmt file",5)
                 {public void run(String[] argv) throws IOException{toGSEA(Arrays.copyOfRange(argv,1,argv.length));} },
         bulk("owldir outdir id speciescheck\t\t\t converts all biopax files in a directory to gmt files",4)
