@@ -452,7 +452,8 @@ public class GOGeneSetFileMaker {
 	            }
 	            writer.println();
 
-                writer_symbol.print(name + "\t" + descrip);
+                writer_symbol.print(descrip + Biopax2GMT.DBSOURCE_SEPARATOR + name + "\t" + descrip);
+                //writer_symbol.print(name + "\t" + descrip);
                 //list of genes
                 for (String gene_symbol : genes_symbol) {
 	                writer_symbol.print("\t");
@@ -508,8 +509,8 @@ public class GOGeneSetFileMaker {
                     descrip = "GO ID not found in OBO ontology definition file";
 
                 if(genes != null && genes.size() > 0){
-
-                    writer.print(name + "\t" + descrip);
+                    writer.print(descrip + Biopax2GMT.DBSOURCE_SEPARATOR + name + "\t" + descrip);
+                    //writer.print(name + "\t" + descrip);
 
                     //list of genes
                     for (String gene : genes) {
@@ -518,7 +519,8 @@ public class GOGeneSetFileMaker {
 	                }
 	                writer.println();
 
-                    writer_symbol.print(name + "\t" + descrip);
+                    writer_symbol.print(descrip + Biopax2GMT.DBSOURCE_SEPARATOR + name + "\t" + descrip);
+                    //writer_symbol.print(name + "\t" + descrip);
                     //list of genes
                     for (String gene_symbol : genes_symbol) {
 	                    writer_symbol.print("\t");
