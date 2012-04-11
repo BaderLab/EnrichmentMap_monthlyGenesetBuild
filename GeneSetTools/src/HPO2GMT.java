@@ -157,7 +157,7 @@ public class HPO2GMT {
 	            }
 	            writer.println();
 
-                writer_symbol.print(name + "\t" + descrip);
+                writer_symbol.print(descrip + Biopax2GMT.DBSOURCE_SEPARATOR + name + "\t" + descrip);
                 //list of genes
                 for (String gene_symbol : genes_symbol) {
 	                writer_symbol.print("\t");
@@ -211,7 +211,7 @@ public class HPO2GMT {
 
                 if(genes != null && genes.size() > 0){
 
-                    writer.print(name + "\t" + descrip);
+                    writer.print(descrip + Biopax2GMT.DBSOURCE_SEPARATOR + name + "\t" + descrip);
 
                     //list of genes
                     for (String gene : genes) {
@@ -220,7 +220,7 @@ public class HPO2GMT {
 	                }
 	                writer.println();
 
-                    writer_symbol.print(name + "\t" + descrip);
+                    writer_symbol.print(descrip + Biopax2GMT.DBSOURCE_SEPARATOR + name + "\t" + descrip);
                     //list of genes
                     for (String gene_symbol : genes_symbol) {
 	                    writer_symbol.print("\t");
