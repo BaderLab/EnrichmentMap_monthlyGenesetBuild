@@ -79,12 +79,13 @@ public class Ontology {
                     current_term.addIsa(is_a);
                 }
 
-                //add the relationships: part_of, relationship: regulates, relationship: positively_regulates, relationship: negatively_regulates
-                if(line.startsWith("relationship:")){
+                //add the relationships: part_of,
+                //if(line.startsWith("relationship:")){
                     if(line.startsWith("relationship: part_of")) {
                         String relation = (line.split("relationship: part_of")[1].trim()).split("!")[0].trim();
                         current_term.addIsa(relation);
                     }
+                /*  //add the relationship: regulates, relationship: positively_regulates, relationship: negatively_regulates
                     else if(line.startsWith("relationship: regulates")) {
                         String relation = (line.split("relationship: regulates")[1].trim()).split("!")[0].trim();
                         current_term.addIsa(relation);
@@ -100,7 +101,7 @@ public class Ontology {
                     else{
                         System.out.println("ERROR: The relationship has not been defined: " + line);
                     }
-                }
+                } */
 
             }
         }
