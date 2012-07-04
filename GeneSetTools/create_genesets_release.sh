@@ -520,6 +520,18 @@ for dir in `ls`; do
 		copy2release MSigdb Human ${PATHWAYS}
 		cd ${STATICDIR}
 	fi
+	if [[ $dir == "DiseasePhenotypes" ]] ; then
+		cd $dir
+		mkdir ${SOURCE}/$dir
+		cp *entrezgene.gmt ${SOURCE}/$dir
+		cp *version.txt ${VERSIONS}
+		cd ${SOURCE}/$dir
+		for file in *.gmt; do
+			translate_gmt $file "9606" "Entrezgene"
+		done
+		copy2release DiseasePhenotypes Human ${DISEASE}
+		cd ${STATICDIR}
+	fi
 	if [[ $dir == "mirs" ]] ; then
 		cd $dir
 		mkdir ${SOURCE}/$dir
@@ -817,12 +829,12 @@ mergesummaries ${UNIPROT} UniProt
 getstats ${EG}
 
 #copy the files over the webserver
-#mkdir /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name
-#cp -R ${CUR_RELEASE}/Human /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name/
-#cp -R ${CUR_RELEASE}/Mouse /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name/
+mkdir /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name
+cp -R ${CUR_RELEASE}/Human /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name/
+cp -R ${CUR_RELEASE}/Mouse /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name/
 
 #create a symbolic link to the latest download indicating it as current_release
-#rm /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/current_release
-#ln -sf /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name/ /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/current_release
+rm /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/current_release
+ln -sf /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name/ /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/current_release
 
 #rm -rf ${CUR_RELEASE}
