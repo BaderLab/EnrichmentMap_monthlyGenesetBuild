@@ -10,7 +10,7 @@ function get_pc_version {
 function download_pc_data {
 	    echo "[Downloading current Pathway Commons data]"
 	    URL="http://www.pathwaycommons.org/pc-snapshot/current-release/gsea/by_source/"
-	    curl ${URL}/nci-nature-entrez-gene-id.gmt.zip -o ${PATHWAYCOMMONS}/nci-nature-entrez-gene-id.gmt.zip
+	    curl ${URL}/nci-nature-entrez-gene-id.gmt.zip -o ${PATHWAYCOMMONS}/nci-nature-entrez-gene-id.gmt.zip -s  -w "Pathway Commons : HTTP code - %{http_code}\tDownload time:%{time_total} millisec\tFile size:%{size_download} Bytes\n"
 	    get_pc_version
 }
 
@@ -30,7 +30,7 @@ function get_webfile_version {
 function download_nci_data {
 	echo "[Downloading current NCI data]"
 	URL="ftp://ftp1.nci.nih.gov/pub/PID/BioPAX_Level_3/NCI-Nature_Curated.bp3.owl.gz"
-	curl ${URL} -o ${NCI}/NCI-Nature_Curated.bp3.owl.gz
+	curl ${URL} -o ${NCI}/NCI-Nature_Curated.bp3.owl.gz -s  -w "NCI : HTTP code - %{http_code}\tDownload time:%{time_total} millisec\tFile size:%{size_download} Bytes\n"
 	get_webfile_version $URL "NCI_Nature"	
 }
 
@@ -41,14 +41,14 @@ function download_netpath_data {
 	URL="http://www.netpath.org/data/biopax/"
 	for Num in {1..25}; do
 		get_webfile_version ${URL}/NetPath_${Num}.owl "NetPath"
-		curl ${URL}/NetPath_${Num}.owl -o ${NETPATH}/NetPath_${Num}.owl
+		curl ${URL}/NetPath_${Num}.owl -o ${NETPATH}/NetPath_${Num}.owl -s  -w "NetPath_${Num}.owl : HTTP code - %{http_code}\tDownload time:%{time_total} millisec\tFile size:%{size_download} Bytes\n"
 	done
 }
 
 function download_reactome_data {
 	echo "[Downloading current Reactome data]"
 	URL="http://www.reactome.org/download/current/"
-	curl ${URL}/biopax3.zip -o ${REACTOME}/biopax3.zip
+	curl ${URL}/biopax3.zip -o ${REACTOME}/biopax3.zip -s  -w "Reactome : HTTP code - %{http_code}\tDownload time:%{time_total} millisec\tFile size:%{size_download} Bytes\n"
 	get_webfile_version ${URL}/biopax3.zip "Reactome"
 }
 
@@ -59,20 +59,20 @@ function download_biocyc_data {
 	URL="http://bioinformatics.ai.sri.com/ecocyc/dist/flatfiles-52983746/"
 	echo "${URL}/${1}.tar.gz" >> ${VERSIONS}/${1}cyc.txt
 	curl ${URL}/${1}.tar.gz -u biocyc-flatfiles:data-20541 -I | grep "Last-Modified" >> ${VERSIONS}/${1}cyc.txt
-	curl ${URL}/${1}.tar.gz -o ${2}/${1}.tar.gz -u biocyc-flatfiles:data-20541
+	curl ${URL}/${1}.tar.gz -o ${2}/${1}.tar.gz -u biocyc-flatfiles:data-20541 -s  -w "Biocyc : HTTP code - %{http_code}\tDownload time:%{time_total} millisec\tFile size:%{size_download} Bytes\n"
 }
 
 # Go human data comes directly from ebi as they are the primary curators of human GO annotations
 function download_GOhuman_data {
 	echo "[Downloading current Go Human EBI data]"
 	URL="ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/HUMAN/"
-	curl ${URL}/gene_association.goa_human.gz -o ${GOSRC}/gene_association.goa_human.gz
+	curl ${URL}/gene_association.goa_human.gz -o ${GOSRC}/gene_association.goa_human.gz -s  -w "GO (Human GAF) : HTTP code - %{http_code}\tDownload time:%{time_total} millisec\tFile size:%{size_download} Bytes\n"
 	get_webfile_version ${URL}/gene_association.goa_human.gz "GO_Human"
 
 	#get the obo file from the gene ontology website
 	echo "[Downloading current GO OBO file]"
 	URL="ftp://ftp.geneontology.org/pub/go/ontology/obo_format_1_2/"
-	curl ${URL}/gene_ontology.1_2.obo -o ${GOSRC}/gene_ontology.1_2.obo
+	curl ${URL}/gene_ontology.1_2.obo -o ${GOSRC}/gene_ontology.1_2.obo -s  -w "GO (obo) : HTTP code - %{http_code}\tDownload time:%{time_total} millisec\tFile size:%{size_download} Bytes\n"
 	get_webfile_version ${URL}/gene_ontology.1_2.obo "GO_OBO_FILE"
 
 
@@ -82,7 +82,7 @@ function download_GOhuman_data {
 function download_GOmouse_data {
 	echo "[Downloading current Go Mouse MGI  data]"
 	URL="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.mgi.gz?rev=HEAD"
-	curl $URL -o ${GOSRC}/gene_association.mgi.gz
+	curl $URL -o ${GOSRC}/gene_association.mgi.gz -s  -w "GO (mouse gaf) : HTTP code - %{http_code}\tDownload time:%{time_total} millisec\tFile size:%{size_download} Bytes\n"
 	get_webfile_version ${URL} "GO_Mouse"
 }
 
