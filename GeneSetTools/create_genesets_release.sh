@@ -10,7 +10,7 @@ function get_pc_version {
 function download_pc_data {
 	    echo "[Downloading current Pathway Commons data]"
 	    URL="http://www.pathwaycommons.org/pc-snapshot/current-release/gsea/by_source/"
-	    curl ${URL}/nci-nature-entrez-gene-id.gmt.zip -o ${PATHWAYCOMMONS}/nci-nature-entrez-gene-id.gmt.zip -s  -w "Pathway Commons : HTTP code - %{http_code}\tDownload time:%{time_total} millisec\tFile size:%{size_download} Bytes\n"
+	    curl ${URL}/nci-nature-entrez-gene-id.gmt.zip -o ${PATHWAYCOMMONS}/nci-nature-entrez-gene-id.gmt.zip -s  -w "Pathway Commons : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
 	    get_pc_version
 }
 
@@ -22,7 +22,7 @@ function download_pc_data {
 function get_webfile_version {
 	echo "$2" >> ${VERSIONS}/${2}.txt
 	echo "$1" >> ${VERSIONS}/${2}.txt
-	curl $1 -I | grep "Last-Modified" >> ${VERSIONS}/${2}.txt
+	curl -s $1 -I | grep "Last-Modified" >> ${VERSIONS}/${2}.txt
 	echo "========" >> ${VERSIONS}/${2}.txt
 }
 
@@ -30,7 +30,7 @@ function get_webfile_version {
 function download_nci_data {
 	echo "[Downloading current NCI data]"
 	URL="ftp://ftp1.nci.nih.gov/pub/PID/BioPAX_Level_3/NCI-Nature_Curated.bp3.owl.gz"
-	curl ${URL} -o ${NCI}/NCI-Nature_Curated.bp3.owl.gz -s  -w "NCI : HTTP code - %{http_code}\tDownload time:%{time_total} millisec\tFile size:%{size_download} Bytes\n"
+	curl ${URL} -o ${NCI}/NCI-Nature_Curated.bp3.owl.gz -s  -w "NCI : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
 	get_webfile_version $URL "NCI_Nature"	
 }
 
@@ -41,14 +41,14 @@ function download_netpath_data {
 	URL="http://www.netpath.org/data/biopax/"
 	for Num in {1..25}; do
 		get_webfile_version ${URL}/NetPath_${Num}.owl "NetPath"
-		curl ${URL}/NetPath_${Num}.owl -o ${NETPATH}/NetPath_${Num}.owl -s  -w "NetPath_${Num}.owl : HTTP code - %{http_code}\tDownload time:%{time_total} millisec\tFile size:%{size_download} Bytes\n"
+		curl ${URL}/NetPath_${Num}.owl -o ${NETPATH}/NetPath_${Num}.owl -s  -w "NetPath_${Num}.owl : HTTP code - %{http_code};time:%{time_total} millisec: size:%{size_download} Bytes\n"
 	done
 }
 
 function download_reactome_data {
 	echo "[Downloading current Reactome data]"
 	URL="http://www.reactome.org/download/current/"
-	curl ${URL}/biopax3.zip -o ${REACTOME}/biopax3.zip -s  -w "Reactome : HTTP code - %{http_code}\tDownload time:%{time_total} millisec\tFile size:%{size_download} Bytes\n"
+	curl ${URL}/biopax3.zip -o ${REACTOME}/biopax3.zip -s  -w "Reactome : HTTP code - %{http_code};time:%{time_total} millisec; size:%{size_download} Bytes\n"
 	get_webfile_version ${URL}/biopax3.zip "Reactome"
 }
 
@@ -59,20 +59,20 @@ function download_biocyc_data {
 	URL="http://bioinformatics.ai.sri.com/ecocyc/dist/flatfiles-52983746/"
 	echo "${URL}/${1}.tar.gz" >> ${VERSIONS}/${1}cyc.txt
 	curl ${URL}/${1}.tar.gz -u biocyc-flatfiles:data-20541 -I | grep "Last-Modified" >> ${VERSIONS}/${1}cyc.txt
-	curl ${URL}/${1}.tar.gz -o ${2}/${1}.tar.gz -u biocyc-flatfiles:data-20541 -s  -w "Biocyc : HTTP code - %{http_code}\tDownload time:%{time_total} millisec\tFile size:%{size_download} Bytes\n"
+	curl ${URL}/${1}.tar.gz -o ${2}/${1}.tar.gz -u biocyc-flatfiles:data-20541 -s  -w "Biocyc : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
 }
 
 # Go human data comes directly from ebi as they are the primary curators of human GO annotations
 function download_GOhuman_data {
 	echo "[Downloading current Go Human EBI data]"
 	URL="ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/HUMAN/"
-	curl ${URL}/gene_association.goa_human.gz -o ${GOSRC}/gene_association.goa_human.gz -s  -w "GO (Human GAF) : HTTP code - %{http_code}\tDownload time:%{time_total} millisec\tFile size:%{size_download} Bytes\n"
+	curl ${URL}/gene_association.goa_human.gz -o ${GOSRC}/gene_association.goa_human.gz -s  -w "GO (Human GAF) : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
 	get_webfile_version ${URL}/gene_association.goa_human.gz "GO_Human"
 
 	#get the obo file from the gene ontology website
 	echo "[Downloading current GO OBO file]"
 	URL="ftp://ftp.geneontology.org/pub/go/ontology/obo_format_1_2/"
-	curl ${URL}/gene_ontology.1_2.obo -o ${GOSRC}/gene_ontology.1_2.obo -s  -w "GO (obo) : HTTP code - %{http_code}\tDownload time:%{time_total} millisec\tFile size:%{size_download} Bytes\n"
+	curl ${URL}/gene_ontology.1_2.obo -o ${GOSRC}/gene_ontology.1_2.obo -s  -w "GO (obo) : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
 	get_webfile_version ${URL}/gene_ontology.1_2.obo "GO_OBO_FILE"
 
 
@@ -82,8 +82,36 @@ function download_GOhuman_data {
 function download_GOmouse_data {
 	echo "[Downloading current Go Mouse MGI  data]"
 	URL="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.mgi.gz?rev=HEAD"
-	curl $URL -o ${GOSRC}/gene_association.mgi.gz -s  -w "GO (mouse gaf) : HTTP code - %{http_code}\tDownload time:%{time_total} millisec\tFile size:%{size_download} Bytes\n"
+	curl $URL -o ${GOSRC}/gene_association.mgi.gz -s  -w "GO (mouse gaf) : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
 	get_webfile_version ${URL} "GO_Mouse"
+}
+
+#download the Human Phenotype data (obo file and annotation file)
+function download_HPO_data {
+	echo "[Downloading current Human Phenotype data]"
+	URL="http://compbio.charite.de/svn/hpo/trunk/src/annotation/"
+	curl ${URL}/genes_to_phenotype.txt -o ${DISEASESRC}/genes_to_phenotype.txt -s -w "HPO (Human annot) : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
+	get_webfile_version ${URL}/genes_to_phenotype.txt "Human_Phenotype"
+
+	#get the obo file
+	echo "[Downloading current Phenotype OBO file]"
+	URL="http://compbio.charite.de/svn/hpo/trunk/src/ontology/"
+	curl ${URL}/human-phenotype-ontology.obo -o ${DISEASESRC}/human-phenotype-ontology.obo -s  -w "HPO (obo) : HTTP code - %{http_code};time:%{time_total} millisec; size:%{size_download} Bytes\n"
+	get_webfile_version ${URL}/human-phenotype-ontology.obo "Human_phenotype_OBO_FILE"
+
+}
+
+#download Drugbank files
+function download_drugbank_data {
+	echo "[Downloading current Drugbank data]"
+	URL="http://www.drugbank.ca/system/downloads/current"
+	curl ${URL}/drugbank.xml.zip -o ${DRUGSSRC}/drugbank.xml.zip -s -w "Drugbank : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
+	get_webfile_version ${URL}/drugbank.xml.zip "DrugBank"
+
+	echo "[Downloading current Drugbank external identifiers info]"
+	curl ${URL}/target_links.csv.zip -o ${DRUGSSRC}/target_links.csv.zip -s -w "Drugbank(external links) : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
+	get_webfile_version ${URL}/target_links.csv.zip "DrugBank_external_links"
+
 }
 
 #this function will validate, autofix and create gmt files from biopax files.
@@ -188,6 +216,13 @@ function process_gaf {
 	java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar createGo --organism $2 --branch $3 --gaffile $1 --obofile $4  2>> ${WITHIEA}_process.err 1>> ${WITHIEA}_output.txt 
 }
 
+# argument 1 - hpo annot file name
+# argument 2 - hpo obo file
+# argument 3 - outputfile
+function process_hpo {
+	java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar createHPO --annotfile $1 --obofile $2 --outfile $3  2>> HPO_process.err 1>> HPO_output.txt 
+}
+
 # argument 1 - source to copy
 #argument 2 - species
 #argument 3 - division to put data into
@@ -225,6 +260,40 @@ function copy2release {
 
 }
 
+# argument 1 - source to copy
+#argument 2 - species
+#argument 3 - division to put data into
+function copy2release_nomerge {
+	cp *ntrezgene.gmt ${EG}/${3}/
+	#concatenate all the translation summaries
+	
+	files=$(ls *gene_summary.log 2> /dev/null | wc -l)
+	if [ $files != 0 ] ; then
+	#if [ -e *gene_summary.log ] ; then
+		cat *gene_summary.log > ${2}_${1}_Entrezgene_translation_summary.log
+		cp ${2}_${1}_Entrezgene_translation_summary.log ${EG}/${3}/${2}_${1}_Entrezgene_translation_summary.log
+	fi
+
+	cp *UniProt.gmt ${UNIPROT}/${3}/
+	#concatenate all the translation summaries
+	files=$(ls *UniProt_summary.log 2> /dev/null | wc -l)
+	if [ $files != 0 ] ; then
+	#if [ -e *UniProt_summary.log ] ; then
+		cat *UniProt_summary.log > ${2}_${1}_UniProt_translation_summary.log
+		cp ${2}_${1}_UniProt_translation_summary.log ${UNIPROT}/${3}/${2}_${1}_UniProt_translation_summary.log
+	fi
+	
+	cp *_symbol.gmt ${SYMBOL}/${3}/
+	#concatenate all the translation summaries
+	files=$(ls *symbol_summary.log 2> /dev/null | wc -l)
+	if [ $files != 0 ] ; then
+	#if [ -e *symbol_summary.log ] ; then
+		cat *symbol_summary.log > ${2}_${1}_symbol_translation_summary.log
+		cp ${2}_${1}_symbol_translation_summary.log ${SYMBOL}/${3}/${2}_${1}_symbol_translation_summary.log
+	fi
+
+}
+
 # argument 1 - directory where you want the divisions created
 function createDivisionDirs {
 	cd ${1}
@@ -233,6 +302,7 @@ function createDivisionDirs {
 	mkdir ${MIR}
 	mkdir ${TF}
 	mkdir ${DISEASE}
+	mkdir ${DRUGS}
 }
 
 #concatenate all the translation summary logs and place in main directory
@@ -361,6 +431,7 @@ PATHWAYS=Pathways
 MIR=miRs
 TF=TranscriptionFactors
 DISEASE=DiseasePhenotypes
+DRUGS=DrugTargets
 
 NOIEA=no_GO_iea
 WITHIEA=with_GO_iea
@@ -375,7 +446,6 @@ mkdir -p ${SYMBOL}
 createDivisionDirs ${UNIPROT}
 createDivisionDirs ${EG}
 createDivisionDirs ${SYMBOL}
-
 
 #There are three different types of files that we have to deal with during the download process:
 # 1. biopax - need to validated, autofixed, converted to gmt files, convert identifiers to other desirable identifiers
@@ -473,6 +543,47 @@ copy2release Reactome Human ${PATHWAYS}
 
 
 
+#download Human Phenotype data
+DISEASESRC=${SOURCE}/DiseasePhenotypes
+mkdir ${DISEASESRC}
+download_HPO_data 
+cd ${DISEASESRC}
+#parse the the phenotypes and obo file.
+process_hpo genes_to_phenotype.txt human-phenotype-ontology.obo Human_DiseasePhenotypes_Entrezgene.gmt
+
+#translate the new file into other identifiers
+for file in *.gmt; do
+	translate_gmt $file "9606" "Entrezgene"
+done
+copy2release DiseasePhenotypes Human ${DISEASE}
+
+
+#parse drugbank data
+DRUGSSRC=${SOURCE}/DrugBank
+mkdir -p ${DRUGSSRC}
+download_drugbank_data
+cd ${DRUGSSRC}
+for file in *.zip; do
+	unzip $file	
+done 
+#process the drugbank file - all drugs
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_all_symbol.gmt -c target_links.csv -i genename 2>>drugbankparse.err
+#process the drugbank file - approved drugs
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_approved_symbol.gmt -c target_links.csv -d "approved" -i genename  2>>drugbankparse.err
+#process the drugbank file - illicit drugs
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_illicit_symbol.gmt -c target_links.csv -d "illicit" -i genename  2>>drugbankparse.err
+#process the drugbank file - experimental drugs
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_experimental_symbol.gmt -c target_links.csv -d "experimental" -i genename  2>>drugbankparse.err
+#process the drugbank file - nutraceutical drugs
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_nutraceutical_symbol.gmt -c target_links.csv -d "nutraceutical" -i genename  2>>drugbankparse.err
+#process the drugbank file - small molecule drugs
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_smallmolecule_symbol.gmt -c target_links.csv -d "small molecule" -i genename  2>>drugbankparse.err
+for file in *.gmt; do
+	translate_gmt $file "9606" "symbol"
+done
+copy2release_nomerge DrugBank Human ${DRUGS}
+
+
 #process the static sources - currently KEGG and IOB
 cd ${STATICDIR}
 for dir in `ls`; do
@@ -520,18 +631,18 @@ for dir in `ls`; do
 		copy2release MSigdb Human ${PATHWAYS}
 		cd ${STATICDIR}
 	fi
-	if [[ $dir == "DiseasePhenotypes" ]] ; then
-		cd $dir
-		mkdir ${SOURCE}/$dir
-		cp *entrezgene.gmt ${SOURCE}/$dir
-		cp *version.txt ${VERSIONS}
-		cd ${SOURCE}/$dir
-		for file in *.gmt; do
-			translate_gmt $file "9606" "Entrezgene"
-		done
-		copy2release DiseasePhenotypes Human ${DISEASE}
-		cd ${STATICDIR}
-	fi
+#	if [[ $dir == "DiseasePhenotypes" ]] ; then
+#		cd $dir
+#		mkdir ${SOURCE}/$dir
+#		cp *entrezgene.gmt ${SOURCE}/$dir
+#		cp *version.txt ${VERSIONS}
+#		cd ${SOURCE}/$dir
+#		for file in *.gmt; do
+#			translate_gmt $file "9606" "Entrezgene"
+#		done
+#		copy2release DiseasePhenotypes Human ${DISEASE}
+#		cd ${STATICDIR}
+#	fi
 	if [[ $dir == "mirs" ]] ; then
 		cd $dir
 		mkdir ${SOURCE}/$dir
