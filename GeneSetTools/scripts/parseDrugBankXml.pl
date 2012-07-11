@@ -113,21 +113,50 @@ foreach my $drug (@{$data->{drug}}){
 			
 				#add the genename to geneset
 				if(exists($genesets_genename -> { $drugbankid })){
-			
-					push @{ $genesets_genename -> {$drugbankid} }, $conver_list->{ $target->{partner} }[2];
+					#only add the name if the target is human,
+					# there is no taxonomy information in the links file but
+					# there is a uniprot name which often has the taxonomy in it
+					#i.e." _HUMAN". --> this is a hack but until drugbank adds the
+					# the taxid to the file this is a quick fix.
+					if($conver_list->{ $target->{partner} }[6] =~ m/_HUMAN/){
+						push @{ $genesets_genename -> {$drugbankid} }, $conver_list->{ $target->{partner} }[2];
+					}
 				}
 				else{
-					$genesets_genename -> {$drugbankid} = [$conver_list->{ $target->{partner} }[2]];
+					#only add the name if the target is human,
+					# there is no taxonomy information in the links file but
+					# there is a uniprot name which often has the taxonomy in it
+					#i.e." _HUMAN". --> this is a hack but until drugbank adds the
+					# the taxid to the file this is a quick fix.
+					if($conver_list->{ $target->{partner} }[6] =~ m/_HUMAN/){
+
+						$genesets_genename -> {$drugbankid} = [$conver_list->{ $target->{partner} }[2]];
+					}
 				}
 
 
 				#add the uniprot to geneset
 				if(exists($genesets_uniprot -> { $drugbankid })){
+					#only add the name if the target is human,
+					# there is no taxonomy information in the links file but
+					# there is a uniprot name which often has the taxonomy in it
+					#i.e." _HUMAN". --> this is a hack but until drugbank adds the
+					# the taxid to the file this is a quick fix.
+					if($conver_list->{ $target->{partner} }[6] =~ m/_HUMAN/){
 			
-					push @{ $genesets_uniprot -> {$drugbankid} }, $conver_list->{ $target->{partner} }[5];
+						push @{ $genesets_uniprot -> {$drugbankid} }, $conver_list->{ $target->{partner} }[5];
+					}
 				}
 				else{
-					$genesets_uniprot -> {$drugbankid} = [$conver_list->{ $target->{partner} }[5]];
+					#only add the name if the target is human,
+					# there is no taxonomy information in the links file but
+					# there is a uniprot name which often has the taxonomy in it
+					#i.e." _HUMAN". --> this is a hack but until drugbank adds the
+					# the taxid to the file this is a quick fix.
+					if($conver_list->{ $target->{partner} }[6] =~ m/_HUMAN/){
+
+						$genesets_uniprot -> {$drugbankid} = [$conver_list->{ $target->{partner} }[5]];
+					}
 				}
 			}
 		}
@@ -146,8 +175,8 @@ if($id_type eq "genename"){
 		my %temp_hash = map { $_ => 1} @{ $genesets_genename->{ $key }};
 		my @unique = keys %temp_hash;
 		for $i ( 0 .. $#unique){
-			$upper_name = uc($unique[$i]);
-			print DRUGS "\t$upper_name";
+			print DRUGS "\t$unique[$i]";
+
 		}
 		print DRUGS "\n";
 	}
