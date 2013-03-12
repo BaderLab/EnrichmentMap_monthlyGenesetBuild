@@ -89,7 +89,7 @@ function download_GOmouse_data {
 #download the Human Phenotype data (obo file and annotation file)
 function download_HPO_data {
 	echo "[Downloading current Human Phenotype data]"
-	URL="http://compbio.charite.de/svn/hpo/trunk/src/annotation/"
+	URL="http://http://compbio.charite.de/hudson/job/hpo.annotations.monthly/lastStableBuild/artifact/annotation"
 	curl ${URL}/genes_to_phenotype.txt -o ${DISEASESRC}/genes_to_phenotype.txt -s -w "HPO (Human annot) : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
 	get_webfile_version ${URL}/genes_to_phenotype.txt "Human_Phenotype"
 
@@ -123,16 +123,20 @@ function process_biopax {
 	#need to change to the validator directory in order to run the validator
 	CURRENTDIR=`pwd`
 	cd ${VALIDATORDIR}
-	./validate.sh "file:${CURRENTDIR}/$1" --output=${CURRENTDIR}/${1}_validationresults_initial.xml --autofix  2>> biopax_process.err
+	#latest version of the validator will generate the output to a .modified.owl file.
+	./validate.sh "file:${CURRENTDIR}/$1"  --autofix  --return-biopax 2>> biopax_process.err
 
 	#create an auto-fix biopax file to use to create the gmt file
-	./validate.sh "file:${CURRENTDIR}/$1" --output=${CURRENTDIR}/${1}_updated_v1.owl --auto-fix --return-biopax 2>> biopax_process.err
+	#./validate.sh "file:${CURRENTDIR}/$1" --output=${CURRENTDIR}/${1}_updated_v1.owl --auto-fix --return-biopax 2>> biopax_process.err
+
+	#move the auto-corrected owl file back to original directory
+	cp ${1}.modified.owl ${CURRENTDIR} 
 
 	cd ${CURRENTDIR}
 	#create gmt file from the given, autofixed biopax file
 	#make sure the the id searching for doesn't have any spaces for the file name
 	#long -D option turns off logging when using paxtool
-	java -Xmx2G -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.NoOpLog -jar ${TOOLDIR}/GenesetTools.jar toGSEA --biopax ${1}_updated_v1.owl --outfile ${1}_${2//[[:space:]]}.gmt --id "$2" --speciescheck FALSE --source "$3" 2>> biopax_process.err 1>> biopax_output.txt
+	java -Xmx2G -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.NoOpLog -jar ${TOOLDIR}/GenesetTools.jar toGSEA --biopax ${1}.modified.owl --outfile ${1}_${2//[[:space:]]}.gmt --id "$2" --speciescheck FALSE --source "$3" 2>> biopax_process.err 1>> biopax_output.txt
 
 	#ticket #209
         #get rid of forward slashes in the resutls gmt file (occurs in NCI, Reactome, and Humancyc) and causes
@@ -405,10 +409,15 @@ function getstats {
 #make sure we are using Java 6
 export JAVA_HOME="/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home"
 
+LOCAL=/Network/Servers/server1.baderlab.med.utoronto.ca/Volumes/RAID/Users/risserlin
+
+#make sure we are using our local perl libs
+export PERL5LIB=${PERL5LIB}:${LOCAL}/lib/perl5:${LOCAL}/lib/perl5/lib64/perl5:${LOCAL}/lib/perl5/lib:${LOCAL}/lib/perl5/lib/i386-linux-thread-multi/:${LOCAL}/lib/perl5/lib/perl5/site_perl
+
 #create a new directory for this release (the directory name will be the date that it was built)
 dir_name=`date '+%B_%d_%Y'`
 TOOLDIR=`pwd`
-VALIDATORDIR=${TOOLDIR}/biopax-validator-2.0.0beta4
+VALIDATORDIR=${TOOLDIR}/biopax-validator-3.0.0
 STATICDIR=${TOOLDIR}/staticSrcFiles
 WORKINGDIR=`pwd`
 CUR_RELEASE=${WORKINGDIR}/${dir_name}
@@ -469,8 +478,10 @@ createDivisionDirs ${SYMBOL}
 #download NCI from NCI database.
 NCI=${SOURCE}/NCI
 mkdir -p ${NCI}
-download_nci_data
+#current NCI file is broken use one from april until the current NCI file is fixed
+#download_nci_data
 cd ${NCI}
+cp ${STATICDIR}/NCI/*.gz ./
 gunzip *.gz
 #modify gmt file so the gmt conforms to our standard with name and description
 for file in *.owl; do
@@ -496,7 +507,7 @@ download_netpath_data
 cd ${NETPATH}
 #process each file in the NetPath directory.
 for file in *.owl; do
-	process_biopax $file "Entrez gene" "NetPath"
+	process_biopax_novalidation $file "Entrez gene" "NetPath"
 done
 for file in *.gmt; do
 	translate_gmt $file "9606" "entrezgene"
@@ -516,7 +527,7 @@ tar -xvzf human.tar.gz *level3.owl
 # they change the data directory structure though.
 cd */data
 for file in *.owl; do
-	process_biopax $file "UniProt" "HumanCyc"
+	process_biopax_novalidation $file "UniProt" "HumanCyc"
 done
 for file in *.gmt; do
 	translate_gmt $file "9606" "UniProt"
@@ -553,10 +564,9 @@ process_hpo genes_to_phenotype.txt human-phenotype-ontology.obo Human_DiseasePhe
 
 #translate the new file into other identifiers
 for file in *.gmt; do
-	translate_gmt $file "9606" "Entrezgene"
+	translate_gmt $file "9606" "entrezgene"
 done
-copy2release DiseasePhenotypes Human ${DISEASE}
-
+copy2release_nomerge DiseasePhenotypes Human ${DISEASE}
 
 #parse drugbank data
 DRUGSSRC=${SOURCE}/DrugBank
@@ -584,6 +594,8 @@ done
 copy2release_nomerge DrugBank Human ${DRUGS}
 
 
+
+
 #process the static sources - currently KEGG and IOB
 cd ${STATICDIR}
 for dir in `ls`; do
@@ -598,7 +610,7 @@ for dir in `ls`; do
 			process_biopax_novalidation $file "Entrez gene" "IOB"
 		done
 		for file in *.gmt; do
-			translate_gmt $file "9606" "Entrezgene"
+			translate_gmt $file "9606" "entrezgene"
 		done
 
 		copy2release IOB Human ${PATHWAYS}
@@ -626,7 +638,7 @@ for dir in `ls`; do
 		cd ${SOURCE}/$dir
 		for file in *.gmt; do
 			process_gmt $file "MSigdb_C2" 1
-			translate_gmt $file "9606" "Entrezgene"
+			translate_gmt $file "9606" "entrezgene"
 		done
 		copy2release MSigdb Human ${PATHWAYS}
 		cd ${STATICDIR}
@@ -638,7 +650,7 @@ for dir in `ls`; do
 #		cp *version.txt ${VERSIONS}
 #		cd ${SOURCE}/$dir
 #		for file in *.gmt; do
-#			translate_gmt $file "9606" "Entrezgene"
+#			translate_gmt $file "9606" "entrezgene"
 #		done
 #		copy2release DiseasePhenotypes Human ${DISEASE}
 #		cd ${STATICDIR}
@@ -651,7 +663,7 @@ for dir in `ls`; do
 		cd ${SOURCE}/$dir
 		for file in *.gmt; do
 			process_gmt $file "MSigdb_C3" 1
-			translate_gmt $file "9606" "Entrezgene"
+			translate_gmt $file "9606" "entrezgene"
 		done
 		copy2release MSigdb Human ${MIR}
 		cd ${STATICDIR}
@@ -664,7 +676,7 @@ for dir in `ls`; do
 		cd ${SOURCE}/$dir
 		for file in *.gmt; do
 			process_gmt $file "MSigdb_C3" 1
-			translate_gmt $file "9606" "Entrezgene"
+			translate_gmt $file "9606" "entrezgene"
 		done
 		copy2release MSigdb Human ${TF}
 		cd ${STATICDIR}
@@ -862,6 +874,9 @@ cp ${HUMANGMTS}/${PATHWAYS}/*NCI*.gmt ./
 cp ${HUMANGMTS}/${PATHWAYS}/*HumanCyc*.gmt ./
 cp ${HUMANGMTS}/${PATHWAYS}/*KEGG*.gmt ./
 
+#copy the human drugs files
+cp ${HUMANGMTS}/${DRUGS}/*DrugBank*.gmt ./
+
 #copy all version into mouse_versions directory.
 cp ${HUMANVERSIONS}/NetPath.txt ${VERSIONS}
 cp ${HUMANVERSIONS}/IOB.txt ${VERSIONS}
@@ -883,8 +898,12 @@ for file in Mouse*.gmt ; do
 	translate_gmt $file "10090" "entrezgene"
 done
 
+#mv all the drugbank files to a separate directory
+mkdir ${DRUGS}
+mv *DrugBank* ${DRUGS}
+
 #copy all the pathway file - can't use the copy function because there are multiple pathway datasets in this set. 
-cp Mouse*_Entrezgene.gmt ${EG}/${PATHWAYS}/
+cp Mouse*_entrezgene.gmt ${EG}/${PATHWAYS}/
 cp Mouse*_UniProt.gmt ${UNIPROT}/${PATHWAYS}/
 cp Mouse*_symbol.gmt ${SYMBOL}/${PATHWAYS}/
 
@@ -905,6 +924,32 @@ files=$(ls *symbol_summary.log 2> /dev/null | wc -l)
 if [ $files != 0 ] ; then
 	cat *symbol_summary.log > Mouse_translatedPathways_symbol_translation_summary.log
 	cp $Mouse_translatedPathways_symbol_translation_summary.log ${SYMBOL}/${PATHWAYS}/Mouse_translatedPathways_symbol_translation_summary.log
+fi
+
+#copy the drugbank converted files
+cd ${DRUGS}
+#copy all the pathway file - can't use the copy function because there are multiple pathway datasets in this set. 
+cp Mouse*_entrezgene.gmt ${EG}/${DRUGS}/
+cp Mouse*_UniProt.gmt ${UNIPROT}/${DRUGS}/
+cp Mouse*_symbol.gmt ${SYMBOL}/${DRUGS}/
+
+#concatenate all the translation summaries	
+files=$(ls *10090_conversion.log 2> /dev/null | wc -l)
+if [ $files != 0 ] ; then
+	cat *10090_conversion.log > Mouse_translatedDrugs_Entrezgene_translation_summary.log
+	cp Mouse_translatedDrugs_Entrezgene_translation_summary.log ${EG}/${DRUGS}/Mouse_translatedDrugs_Entrezgene_translation_summary.log
+fi
+	
+files=$(ls *UniProt_summary.log 2> /dev/null | wc -l)
+if [ $files != 0 ] ; then
+	cat *UniProt_summary.log > Mouse_translatedDrugs_UniProt_translation_summary.log
+	cp Mouse_translatedDrugs_UniProt_translation_summary.log ${UNIPROT}/${DRUGS}/Mouse_translatedDrugs_UniProt_translation_summary.log
+fi
+		
+files=$(ls *symbol_summary.log 2> /dev/null | wc -l)
+if [ $files != 0 ] ; then
+	cat *symbol_summary.log > Mouse_translatedDrugs_symbol_translation_summary.log
+	cp Mouse_translatedDrugs_symbol_translation_summary.log ${SYMBOL}/${DRUGS}/Mouse_translatedDrugs_symbol_translation_summary.log
 fi
 
 

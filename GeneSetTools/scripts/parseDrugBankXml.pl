@@ -1,7 +1,12 @@
-#!/usr/local/bin/perl -w
+#!/opt/local/bin/perl -w
 # ===========================================================================
 # parse drug bank xml file to extract information for geneset files.
 # ===========================================================================
+
+#use local::lib;
+#use warnings;
+#use strict;
+
 use LWP::Simple;
 use XML::Parser;
 use XML::Simple;	# module to parse XML data which is the response to the query
