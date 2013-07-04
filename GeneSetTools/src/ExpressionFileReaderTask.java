@@ -139,7 +139,7 @@ public class ExpressionFileReaderTask implements Task {
             String [] tokens = line.split("\t");
 
             //The first column of the file is the name of the geneset
-            String Name = tokens[0].toUpperCase();
+            String Name = tokens[0];
 
             if(i==0 && expressionMatrix == null){
                 //otherwise the first line is the header
@@ -194,8 +194,8 @@ public class ExpressionFileReaderTask implements Task {
              //if the Gene is not in the gene list then add it
              if(!genes.containsKey(Name)){
                 int value = params.getNumberOfGenes();
-                genes.put(Name.toUpperCase(), value);
-                hashkey2gene.put(value,Name.toUpperCase());
+                genes.put(Name, value);
+                hashkey2gene.put(value,Name);
                 params.setNumberOfGenes(value+1);
             }
 

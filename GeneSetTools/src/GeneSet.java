@@ -155,12 +155,12 @@ public class GeneSet {
                 else{
                     //add the gene to the master list of genes
                     int value = params.getNumberOfGenes();
-                    CurrentMappings.put(genelist[j].toUpperCase(), value);
-                    OppositeMappings.put(value,genelist[j].toUpperCase());
+                    CurrentMappings.put(genelist[j], value);
+                    OppositeMappings.put(value,genelist[j]);
                     params.setNumberOfGenes(value+1);
 
                     //add the gene to the genelist
-                    this.addGene(CurrentMappings.get(genelist[j].toUpperCase()));
+                    this.addGene(CurrentMappings.get(genelist[j]));
                 }
             }
 
