@@ -17,6 +17,7 @@ import org.biopax.paxtools.model.BioPAXElement;
 import org.biopax.paxtools.model.BioPAXLevel;
 import org.biopax.paxtools.model.Model;
 import org.biopax.paxtools.model.level3.*;
+import org.biopax.paxtools.model.level3.Process;
 import org.biopax.paxtools.util.Filter;
 import org.kohsuke.args4j.Option;
 
@@ -189,11 +190,25 @@ public class Biopax2GMT  {
         else if (model.getLevel() == BioPAXLevel.L3) {
         	l3Model = model;
         }
-
+                
         // iterate over all pathways in the model
         for (Pathway aPathway : l3Model.getObjects(Pathway.class)) {
             //only add the geneset is it has genes
             GeneSet current = getGSEAEntry(model, aPathway, database);
+            
+            //if the datasource is Panther then iterate over the process instead of the pathways
+            //The assumption is that the Panther pathways are each in a separate file
+            //but their catalysis are not listed in the pathways and the easiest way to get
+            //at them to recurse through the processes instead
+            //IF THERE ARE MULTIPLE PATHWAYS IN THE FILE THIS WILL NOT WORK
+            // iterate over all pathways in the model
+            if(this.source.equalsIgnoreCase("Panther")) {
+                //only add the geneset is it has genes
+            		for (Process aProcess : l3Model.getObjects(Process.class)) 
+            			current = addGenesFromProcess(model,aProcess , current);
+                
+            }
+            
             //if(current.getGenes() != null && current.getGenes().size() >0 )
         	    toReturn.add(current);
         }
@@ -219,6 +234,25 @@ public class Biopax2GMT  {
     	}
     }
    */
+    
+    private GeneSet addGenesFromProcess(final Model model, final Process aProcess, final GeneSet toReturn){
+    			// genes
+    			this.visitProtein = true;
+    			this.rdfToGenes = new HashMap<String, String>();
+    			this.visited = new HashSet<BioPAXElement>();
+    			this.traverser.traverse(aProcess, model);
+    			if (this.rdfToGenes.size() == 0) {
+    				this.visitProtein = false;
+    				this.visited = new HashSet<BioPAXElement>();
+    				this.traverser.traverse(aProcess, model);
+    			}
+    			HashMap<String,String> temp = new HashMap<String,String>(toReturn.getRDFToGeneMap());
+    			temp.putAll(this.rdfToGenes);
+    			toReturn.setRDFToGeneMap(temp);
+    		return toReturn;
+    	
+    }
+    
 	private GeneSet getGSEAEntry(final Model model, final Pathway aPathway, final String database) {
 
 		// the GSEAEntry to return
