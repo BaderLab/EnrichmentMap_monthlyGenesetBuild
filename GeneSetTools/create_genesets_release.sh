@@ -14,7 +14,12 @@ function download_pc_data {
 	    get_pc_version
 }
 
-
+function download_panther_data {
+	    echo "[Downloading current Panther Pathway data]"
+	    URL="ftp://ftp.pantherdb.org//pathway/current_release/"
+	    curl ${URL}/BioPAX.tar.gz -o ${PANTHER}/BioPAX.tar.gz -s  -w "Panther : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
+	    get_webfile_version ${URL}/BioPAX.tar.gz "Panther"
+}
 
 #this function will get the date of the file if there is no other way to get a version from it
 # argument 1 - name of the file
@@ -48,8 +53,8 @@ function download_netpath_data {
 function download_reactome_data {
 	echo "[Downloading current Reactome data]"
 	URL="http://www.reactome.org/download/current/"
-	curl ${URL}/biopax3.zip -o ${REACTOME}/biopax3.zip -s  -w "Reactome : HTTP code - %{http_code};time:%{time_total} millisec; size:%{size_download} Bytes\n"
-	get_webfile_version ${URL}/biopax3.zip "Reactome"
+	curl ${URL}/biopax.zip -o ${REACTOME}/biopax.zip -s  -w "Reactome : HTTP code - %{http_code};time:%{time_total} millisec; size:%{size_download} Bytes\n"
+	get_webfile_version ${URL}/biopax.zip "Reactome"
 }
 
 #argument 1 - species, either human or mouse
@@ -89,7 +94,7 @@ function download_GOmouse_data {
 #download the Human Phenotype data (obo file and annotation file)
 function download_HPO_data {
 	echo "[Downloading current Human Phenotype data]"
-	URL="http://http://compbio.charite.de/hudson/job/hpo.annotations.monthly/lastStableBuild/artifact/annotation"
+	URL="http://compbio.charite.de/hudson/job/hpo.annotations.monthly/lastStableBuild/artifact/annotation"
 	curl ${URL}/genes_to_phenotype.txt -o ${DISEASESRC}/genes_to_phenotype.txt -s -w "HPO (Human annot) : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
 	get_webfile_version ${URL}/genes_to_phenotype.txt "Human_Phenotype"
 
@@ -124,7 +129,7 @@ function process_biopax {
 	CURRENTDIR=`pwd`
 	cd ${VALIDATORDIR}
 	#latest version of the validator will generate the output to a .modified.owl file.
-	./validate.sh "file:${CURRENTDIR}/$1"  --autofix  --return-biopax 2>> biopax_process.err
+	./validate.sh "file:${CURRENTDIR}/$1"  --auto-fix  --profile=notstrict 2>> biopax_process.err
 
 	#create an auto-fix biopax file to use to create the gmt file
 	#./validate.sh "file:${CURRENTDIR}/$1" --output=${CURRENTDIR}/${1}_updated_v1.owl --auto-fix --return-biopax 2>> biopax_process.err
@@ -232,7 +237,7 @@ function process_hpo {
 #argument 3 - division to put data into
 function copy2release {
 	cat *gene.gmt > ${2}_${1}_Entrezgene.gmt
-	cp ${2}_${1}_Entrezgene.gmt ${EG}/${3}/${2}_${1}_Entrezgene.gmt
+	cp ${2}_${1}_Entrezgene.gmt ${EG}/${3}/${2}_${1}_${dir_name}_Entrezgene.gmt
 	#concatenate all the translation summaries
 	
 	files=$(ls *gene_summary.log 2> /dev/null | wc -l)
@@ -243,7 +248,7 @@ function copy2release {
 	fi
 
 	cat *UniProt.gmt > ${2}_${1}_UniProt.gmt
-	cp ${2}_${1}_UniProt.gmt ${UNIPROT}/${3}/${2}_${1}_UniProt.gmt
+	cp ${2}_${1}_UniProt.gmt ${UNIPROT}/${3}/${2}_${1}_${dir_name}_UniProt.gmt
 	#concatenate all the translation summaries
 	files=$(ls *UniProt_summary.log 2> /dev/null | wc -l)
 	if [ $files != 0 ] ; then
@@ -253,7 +258,7 @@ function copy2release {
 	fi
 	
 	cat *symbol.gmt > ${2}_${1}_symbol.gmt
-	cp ${2}_${1}_symbol.gmt ${SYMBOL}/${3}/${2}_${1}_symbol.gmt
+	cp ${2}_${1}_symbol.gmt ${SYMBOL}/${3}/${2}_${1}_${dir_name}_symbol.gmt
 	#concatenate all the translation summaries
 	files=$(ls *symbol_summary.log 2> /dev/null | wc -l)
 	if [ $files != 0 ] ; then
@@ -399,6 +404,14 @@ function getstats {
                 wc -l *.gmt >> ${1}/Summary_Geneset_Counts.txt
         fi
 
+        cd ${1}/${DRUGS}
+        files=$(ls *.gmt 2> /dev/null | wc -l)
+        if [ $files != 0 ] ; then
+
+                echo 'Drug Targets Stats:' >> ${1}/Summary_Geneset_Counts.txt
+                wc -l *.gmt >> ${1}/Summary_Geneset_Counts.txt
+        fi
+
         mv ${1}/Summary_Geneset_Counts.txt ${OUTPUTDIR}
 
 
@@ -499,6 +512,22 @@ copy2release NCI_Nature Human ${PATHWAYS}
 # 3. convert to gmt file using GenesetTools
 # 4. convert to other identifiers using GenesetTools
 
+#download panther biopax data
+PANTHER=${SOURCE}/Panther
+mkdir ${PANTHER}
+download_panther_data
+#unzip and untar human.tar.gz file
+cd ${PANTHER}
+tar -xvzf BioPAX.tar.gz --strip=1 >/dev/null
+#Go through each pathway file and grab the uniprots
+for file in *.owl; do
+	process_biopax_novalidation $file "UniProt" "Panther"
+done
+for file in *.gmt; do
+	translate_gmt $file "9606" "UniProt"
+done
+copy2release Panther Human ${PATHWAYS}
+
 #download NetPath biopax data
 NETPATH=${SOURCE}/NetPath
 mkdir ${NETPATH}
@@ -540,7 +569,7 @@ REACTOME=${SOURCE}/Reactome
 mkdir ${REACTOME}
 download_reactome_data
 cd ${REACTOME}
-unzip biopax3.zip *sapiens.owl
+unzip biopax.zip *sapiens.owl
 mv Homo\ sapiens.owl Homosapiens.owl
 
 #for some reason the validated and fixed Reactome file hangs.
@@ -703,13 +732,13 @@ for file in *.gmt; do
 done
 
 #create  the compilation of all branches
-cat *_${WITHIEA}*entrezgene.gmt > Human_GOALL_${WITHIEA}_entrezgene.gmt
-cat *_${WITHIEA}*UniProt.gmt > Human_GOALL_${WITHIEA}_UniProt.gmt
-cat *_${WITHIEA}*symbol.gmt > Human_GOALL_${WITHIEA}_symbol.gmt
+cat *_${WITHIEA}*entrezgene.gmt > Human_GOALL_${WITHIEA}_${dir_name}_entrezgene.gmt
+cat *_${WITHIEA}*UniProt.gmt > Human_GOALL_${WITHIEA}_${dir_name}_UniProt.gmt
+cat *_${WITHIEA}*symbol.gmt > Human_GOALL_${WITHIEA}_${dir_name}_symbol.gmt
 
-cat *_${NOIEA}*entrezgene.gmt > Human_GOALL_${NOIEA}_entrezgene.gmt
-cat *_${NOIEA}*UniProt.gmt > Human_GOALL_${NOIEA}_UniProt.gmt
-cat *_${NOIEA}*symbol.gmt > Human_GOALL_${NOIEA}_symbol.gmt
+cat *_${NOIEA}*entrezgene.gmt > Human_GOALL_${NOIEA}_${dir_name}_entrezgene.gmt
+cat *_${NOIEA}*UniProt.gmt > Human_GOALL_${NOIEA}_${dir_name}_UniProt.gmt
+cat *_${NOIEA}*symbol.gmt > Human_GOALL_${NOIEA}_${dir_name}_symbol.gmt
 
 cp *entrezgene.gmt ${EG}/${GO}
 #create report of translations
@@ -730,26 +759,26 @@ cat *.txt > ${OUTPUTDIR}/${dir_name}_versions.txt
 
 #create all the different distributions
 cd ${EG}/${PATHWAYS}
-cat *.gmt > ../Human_AllPathways_entrezgene.gmt
+cat *.gmt > ../Human_AllPathways_${dir_name}_entrezgene.gmt
 cd ${EG}/${GO}
-cat ../Human_AllPathways_entrezgene.gmt Human_GOALL_${WITHIEA}_entrezgene.gmt > ../Human_GO_AllPathways_${WITHIEA}_entrezgene.gmt
-cat ../Human_AllPathways_entrezgene.gmt Human_GOALL_${NOIEA}_entrezgene.gmt > ../Human_GO_AllPathways_${NOIEA}_entrezgene.gmt
+cat ../Human_AllPathways_${dir_name}_entrezgene.gmt Human_GOALL_${WITHIEA}_${dir_name}_entrezgene.gmt > ../Human_GO_AllPathways_${WITHIEA}_${dir_name}_entrezgene.gmt
+cat ../Human_AllPathways_${dir_name}_entrezgene.gmt Human_GOALL_${NOIEA}_${dir_name}_entrezgene.gmt > ../Human_GO_AllPathways_${NOIEA}_${dir_name}_entrezgene.gmt
 #merge all the summaries
 mergesummaries ${EG} entrezgene
 
 cd ${SYMBOL}/${PATHWAYS}
-cat *.gmt > ../Human_AllPathways_symbol.gmt
+cat *.gmt > ../Human_AllPathways_${dir_name}_symbol.gmt
 cd ${SYMBOL}/${GO}
-cat ../Human_AllPathways_symbol.gmt Human_GOALL_${WITHIEA}_symbol.gmt > ../Human_GO_AllPathways_${WITHIEA}_symbol.gmt
-cat ../Human_AllPathways_symbol.gmt Human_GOALL_${NOIEA}_symbol.gmt > ../Human_GO_AllPathways_${NOIEA}_symbol.gmt
+cat ../Human_AllPathways_${dir_name}_symbol.gmt Human_GOALL_${WITHIEA}_${dir_name}_symbol.gmt > ../Human_GO_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
+cat ../Human_AllPathways_${dir_name}_symbol.gmt Human_GOALL_${NOIEA}_${dir_name}_symbol.gmt > ../Human_GO_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
 #merge all the summaries
 mergesummaries ${SYMBOL} symbol
 
 cd ${UNIPROT}/${PATHWAYS}
-cat *.gmt > ../Human_AllPathways_UniProt.gmt
+cat *.gmt > ../Human_AllPathways_${dir_name}_UniProt.gmt
 cd ${UNIPROT}/${GO}
-cat ../Human_AllPathways_UniProt.gmt Human_GOALL_${WITHIEA}_UniProt.gmt > ../Human_GO_AllPathways_${WITHIEA}_UniProt.gmt
-cat ../Human_AllPathways_UniProt.gmt Human_GOALL_${NOIEA}_UniProt.gmt > ../Human_GO_AllPathways_${NOIEA}_UniProt.gmt
+cat ../Human_AllPathways_${dir_name}_UniProt.gmt Human_GOALL_${WITHIEA}_${dir_name}_UniProt.gmt > ../Human_GO_AllPathways_${WITHIEA}_${dir_name}_UniProt.gmt
+cat ../Human_AllPathways_${dir_name}_UniProt.gmt Human_GOALL_${NOIEA}_${dir_name}_UniProt.gmt > ../Human_GO_AllPathways_${NOIEA}_${dir_name}_UniProt.gmt
 #merge all the summaries
 mergesummaries ${UNIPROT} UniProt
 
@@ -808,7 +837,7 @@ cp ${SOURCE}/Reactome/*.zip ${REACTOME}/
 #copy reactome version into mouse_versions directory.
 cp ${HUMANVERSIONS}/Reactome.txt ${VERSIONS}
 cd ${REACTOME}
-unzip biopax3.zip *musculus.owl
+unzip biopax.zip *musculus.owl
 mv Mus\ musculus.owl Musmusculus.owl
 
 #for some reason the validated and fixed Reactome file hangs.
@@ -840,13 +869,13 @@ for file in *.gmt; do
 done
 
 #create  the compilation of all branches
-cat *_${WITHIEA}*entrezgene.gmt > Mouse_GOALL_${WITHIEA}_entrezgene.gmt
-cat *_${WITHIEA}*UniProt.gmt > Mouse_GOALL_${WITHIEA}_UniProt.gmt
-cat *_${WITHIEA}*symbol.gmt > Mouse_GOALL_${WITHIEA}_symbol.gmt
+cat *_${WITHIEA}*entrezgene.gmt > Mouse_GOALL_${WITHIEA}_${dir_name}_entrezgene.gmt
+cat *_${WITHIEA}*UniProt.gmt > Mouse_GOALL_${WITHIEA}_${dir_name}_UniProt.gmt
+cat *_${WITHIEA}*symbol.gmt > Mouse_GOALL_${WITHIEA}_${dir_name}_symbol.gmt
 
-cat *_${NOIEA}*entrezgene.gmt > Mouse_GOALL_${NOIEA}_entrezgene.gmt
-cat *_${NOIEA}*UniProt.gmt > Mouse_GOALL_${NOIEA}_UniProt.gmt
-cat *_${NOIEA}*symbol.gmt > Mouse_GOALL_${NOIEA}_symbol.gmt
+cat *_${NOIEA}*entrezgene.gmt > Mouse_GOALL_${NOIEA}_${dir_name}_entrezgene.gmt
+cat *_${NOIEA}*UniProt.gmt > Mouse_GOALL_${NOIEA}_${dir_name}_UniProt.gmt
+cat *_${NOIEA}*symbol.gmt > Mouse_GOALL_${NOIEA}_${dir_name}_symbol.gmt
 
 cp *entrezgene.gmt ${EG}/${GO}
 #create report of translations
@@ -873,6 +902,7 @@ cp ${HUMANGMTS}/${PATHWAYS}/*MSig*.gmt ./
 cp ${HUMANGMTS}/${PATHWAYS}/*NCI*.gmt ./
 cp ${HUMANGMTS}/${PATHWAYS}/*HumanCyc*.gmt ./
 cp ${HUMANGMTS}/${PATHWAYS}/*KEGG*.gmt ./
+cp ${HUMANGMTS}/${PATHWAYS}/*Panther*.gmt ./
 
 #copy the human drugs files
 cp ${HUMANGMTS}/${DRUGS}/*DrugBank*.gmt ./
@@ -884,6 +914,7 @@ cp ${HUMANVERSIONS}/msigdb_path.txt ${VERSIONS}
 cp ${HUMANVERSIONS}/NCI_Nature.txt ${VERSIONS}
 cp ${HUMANVERSIONS}/humancyc.txt ${VERSIONS}
 cp ${HUMANVERSIONS}/KEGG.txt ${VERSIONS}
+cp ${HUMANVERSIONS}/Panther.txt ${VERSIONS}
 
 #cp ${HUMANGMTS}/${MIRS}/*.gmt ./
 #cp ${HUMANGMTS}/${TF}/*.gmt ./
@@ -959,26 +990,26 @@ cat *.txt > ${OUTPUTDIR}/${dir_name}_versions.txt
 
 #create all the different distributions
 cd ${EG}/${PATHWAYS}
-cat *.gmt > ../Mouse_AllPathways_entrezgene.gmt
+cat *.gmt > ../Mouse_AllPathways_${dir_name}_entrezgene.gmt
 cd ${EG}/${GO}
-cat ../Mouse_AllPathways_entrezgene.gmt Mouse_GOALL_${WITHIEA}_entrezgene.gmt > ../Mouse_GO_AllPathways_${WITHIEA}_entrezgene.gmt
-cat ../Mouse_AllPathways_entrezgene.gmt Mouse_GOALL_${NOIEA}_entrezgene.gmt > ../Mouse_GO_AllPathways_${NOIEA}_entrezgene.gmt
+cat ../Mouse_AllPathways_${dir_name}_entrezgene.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_entrezgene.gmt > ../Mouse_GO_AllPathways_${WITHIEA}_${dir_name}_entrezgene.gmt
+cat ../Mouse_AllPathways_${dir_name}_entrezgene.gmt Mouse_GOALL_${NOIEA}_${dir_name}_entrezgene.gmt > ../Mouse_GO_AllPathways_${NOIEA}_${dir_name}_entrezgene.gmt
 #merge all the summaries
 mergesummaries ${EG} entrezgene
 
 cd ${SYMBOL}/${PATHWAYS}
-cat *.gmt > ../Mouse_AllPathways_symbol.gmt
+cat *.gmt > ../Mouse_AllPathways_${dir_name}_symbol.gmt
 cd ${SYMBOL}/${GO}
-cat ../Mouse_AllPathways_symbol.gmt Mouse_GOALL_${WITHIEA}_symbol.gmt > ../Mouse_GO_AllPathways_${WITHIEA}_symbol.gmt
-cat ../Mouse_AllPathways_symbol.gmt Mouse_GOALL_${NOIEA}_symbol.gmt > ../Mouse_GO_AllPathways_${NOIEA}_symbol.gmt
+cat ../Mouse_AllPathways_${dir_name}_symbol.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
+cat ../Mouse_AllPathways_${dir_name}_symbol.gmt Mouse_GOALL_${NOIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
 #merge all the summaries
 mergesummaries ${SYMBOL} symbol
 
 cd ${UNIPROT}/${PATHWAYS}
-cat *.gmt > ../Mouse_AllPathways_UniProt.gmt
+cat *.gmt > ../Mouse_AllPathways_${dir_name}_UniProt.gmt
 cd ${UNIPROT}/${GO}
-cat ../Mouse_AllPathways_UniProt.gmt Mouse_GOALL_${WITHIEA}_UniProt.gmt > ../Mouse_GO_AllPathways_${WITHIEA}_UniProt.gmt
-cat ../Mouse_AllPathways_UniProt.gmt Mouse_GOALL_${NOIEA}_UniProt.gmt > ../Mouse_GO_AllPathways_${NOIEA}_UniProt.gmt
+cat ../Mouse_AllPathways_${dir_name}_UniProt.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_UniProt.gmt > ../Mouse_GO_AllPathways_${WITHIEA}_${dir_name}_UniProt.gmt
+cat ../Mouse_AllPathways_${dir_name}_UniProt.gmt Mouse_GOALL_${NOIEA}_${dir_name}_UniProt.gmt > ../Mouse_GO_AllPathways_${NOIEA}_${dir_name}_UniProt.gmt
 #merge all the summaries
 mergesummaries ${UNIPROT} UniProt
 
