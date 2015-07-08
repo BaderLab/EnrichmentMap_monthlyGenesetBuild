@@ -10,7 +10,7 @@ eval $(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)
 export PERL5LIB=${PERL5LIB}:~/lib/perl5:~/lib/perl5/lib64/perl5:~/lib/perl5/lib:~/lib/perl5/lib/i386-linux-thread-multi/:~/lib/perl5/lib/perl5/site_perl
 
 BUILDLOG=`date '+%B_%d_%Y'`_build.log
-ABSPATH=/Users/risserlin/AutomaticGeneSetCreation/GeneSetTools
+ABSPATH=/Users/risserlin/EnrichmentMap_monthlyGenesetBuild/GeneSetTools
 
 cd ${ABSPATH}
 
