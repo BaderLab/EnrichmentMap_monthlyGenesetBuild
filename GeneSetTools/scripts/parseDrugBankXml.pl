@@ -19,7 +19,6 @@ use Getopt::Long; # to parse the command line options.
 my (
 	$input_filename,
 	$output_filename,
-	$conversion_filename,
 	$drug_type,
 	$id_type,
 );
@@ -27,28 +26,27 @@ my (
 GetOptions (
 	"inputfile|f=s"		=> \$input_filename,
 	"outputfile|o=s"	=> \$output_filename,
-	"conversion|c=s"	=> \$conversion_filename,
 	"drugtype|d=s"		=> \$drug_type,
 	"idtype|i=s"		=> \$id_type,
 );
 
 #load in the target information from the target_links.csv file downloaded
 # with the xml file.  This is the only way to get the external ids for the targets
-my $conver_list = {};
+#my $conver_list = {};
 
-my @rows;
-my $csv = Text::CSV->new ( { binary => 1 } )  # should set binary attribute.
-                 or die "Cannot use CSV: ".Text::CSV->error_diag ();
+#my @rows;
+#my $csv = Text::CSV->new ( { binary => 1 } )  # should set binary attribute.
+#                 or die "Cannot use CSV: ".Text::CSV->error_diag ();
  
-open my $fh, "<:encoding(utf8)", "$conversion_filename" or die "$conversion_filename: $!";
-while ( my $row = $csv->getline( $fh ) ) {
+#open my $fh, "<:encoding(utf8)", "$conversion_filename" or die "$conversion_filename: $!";
+#while ( my $row = $csv->getline( $fh ) ) {
 
 	#ID,Name,Gene Name,GenBank Protein ID,GenBank Gene ID,UniProt ID,Uniprot Title,PDB ID,GeneCard ID,GenAtlas ID,HGNC ID,HPRD ID
 	
 	#for the hash the first entry on the line is hash key and the value is 
 	# the entire id array
-        $conver_list->{ $row->[0] } = $row ;
-}
+#        $conver_list->{ $row->[0] } = $row ;
+#}
 
 #print Dumper($conver_list);
 
@@ -62,8 +60,10 @@ $xml = new XML::Simple;
 #read xml file
 #set key attr to nothing or else it will by default use the name and mess up
 # the array format of the xml
-$data = $xml-> XMLin("$input_filename", KeyAttr => {}, ForceArray => 1);
-#print DRUGS Dumper($data);
+#$data = $xml-> XMLin("$input_filename", KeyAttr => {}, ForceArray => 1);
+$data = $xml-> XMLin("$input_filename",  ForceArray => 1);
+#print Dumper($data);
+
 
 #create a hash with all the drug information (hash key is the drug id)
 my $drugs = {};
@@ -80,9 +80,13 @@ foreach my $drug (@{$data->{drug}}){
 
 	#each item in the xml is read in as an array so even though there is
 	#only one drugbank id need to print the contents of the array
-	my $drugbankid = (@{$drug->{'drugbank-id'}})[0];	
+	my $drugbankid = (@{$drug->{'drugbank-id'}})[0]->{'content'};	
+	#print "Drugbankid: $drugbankid";
+	#print "DrugbankID: $drugbankid\n"; 
 	my $name = (@{$drug->{name}})[0];	
+	#print "Name: $name\n"; 
 	my $casnumber = (@{$drug->{'cas-number'}})[0];
+	#print "CAS: $casnumber\n"; 
        	
 	#go through the groups for each drug
 	# only keep the drugs that are in the user specified category
@@ -115,7 +119,7 @@ foreach my $drug (@{$data->{drug}}){
 		#go through the targets if there are any
 		foreach my $targets (@{$drug->{targets}}){
 			foreach my $target (@{$targets->{target}}){
-			
+				#print Dumper($target);
 				#add the genename to geneset
 				if(exists($genesets_genename -> { $drugbankid })){
 					#only add the name if the target is human,
@@ -123,8 +127,17 @@ foreach my $drug (@{$data->{drug}}){
 					# there is a uniprot name which often has the taxonomy in it
 					#i.e." _HUMAN". --> this is a hack but until drugbank adds the
 					# the taxid to the file this is a quick fix.
-					if($conver_list->{ $target->{partner} }[6] =~ m/_HUMAN/){
-						push @{ $genesets_genename -> {$drugbankid} }, $conver_list->{ $target->{partner} }[2];
+					my $targetOrganism = (@{$target->{'organism'}})[0];	
+					#print "1Orgnaism= $targetOrganism\n";
+					#my $genename = $target->{'components'}->[0]->{'polypeptide'}->[0]->{'gene-name'}->[0];
+
+					if($targetOrganism eq "Human"){
+						#my $genename = $target->{'components'}->[0]->{'polypeptide'}->[0]->{'gene-name'}->[0];
+						my $genename = $target->{'polypeptide'}->[0]->{'gene-name'}->[0];
+						#print "target GeneName: $genename\n";
+						if(defined $genename){
+							push @{ $genesets_genename -> {$drugbankid} }, $genename;
+						}
 					}
 				}
 				else{
@@ -133,10 +146,19 @@ foreach my $drug (@{$data->{drug}}){
 					# there is a uniprot name which often has the taxonomy in it
 					#i.e." _HUMAN". --> this is a hack but until drugbank adds the
 					# the taxid to the file this is a quick fix.
-					if($conver_list->{ $target->{partner} }[6] =~ m/_HUMAN/){
+					my $targetOrganism = (@{$target->{'organism'}})[0];	
+					#print "2Orgnaism= $targetOrganism\n";
 
-						$genesets_genename -> {$drugbankid} = [$conver_list->{ $target->{partner} }[2]];
+					if($targetOrganism eq "Human"){
+						#my $genename = $target->{'components'}->[0]->{'polypeptide'}->[0]->{'gene-name'}->[0];
+						my $genename = $target->{'polypeptide'}->[0]->{'gene-name'}->[0];
+						#print "GeneName GS creation: $genename\n";
+						#only add if there is a gene name associated with the drugtarget
+						if(defined $genename){
+							$genesets_genename -> {$drugbankid} = [$genename];
+						}
 					}
+
 				}
 
 
@@ -147,9 +169,19 @@ foreach my $drug (@{$data->{drug}}){
 					# there is a uniprot name which often has the taxonomy in it
 					#i.e." _HUMAN". --> this is a hack but until drugbank adds the
 					# the taxid to the file this is a quick fix.
-					if($conver_list->{ $target->{partner} }[6] =~ m/_HUMAN/){
-			
-						push @{ $genesets_uniprot -> {$drugbankid} }, $conver_list->{ $target->{partner} }[5];
+					my $targetOrganism = (@{$target->{'organism'}})[0];	
+					if($targetOrganism eq "Human"){
+						#go through all the external identifiers
+						foreach my $identifiers (@{$target->{'polypeptide'}->[0]->{'external-identifiers'}->[0]->{'external-identifier'}}){
+							my $resource = $identifiers ->{'resource'}->[0];
+							my $id = $identifiers->{'identifier'}->[0];
+							#print "$resource -> $id\n";
+							#only add if there is a gene name associated with the drugtarget
+							if($resource eq "UniProtKB"){
+								push @{ $genesets_uniprot -> {$drugbankid} }, $id;
+
+							}
+						}
 					}
 				}
 				else{
@@ -158,9 +190,24 @@ foreach my $drug (@{$data->{drug}}){
 					# there is a uniprot name which often has the taxonomy in it
 					#i.e." _HUMAN". --> this is a hack but until drugbank adds the
 					# the taxid to the file this is a quick fix.
-					if($conver_list->{ $target->{partner} }[6] =~ m/_HUMAN/){
+					my $targetOrganism = (@{$target->{'organism'}})[0];	
+					#print "4Orgnaism= $targetOrganism\n";
 
-						$genesets_uniprot -> {$drugbankid} = [$conver_list->{ $target->{partner} }[5]];
+					if($targetOrganism eq "Human"){
+						#go through all the external identifiers
+						foreach my $identifiers (@{$target->{'polypeptide'}->[0]->{'external-identifiers'}->[0]->{'external-identifier'}}){
+							my $resource = $identifiers->{'resource'}->[0];
+							my $id = $identifiers->{'identifier'}->[0];
+							#print "$resource -> $id\n";
+							#only add if there is a gene name associated with the drugtarget
+							if(($resource eq "UniProtKB") && (exists($genesets_uniprot -> { $drugbankid }))){
+								push @{ $genesets_uniprot -> {$drugbankid} }, $id;
+
+							}
+							elsif($resource eq "UniProtKB"){
+								$genesets_uniprot -> {$drugbankid} = [$id];
+							}
+						}
 					}
 				}
 			}
