@@ -35,7 +35,8 @@ function get_webfile_version {
 function download_nci_data {
 	echo "[Downloading current NCI data]"
 	URL="ftp://ftp1.nci.nih.gov/pub/PID/BioPAX_Level_3/NCI-Nature_Curated.bp3.owl.gz"
-	curl ${URL} -o ${NCI}/NCI-Nature_Curated.bp3.owl.gz -s  -w "NCI : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
+	ftp ${URL}
+	#curl ${URL} -o ${NCI}/NCI-Nature_Curated.bp3.owl.gz -s  -w "NCI : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
 	get_webfile_version $URL "NCI_Nature"	
 }
 
@@ -93,10 +94,12 @@ function download_GOmouse_data {
 
 #download the Human Phenotype data (obo file and annotation file)
 function download_HPO_data {
+	#file no longer exists.  Use latest version from June 16, 2013
 	echo "[Downloading current Human Phenotype data]"
-	URL="http://compbio.charite.de/hudson/job/hpo.annotations.monthly/lastStableBuild/artifact/annotation"
-	curl ${URL}/genes_to_phenotype.txt -o ${DISEASESRC}/genes_to_phenotype.txt -s -w "HPO (Human annot) : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
-	get_webfile_version ${URL}/genes_to_phenotype.txt "Human_Phenotype"
+        URL="http://compbio.charite.de/hudson/job/hpo.annotations.monthly/lastStableBuild/artifact/annotation/ALL_SOURCES_ALL_FREQUENCIES_genes_to_phenotype.txt"
+	#URL="http://compbio.charite.de/hudson/job/hpo.annotations.monthly/lastStableBuild/artifact/annotation"
+	curl ${URL} -o ${DISEASESRC}/genes_to_phenotype.txt -s -w "HPO (Human annot) : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
+	get_webfile_version ${URL} "Human_Phenotype"
 
 	#get the obo file
 	echo "[Downloading current Phenotype OBO file]"
@@ -113,9 +116,10 @@ function download_drugbank_data {
 	curl ${URL}/drugbank.xml.zip -o ${DRUGSSRC}/drugbank.xml.zip -s -w "Drugbank : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
 	get_webfile_version ${URL}/drugbank.xml.zip "DrugBank"
 
-	echo "[Downloading current Drugbank external identifiers info]"
-	curl ${URL}/target_links.csv.zip -o ${DRUGSSRC}/target_links.csv.zip -s -w "Drugbank(external links) : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
-	get_webfile_version ${URL}/target_links.csv.zip "DrugBank_external_links"
+	#echo "[Downloading current Drugbank external identifiers info]"
+	#curl ${URL}/target_links.csv.zip -o ${DRUGSSRC}/target_links.csv.zip -s -w "Drugbank(external links) : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
+	#curl ${URL}/all_target_ids_all.csv.zip -o ${DRUGSSRC}/target_links.csv.zip -s -w "Drugbank(external links) : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
+	#get_webfile_version ${URL}/all_target_ids_all.csv.zip "DrugBank_external_links"
 
 }
 
@@ -422,7 +426,7 @@ function getstats {
 #make sure we are using Java 6
 export JAVA_HOME="/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home"
 
-LOCAL=/Network/Servers/server1.baderlab.med.utoronto.ca/Volumes/RAID/Users/risserlin
+LOCAL=/Users/risserlin
 
 #make sure we are using our local perl libs
 export PERL5LIB=${PERL5LIB}:${LOCAL}/lib/perl5:${LOCAL}/lib/perl5/lib64/perl5:${LOCAL}/lib/perl5/lib:${LOCAL}/lib/perl5/lib/i386-linux-thread-multi/:${LOCAL}/lib/perl5/lib/perl5/site_perl
@@ -491,10 +495,9 @@ createDivisionDirs ${SYMBOL}
 #download NCI from NCI database.
 NCI=${SOURCE}/NCI
 mkdir -p ${NCI}
-#current NCI file is broken use one from april until the current NCI file is fixed
-#download_nci_data
 cd ${NCI}
-cp ${STATICDIR}/NCI/*.gz ./
+download_nci_data
+#cp ${STATICDIR}/NCI/*.gz ./
 gunzip *.gz
 #modify gmt file so the gmt conforms to our standard with name and description
 for file in *.owl; do
@@ -524,6 +527,10 @@ for file in *.owl; do
 	process_biopax_novalidation $file "UniProt" "Panther"
 done
 for file in *.gmt; do
+	#because we are going through processes instead of pathways (because of biopax contents)
+        #we get duplicated lines.  Get rid of all lines that don't have a Panther ID
+	grep "%PANTHER Pathway%" $file > temp_file.gmt
+	mv temp_file.gmt $file
 	translate_gmt $file "9606" "UniProt"
 done
 copy2release Panther Human ${PATHWAYS}
@@ -588,6 +595,8 @@ DISEASESRC=${SOURCE}/DiseasePhenotypes
 mkdir ${DISEASESRC}
 download_HPO_data 
 cd ${DISEASESRC}
+#cp ${STATICDIR}/DiseasePhenotypes/gene_to_phenotype_june142013.txt ./
+
 #parse the the phenotypes and obo file.
 process_hpo genes_to_phenotype.txt human-phenotype-ontology.obo Human_DiseasePhenotypes_Entrezgene.gmt
 
@@ -606,18 +615,33 @@ for file in *.zip; do
 	unzip $file	
 done 
 #process the drugbank file - all drugs
-perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_all_symbol.gmt -c target_links.csv -i genename 2>>drugbankparse.err
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_all_symbol.gmt -i genename 2>>drugbankparse.err
 #process the drugbank file - approved drugs
-perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_approved_symbol.gmt -c target_links.csv -d "approved" -i genename  2>>drugbankparse.err
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_approved_symbol.gmt-d "approved" -i genename  2>>drugbankparse.err
 #process the drugbank file - illicit drugs
-perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_illicit_symbol.gmt -c target_links.csv -d "illicit" -i genename  2>>drugbankparse.err
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_illicit_symbol.gmt -d "illicit" -i genename  2>>drugbankparse.err
 #process the drugbank file - experimental drugs
-perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_experimental_symbol.gmt -c target_links.csv -d "experimental" -i genename  2>>drugbankparse.err
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_experimental_symbol.gmt -d "experimental" -i genename  2>>drugbankparse.err
 #process the drugbank file - nutraceutical drugs
-perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_nutraceutical_symbol.gmt -c target_links.csv -d "nutraceutical" -i genename  2>>drugbankparse.err
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_nutraceutical_symbol.gmt -d "nutraceutical" -i genename  2>>drugbankparse.err
 #process the drugbank file - small molecule drugs
-perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_smallmolecule_symbol.gmt -c target_links.csv -d "small molecule" -i genename  2>>drugbankparse.err
-for file in *.gmt; do
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_smallmolecule_symbol.gmt -d "small molecule" -i genename  2>>drugbankparse.err
+
+#uniprot computation
+#process the drugbank file - all drugs
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_all_drugb_uniprot.gmt -i uniprot 2>>drugbankparse.err
+#process the drugbank file - approved drugs
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_approved_drugb_uniprot.gmt-d "approved" -i uniprot  2>>drugbankparse.err
+#process the drugbank file - illicit drugs
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_illicit_drugb_uniprot.gmt -d "illicit" -i uniprot  2>>drugbankparse.err
+#process the drugbank file - experimental drugs
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_experimental_drugb_uniprot.gmt -d "experimental" -i uniprot  2>>drugbankparse.err
+#process the drugbank file - nutraceutical drugs
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_nutraceutical_drugb_uniprot.gmt -d "nutraceutical" -i uniprot  2>>drugbankparse.err
+#process the drugbank file - small molecule drugs
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_smallmolecule_drugb_uniprot.gmt -d "small molecule" -i uniprot  2>>drugbankparse.err
+
+for file in *symbol.gmt; do
 	translate_gmt $file "9606" "symbol"
 done
 copy2release_nomerge DrugBank Human ${DRUGS}
@@ -694,7 +718,7 @@ for dir in `ls`; do
 			process_gmt $file "MSigdb_C3" 1
 			translate_gmt $file "9606" "entrezgene"
 		done
-		copy2release MSigdb Human ${MIR}
+		copy2release miRs_MSigdb Human ${MIR}
 		cd ${STATICDIR}
 	fi
 	if [[ $dir == "tf" ]] ; then
@@ -707,7 +731,7 @@ for dir in `ls`; do
 			process_gmt $file "MSigdb_C3" 1
 			translate_gmt $file "9606" "entrezgene"
 		done
-		copy2release MSigdb Human ${TF}
+		copy2release TranscriptionFactors_MSigdb Human ${TF}
 		cd ${STATICDIR}
 	fi
 done
@@ -763,6 +787,11 @@ cat *.gmt > ../Human_AllPathways_${dir_name}_entrezgene.gmt
 cd ${EG}/${GO}
 cat ../Human_AllPathways_${dir_name}_entrezgene.gmt Human_GOALL_${WITHIEA}_${dir_name}_entrezgene.gmt > ../Human_GO_AllPathways_${WITHIEA}_${dir_name}_entrezgene.gmt
 cat ../Human_AllPathways_${dir_name}_entrezgene.gmt Human_GOALL_${NOIEA}_${dir_name}_entrezgene.gmt > ../Human_GO_AllPathways_${NOIEA}_${dir_name}_entrezgene.gmt
+
+#create two new all pathways files with GOBP included
+cat ../Human_AllPathways_${dir_name}_entrezgene.gmt Human_GO_bp_${WITHIEA}_entrezgene.gmt > ../Human_GOBP_AllPathways_${WITHIEA}_${dir_name}_entrezgene.gmt
+cat ../Human_AllPathways_${dir_name}_entrezgene.gmt Human_GO_bp_${NOIEA}_entrezgene.gmt > ../Human_GOBP_AllPathways_${NOIEA}_${dir_name}_entrezgene.gmt
+
 #merge all the summaries
 mergesummaries ${EG} entrezgene
 
@@ -771,6 +800,12 @@ cat *.gmt > ../Human_AllPathways_${dir_name}_symbol.gmt
 cd ${SYMBOL}/${GO}
 cat ../Human_AllPathways_${dir_name}_symbol.gmt Human_GOALL_${WITHIEA}_${dir_name}_symbol.gmt > ../Human_GO_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
 cat ../Human_AllPathways_${dir_name}_symbol.gmt Human_GOALL_${NOIEA}_${dir_name}_symbol.gmt > ../Human_GO_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
+
+#create two new all pathways files with GOBP included
+cat ../Human_AllPathways_${dir_name}_symbol.gmt Human_GO_bp_${WITHIEA}_symbol.gmt > ../Human_GOBP_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
+cat ../Human_AllPathways_${dir_name}_symbol.gmt Human_GO_bp_${NOIEA}_symbol.gmt > ../Human_GOBP_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
+
+
 #merge all the summaries
 mergesummaries ${SYMBOL} symbol
 
@@ -779,6 +814,12 @@ cat *.gmt > ../Human_AllPathways_${dir_name}_UniProt.gmt
 cd ${UNIPROT}/${GO}
 cat ../Human_AllPathways_${dir_name}_UniProt.gmt Human_GOALL_${WITHIEA}_${dir_name}_UniProt.gmt > ../Human_GO_AllPathways_${WITHIEA}_${dir_name}_UniProt.gmt
 cat ../Human_AllPathways_${dir_name}_UniProt.gmt Human_GOALL_${NOIEA}_${dir_name}_UniProt.gmt > ../Human_GO_AllPathways_${NOIEA}_${dir_name}_UniProt.gmt
+
+#create two new all pathways files with GOBP included
+cat ../Human_AllPathways_${dir_name}_UniProt.gmt Human_GO_bp_${WITHIEA}_UniProt.gmt > ../Human_GOBP_AllPathways_${WITHIEA}_${dir_name}_UniProt.gmt
+cat ../Human_AllPathways_${dir_name}_UniProt.gmt Human_GO_bp_${NOIEA}_UniProt.gmt > ../Human_GOBP_AllPathways_${NOIEA}_${dir_name}_UniProt.gmt
+
+
 #merge all the summaries
 mergesummaries ${UNIPROT} UniProt
 
@@ -934,7 +975,7 @@ mkdir ${DRUGS}
 mv *DrugBank* ${DRUGS}
 
 #copy all the pathway file - can't use the copy function because there are multiple pathway datasets in this set. 
-cp Mouse*_entrezgene.gmt ${EG}/${PATHWAYS}/
+cp Mouse*_Entrezgene.gmt ${EG}/${PATHWAYS}/
 cp Mouse*_UniProt.gmt ${UNIPROT}/${PATHWAYS}/
 cp Mouse*_symbol.gmt ${SYMBOL}/${PATHWAYS}/
 
@@ -994,6 +1035,12 @@ cat *.gmt > ../Mouse_AllPathways_${dir_name}_entrezgene.gmt
 cd ${EG}/${GO}
 cat ../Mouse_AllPathways_${dir_name}_entrezgene.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_entrezgene.gmt > ../Mouse_GO_AllPathways_${WITHIEA}_${dir_name}_entrezgene.gmt
 cat ../Mouse_AllPathways_${dir_name}_entrezgene.gmt Mouse_GOALL_${NOIEA}_${dir_name}_entrezgene.gmt > ../Mouse_GO_AllPathways_${NOIEA}_${dir_name}_entrezgene.gmt
+
+#create two new all pathways files with GOBP included
+cat ../Mouse_AllPathways_${dir_name}_entrezgene.gmt Mouse_GO_bp_${WITHIEA}_entrezgene.gmt > ../Mouse_GOBP_AllPathways_${WITHIEA}_${dir_name}_entrezgene.gmt
+cat ../Mouse_AllPathways_${dir_name}_entrezgene.gmt Mouse_GO_bp_${NOIEA}_entrezgene.gmt > ../Mouse_GOBP_AllPathways_${NOIEA}_${dir_name}_entrezgene.gmt
+
+
 #merge all the summaries
 mergesummaries ${EG} entrezgene
 
@@ -1002,6 +1049,12 @@ cat *.gmt > ../Mouse_AllPathways_${dir_name}_symbol.gmt
 cd ${SYMBOL}/${GO}
 cat ../Mouse_AllPathways_${dir_name}_symbol.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
 cat ../Mouse_AllPathways_${dir_name}_symbol.gmt Mouse_GOALL_${NOIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
+
+#create two new all pathways files with GOBP included
+cat ../Mouse_AllPathways_${dir_name}_symbol.gmt Mouse_GO_bp_${WITHIEA}_symbol.gmt > ../Mouse_GOBP_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
+cat ../Mouse_AllPathways_${dir_name}_symbol.gmt Mouse_GO_bp_${NOIEA}_symbol.gmt > ../Mouse_GOBP_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
+
+
 #merge all the summaries
 mergesummaries ${SYMBOL} symbol
 
@@ -1010,6 +1063,241 @@ cat *.gmt > ../Mouse_AllPathways_${dir_name}_UniProt.gmt
 cd ${UNIPROT}/${GO}
 cat ../Mouse_AllPathways_${dir_name}_UniProt.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_UniProt.gmt > ../Mouse_GO_AllPathways_${WITHIEA}_${dir_name}_UniProt.gmt
 cat ../Mouse_AllPathways_${dir_name}_UniProt.gmt Mouse_GOALL_${NOIEA}_${dir_name}_UniProt.gmt > ../Mouse_GO_AllPathways_${NOIEA}_${dir_name}_UniProt.gmt
+
+#create two new all pathways files with GOBP included
+cat ../Mouse_AllPathways_${dir_name}_UniProt.gmt Mouse_GO_bp_${WITHIEA}_UniProt.gmt > ../Mouse_GOBP_AllPathways_${WITHIEA}_${dir_name}_UniProt.gmt
+cat ../Mouse_AllPathways_${dir_name}_UniProt.gmt Mouse_GO_bp_${NOIEA}_UniProt.gmt > ../Mouse_GOBP_AllPathways_${NOIEA}_${dir_name}_UniProt.gmt
+
+
+#merge all the summaries
+mergesummaries ${UNIPROT} UniProt
+
+#create the stats summary
+getstats ${EG}
+
+
+#Rat data is downloaded from the Gene ontology website and comes from RGD
+function download_GORat_data {
+	echo "[Downloading current Go Rat  data]"
+	URL="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.rgd.gz?rev=HEAD"
+	curl $URL -o ${GOSRC}/gene_association.rgd.gz -s  -w "GO (Rat gaf) : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
+	get_webfile_version ${URL} "GO_Rat"
+
+	#get the obo file from the gene ontology website
+	echo "[Downloading current GO OBO file]"
+	URL="ftp://ftp.geneontology.org/pub/go/ontology/obo_format_1_2/"
+	curl ${URL}/gene_ontology.1_2.obo -o ${GOSRC}/gene_ontology.1_2.obo -s  -w "GO (obo) : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
+	get_webfile_version ${URL}/gene_ontology.1_2.obo "GO_OBO_FILE"
+
+}
+
+
+#################################################################
+# Create Rat Genesets.
+##########################################################
+#use same gmts as mouse
+
+OUTPUTDIR=${CUR_RELEASE}/Rat
+UNIPROT=${OUTPUTDIR}/UniProt
+EG=${OUTPUTDIR}/Entrezgene
+SYMBOL=${OUTPUTDIR}/symbol
+RatSOURCE=${CUR_RELEASE}/SRC_Rat
+VERSIONS=${CUR_RELEASE}/version_Rat
+
+mkdir ${RatSOURCE}
+mkdir ${VERSIONS}
+mkdir -p ${UNIPROT}
+mkdir -p ${EG}
+mkdir -p ${SYMBOL}
+
+createDivisionDirs ${UNIPROT}
+createDivisionDirs ${EG}
+createDivisionDirs ${SYMBOL}
+
+
+#Direct source for Rat come from GO, Ratcyc, Reactome, Kegg
+
+#download Ratcyc --get from human instead, there is nothing in the Ratcyc
+#RatCYC=${RatSOURCE}/Ratcyc
+#mkdir ${RatCYC}
+#download_biocyc_data "Rat" ${RatCYC}
+#cd ${RatCYC}
+#unzip and untar Rat biopax level 3 file
+#tar -xvzf Rat.tar.gz *level3.owl
+#cd 1.36/data
+#for file in *.owl; do
+#	process_biopax $file "UniProt" "RatCyc"
+#done
+#for file in *.gmt; do
+#	translate_gmt $file "10090" "UniProt"
+#done
+#copy2release RatCyc Rat ${PATHWAYS}
+
+
+#download Reactome biopax data
+REACTOME=${RatSOURCE}/Reactome
+mkdir ${REACTOME}
+#copy reactome file from human src directory
+cp /Users/risserlin/AutomaticGeneSetCreation/GeneSetTools/November_04_2014/SRC/Reactome/*.zip ${REACTOME}/
+#copy reactome version into Rat_versions directory.
+cp ${HUMANVERSIONS}/Reactome.txt ${VERSIONS}
+cd ${REACTOME}
+unzip biopax.zip Rattus_norvegicus.owl
+
+#for some reason the validated and fixed Reactome file hangs.
+for file in *.owl; do
+	process_biopax_novalidation $file "UniProt" "Reactome"
+done
+for file in *.gmt; do
+	translate_gmt $file "10116" "UniProt"
+done
+copy2release Reactome Rat ${PATHWAYS}
+
+
+#process GO
+GOSRC=${RatSOURCE}/GO
+mkdir ${GOSRC}
+download_GORat_data
+cd ${GOSRC}
+GOOBO=${GOSRC}/gene_ontology.1_2.obo
+gunzip *.gz
+for file in *.rgd*; do
+	process_gaf $file "10116" "bp" ${GOOBO}
+	process_gaf_noiea  $file "10116" "bp" ${GOOBO}
+	process_gaf $file "10116" "mf" ${GOOBO}
+	process_gaf_noiea  $file "10116" "mf" ${GOOBO}
+	process_gaf $file "10116" "cc" ${GOOBO}
+	process_gaf_noiea  $file "10116" "cc" ${GOOBO}
+done
+for file in *.gmt; do
+	translate_gmt $file "10116" "RGD"
+done
+
+#create  the compilation of all branches
+cat *_${WITHIEA}*entrezgene.gmt > Rat_GOALL_${WITHIEA}_${dir_name}_entrezgene.gmt
+cat *_${WITHIEA}*UniProt.gmt > Rat_GOALL_${WITHIEA}_${dir_name}_UniProt.gmt
+cat *_${WITHIEA}*symbol.gmt > Rat_GOALL_${WITHIEA}_${dir_name}_symbol.gmt
+
+cat *_${NOIEA}*entrezgene.gmt > Rat_GOALL_${NOIEA}_${dir_name}_entrezgene.gmt
+cat *_${NOIEA}*UniProt.gmt > Rat_GOALL_${NOIEA}_${dir_name}_UniProt.gmt
+cat *_${NOIEA}*symbol.gmt > Rat_GOALL_${NOIEA}_${dir_name}_symbol.gmt
+
+cp *entrezgene.gmt ${EG}/${GO}
+#create report of translations
+cat *gene_summary.log > ${EG}/${GO}/Rat_GO_entrezgene_translation_summary.log
+
+cp *UniProt.gmt ${UNIPROT}/${GO}
+#create report of translations
+cat *UniProt_summary.log > ${UNIPROT}/${GO}/Rat_GO_UniProt_translation_summary.log
+
+cp *symbol.gmt ${SYMBOL}/${GO}
+#create report of translations
+cat *UniProt_summary.log > ${UNIPROT}/${GO}/Rat_GO_UniProt_translation_summary.log
+
+
+#create a directory will all the gmt from human we want to convert to Rat
+CONV=${RatSOURCE}/ToBeConverted
+mkdir ${CONV}
+
+#copy the following files to Rat directory to be converted from human to Rat
+cd ${CONV}
+cp ${HUMANGMTS}/${PATHWAYS}/*NetPath*.gmt ./
+cp ${HUMANGMTS}/${PATHWAYS}/*IOB*.gmt ./
+cp ${HUMANGMTS}/${PATHWAYS}/*MSig*.gmt ./
+cp ${HUMANGMTS}/${PATHWAYS}/*NCI*.gmt ./
+cp ${HUMANGMTS}/${PATHWAYS}/*HumanCyc*.gmt ./
+cp ${HUMANGMTS}/${PATHWAYS}/*KEGG*.gmt ./
+cp ${HUMANGMTS}/${PATHWAYS}/*Panther*.gmt ./
+
+#copy the human drugs files
+cp ${HUMANGMTS}/${DRUGS}/*DrugBank*.gmt ./
+
+#copy all version into Rat_versions directory.
+cp ${HUMANVERSIONS}/NetPath.txt ${VERSIONS}
+cp ${HUMANVERSIONS}/IOB.txt ${VERSIONS}
+cp ${HUMANVERSIONS}/msigdb_path.txt ${VERSIONS}
+cp ${HUMANVERSIONS}/NCI_Nature.txt ${VERSIONS}
+cp ${HUMANVERSIONS}/humancyc.txt ${VERSIONS}
+cp ${HUMANVERSIONS}/KEGG.txt ${VERSIONS}
+cp ${HUMANVERSIONS}/Panther.txt ${VERSIONS}
+
+#go through each of the gmt file and convert to Rat entrez genes
+for file in Human*.gmt ; do
+	convert_gmt $file "10116" "Rat"
+done
+
+#got through all the newly created Rat gmt file and translate them from eg to uniprot and symbol
+for file in Rat*.gmt ; do
+	translate_gmt $file "10116" "entrezgene"
+done
+
+#copy all the pathway file - can't use the copy function because there are multiple pathway datasets in this set. 
+cp Rat*_Entrezgene.gmt ${EG}/${PATHWAYS}/
+cp Rat*_UniProt.gmt ${UNIPROT}/${PATHWAYS}/
+cp Rat*_symbol.gmt ${SYMBOL}/${PATHWAYS}/
+
+#concatenate all the translation summaries	
+files=$(ls *10116_conversion.log 2> /dev/null | wc -l)
+if [ $files != 0 ] ; then
+	cat *10116_conversion.log > Rat_translatedPathways_Entrezgene_translation_summary.log
+	cp Rat_translatedPathways_Entrezgene_translation_summary.log ${EG}/${PATHWAYS}/Rat_translatedPathways_Entrezgene_translation_summary.log
+fi
+	
+files=$(ls *UniProt_summary.log 2> /dev/null | wc -l)
+if [ $files != 0 ] ; then
+	cat *UniProt_summary.log > Rat_translatedPathways_UniProt_translation_summary.log
+	cp Rat_translatedPathways_UniProt_translation_summary.log ${UNIPROT}/${PATHWAYS}/Rat_translatedPathways_UniProt_translation_summary.log
+fi
+		
+files=$(ls *symbol_summary.log 2> /dev/null | wc -l)
+if [ $files != 0 ] ; then
+	cat *symbol_summary.log > Rat_translatedPathways_symbol_translation_summary.log
+	cp $Rat_translatedPathways_symbol_translation_summary.log ${SYMBOL}/${PATHWAYS}/Rat_translatedPathways_symbol_translation_summary.log
+fi
+
+#compile all the different versions
+cd ${VERSIONS}
+cat *.txt > ${OUTPUTDIR}/${dir_name}_versions.txt
+
+#create all the different distributions
+cd ${EG}/${PATHWAYS}
+cat *.gmt > ../Rat_AllPathways_${dir_name}_entrezgene.gmt
+cd ${EG}/${GO}
+cat ../Rat_AllPathways_${dir_name}_entrezgene.gmt Rat_GOALL_${WITHIEA}_${dir_name}_entrezgene.gmt > ../Rat_GO_AllPathways_${WITHIEA}_${dir_name}_entrezgene.gmt
+cat ../Rat_AllPathways_${dir_name}_entrezgene.gmt Rat_GOALL_${NOIEA}_${dir_name}_entrezgene.gmt > ../Rat_GO_AllPathways_${NOIEA}_${dir_name}_entrezgene.gmt
+
+#create two new all pathways files with GOBP included
+cat ../Rat_AllPathways_${dir_name}_entrezgene.gmt Rat_GO_bp_${WITHIEA}_entrezgene.gmt > ../Rat_GOBP_AllPathways_${WITHIEA}_${dir_name}_entrezgene.gmt
+cat ../Rat_AllPathways_${dir_name}_entrezgene.gmt Rat_GO_bp_${NOIEA}_entrezgene.gmt > ../Rat_GOBP_AllPathways_${NOIEA}_${dir_name}_entrezgene.gmt
+
+
+#merge all the summaries
+mergesummaries ${EG} entrezgene
+
+cd ${SYMBOL}/${PATHWAYS}
+cat *.gmt > ../Rat_AllPathways_${dir_name}_symbol.gmt
+cd ${SYMBOL}/${GO}
+cat ../Rat_AllPathways_${dir_name}_symbol.gmt Rat_GOALL_${WITHIEA}_${dir_name}_symbol.gmt > ../Rat_GO_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
+cat ../Rat_AllPathways_${dir_name}_symbol.gmt Rat_GOALL_${NOIEA}_${dir_name}_symbol.gmt > ../Rat_GO_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
+
+#create two new all pathways files with GOBP included
+cat ../Rat_AllPathways_${dir_name}_symbol.gmt Rat_GO_bp_${WITHIEA}_symbol.gmt > ../Rat_GOBP_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
+cat ../Rat_AllPathways_${dir_name}_symbol.gmt Rat_GO_bp_${NOIEA}_symbol.gmt > ../Rat_GOBP_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
+
+
+#merge all the summaries
+mergesummaries ${SYMBOL} symbol
+
+cd ${UNIPROT}/${PATHWAYS}
+cat *.gmt > ../Rat_AllPathways_${dir_name}_UniProt.gmt
+cd ${UNIPROT}/${GO}
+cat ../Rat_AllPathways_${dir_name}_UniProt.gmt Rat_GOALL_${WITHIEA}_${dir_name}_UniProt.gmt > ../Rat_GO_AllPathways_${WITHIEA}_${dir_name}_UniProt.gmt
+cat ../Rat_AllPathways_${dir_name}_UniProt.gmt Rat_GOALL_${NOIEA}_${dir_name}_UniProt.gmt > ../Rat_GO_AllPathways_${NOIEA}_${dir_name}_UniProt.gmt
+
+#create two new all pathways files with GOBP included
+cat ../Rat_AllPathways_${dir_name}_UniProt.gmt Rat_GO_bp_${WITHIEA}_UniProt.gmt > ../Rat_GOBP_AllPathways_${WITHIEA}_${dir_name}_UniProt.gmt
+cat ../Rat_AllPathways_${dir_name}_UniProt.gmt Rat_GO_bp_${NOIEA}_UniProt.gmt > ../Rat_GOBP_AllPathways_${NOIEA}_${dir_name}_UniProt.gmt
+
 #merge all the summaries
 mergesummaries ${UNIPROT} UniProt
 
@@ -1019,9 +1307,11 @@ getstats ${EG}
 mkdir /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name
 cp -R ${CUR_RELEASE}/Human /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name/
 cp -R ${CUR_RELEASE}/Mouse /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name/
+cp -R ${CUR_RELEASE}/Rat /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name/
 
 #create a symbolic link to the latest download indicating it as current_release
 rm /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/current_release
 ln -sf /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name/ /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/current_release
 
 #rm -rf ${CUR_RELEASE}
+
