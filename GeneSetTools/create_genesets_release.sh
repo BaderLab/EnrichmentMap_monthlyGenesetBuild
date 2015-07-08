@@ -1138,7 +1138,7 @@ createDivisionDirs ${SYMBOL}
 REACTOME=${RatSOURCE}/Reactome
 mkdir ${REACTOME}
 #copy reactome file from human src directory
-cp /Users/risserlin/AutomaticGeneSetCreation/GeneSetTools/November_04_2014/SRC/Reactome/*.zip ${REACTOME}/
+cp ${SOURCE}/Reactome/*.zip ${REACTOME}/
 #copy reactome version into Rat_versions directory.
 cp ${HUMANVERSIONS}/Reactome.txt ${VERSIONS}
 cd ${REACTOME}
