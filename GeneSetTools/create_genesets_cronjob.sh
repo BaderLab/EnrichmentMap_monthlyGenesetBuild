@@ -1,12 +1,16 @@
 
 export PATH=/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Commands:$PATH
 
-export PATH=/Network/Servers/server1.baderlab.med.utoronto.ca/Volumes/RAID/Users/risserlin/bin:$PATH
+export PATH=/Users/risserlin/bin:$PATH
 
 export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home
 
+#for required perl libraries for drugbank perl parser
+eval $(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)
+export PERL5LIB=${PERL5LIB}:~/lib/perl5:~/lib/perl5/lib64/perl5:~/lib/perl5/lib:~/lib/perl5/lib/i386-linux-thread-multi/:~/lib/perl5/lib/perl5/site_perl
+
 BUILDLOG=`date '+%B_%d_%Y'`_build.log
-ABSPATH=/Network/Servers/server1.baderlab.med.utoronto.ca/Volumes/RAID/Users/risserlin/AutomaticGeneSetCreation/GeneSetTools
+ABSPATH=/Users/risserlin/AutomaticGeneSetCreation/GeneSetTools
 
 cd ${ABSPATH}
 
