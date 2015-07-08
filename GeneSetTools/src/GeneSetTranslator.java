@@ -54,6 +54,12 @@ public class GeneSetTranslator {
         }else if(TaxonomyId == 10090){
             taxon = "Mus musculus";
             symboldb = "mgi_symbol";
+        }else if(TaxonomyId == 10116){
+            taxon = "Rattus norvegicus";
+	    if(oldID.equalsIgnoreCase("entrezgene"))
+		symboldb ="rgd_symbol"; 
+	    else
+            	symboldb = "symbol";
         }
     }
 
@@ -155,6 +161,21 @@ public class GeneSetTranslator {
             conversions_id3.put(1,new SynergizerParams("ensembl", "mgi_id", "uniprot_swissprot_accession") );
              conversions_id3.put(2,new SynergizerParams("ensembl", "mgi_id", "uniprot_sptrembl_accession") );
              conversions_id3.put(3,new SynergizerParams("ncbi", "mgi", "uniprot"));
+            conversions.put(id3, conversions_id3);
+            createNewIdTracker(id3,unfoundIds,logs,translated_genesets );
+        }
+        //RAT go files use rgd ids, we can convert using rgd straight instead of the standard 2
+        else if(oldID.equalsIgnoreCase("rgd")){
+            id1="entrezgene";
+            conversions_id1.put(1,new SynergizerParams("rgd", "gene_rgd_id", "entrez_gene"));
+
+            id2="symbol";
+            conversions_id2.put(1,new SynergizerParams("rgd", "gene_rgd_id", symboldb));
+
+            //add an additional id.
+            String id3="UniProt";
+            HashMap<Integer, SynergizerParams> conversions_id3 = new HashMap<Integer,SynergizerParams>();
+            conversions_id3.put(1,new SynergizerParams("rgd", "gene_rgd_id", "uniprot_id") );
             conversions.put(id3, conversions_id3);
             createNewIdTracker(id3,unfoundIds,logs,translated_genesets );
         }

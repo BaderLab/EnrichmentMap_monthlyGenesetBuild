@@ -185,7 +185,7 @@ public class GOGeneSetFileMaker {
 	                     String branch = results.getString("ancestor_term_type");
 	                     String id = results.getString("ancestor_acc");
                          String name = results.getString("term_name");
-                         String name_descr = name + Biopax2GMT.DBSOURCE_SEPARATOR + "GO"+ Biopax2GMT.DBSOURCE_SEPARATOR + id + "\t" + name;
+                         String name_descr = name + Biopax2GMT.DBSOURCE_SEPARATOR + "GO"+ fBranch + Biopax2GMT.DBSOURCE_SEPARATOR + id + "\t" + name;
 	                     String gene = results.getString("symbol");
                          String uniprot = "";
                          if(id_type.equalsIgnoreCase("uniprot"))
@@ -391,6 +391,10 @@ public class GOGeneSetFileMaker {
 			fQueryFilename = "MOUSE_GO";
             id = "MGI";
         }
+		else if(fTaxonomyId == 10116){
+			fQueryFilename = "RAT_GO";
+            id = "RGD";
+        }
 		else
 			fQueryFilename = fTaxonomyId + "_GO";
 
@@ -418,7 +422,7 @@ public class GOGeneSetFileMaker {
                 Set<String> genes = file_gs.get(current);
                 Set<String> genes_symbol = file_gs_symbol.get(current);
                 //gs name = GO|goid
-                String name = "GO" +Biopax2GMT.DBSOURCE_SEPARATOR + current;
+                String name = "GO"+fBranch +Biopax2GMT.DBSOURCE_SEPARATOR + current;
 
                 //if current is the set name "All" ignore it.
                 if(current.equalsIgnoreCase("all"))
@@ -486,7 +490,7 @@ public class GOGeneSetFileMaker {
                 Set<String> genes = new HashSet<String>();
                 Set<String> genes_symbol = new HashSet<String>();
                 //gs name = GO|goid
-                String name = "GO" + Biopax2GMT.DBSOURCE_SEPARATOR + current;
+                String name = "GO"+fBranch + Biopax2GMT.DBSOURCE_SEPARATOR + current;
 
                 //up propagate the annotations for the terms that have descendants
                 HashSet<String> children = null;

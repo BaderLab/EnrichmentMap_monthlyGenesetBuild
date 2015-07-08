@@ -74,13 +74,17 @@ public class HPO2GMT {
 
                    //Go through each phenotype and add this gene to that phenotype.
                    //Each phenotype is separated by a ";"
-                   String[] phenotype = phenotypes.split(";");
-                   for(int j=0;j<phenotype.length;j++){
-
+                  
+		//file format changed, now each HP is on its own line
+		// in the 4 position
+		// String[] phenotype = phenotypes.split(";");
+                //   for(int j=0;j<phenotype.length;j++){
+			String name = tokens[2];
+			String HPOid = tokens[3];
                        //each phenotype consists of name(HPO ID)
-                       String name = phenotype[j].split("\\(HP:")[0];
-                       String HPOid = "HP:" + (phenotype[j].split("\\(HP:")[1]).split("\\)")[0];
-
+                       //String name = phenotype[j].split("\\(HP:")[0];
+                       //String HPOid = "HP:" + (phenotype[j].split("\\(HP:")[1]).split("\\)")[0];
+		
                         //create a new HPOGeneset for this line
                         String current_set = HPOid;
 
@@ -105,7 +109,7 @@ public class HPO2GMT {
 
                    }
 
-               }
+               //}
             }
         }
 
