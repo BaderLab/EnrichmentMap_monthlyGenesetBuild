@@ -617,7 +617,7 @@ done
 #process the drugbank file - all drugs
 perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_all_symbol.gmt -i genename 2>>drugbankparse.err
 #process the drugbank file - approved drugs
-perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_approved_symbol.gmt-d "approved" -i genename  2>>drugbankparse.err
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_approved_symbol.gmt -d "approved" -i genename  2>>drugbankparse.err
 #process the drugbank file - illicit drugs
 perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_illicit_symbol.gmt -d "illicit" -i genename  2>>drugbankparse.err
 #process the drugbank file - experimental drugs
@@ -631,7 +631,7 @@ perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_sm
 #process the drugbank file - all drugs
 perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_all_drugb_uniprot.gmt -i uniprot 2>>drugbankparse.err
 #process the drugbank file - approved drugs
-perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_approved_drugb_uniprot.gmt-d "approved" -i uniprot  2>>drugbankparse.err
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_approved_drugb_uniprot.gmt -d "approved" -i uniprot  2>>drugbankparse.err
 #process the drugbank file - illicit drugs
 perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_illicit_drugb_uniprot.gmt -d "illicit" -i uniprot  2>>drugbankparse.err
 #process the drugbank file - experimental drugs
