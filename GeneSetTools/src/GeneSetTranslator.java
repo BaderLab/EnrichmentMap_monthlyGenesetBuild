@@ -113,7 +113,7 @@ public class GeneSetTranslator {
 
         //depending on the old ID there are different paths that we can take to maximize coverage
         //if uniprot, convert to entrezgene(id1)and symbol(id2)
-        // try  ensembl uniprot_swissprot_accession to entrezgene
+        // try  ensembl uniprot_swissprot to entrezgene
         // then ensembl uniprot_sptrembl to entrezgene
         // then ncbi  uniprot to entrezgene
         //
@@ -122,7 +122,7 @@ public class GeneSetTranslator {
         if(oldID.equalsIgnoreCase("entrezgene")){
             //for each conversion place in oldID to newID into hashmap
             id1="UniProt";
-            conversions_id1.put(1,new SynergizerParams("ensembl", "entrezgene","uniprot_swissprot_accession"));
+            conversions_id1.put(1,new SynergizerParams("ensembl", "entrezgene","uniprot_swissprot"));
             conversions_id1.put(2,new SynergizerParams("ensembl", "entrezgene","uniprot_sptrembl"));
             conversions_id1.put(3,new SynergizerParams("ncbi", "entrezgene","uniprot"));
             //ncbi has no symbols so can only use ensembl
@@ -131,20 +131,20 @@ public class GeneSetTranslator {
         }else if(oldID.equalsIgnoreCase("uniprot")){
             //for each conversion place in oldID to newID into hashmap
             id1="entrezgene";
-            conversions_id1.put(1, new SynergizerParams("ensembl", "uniprot_swissprot_accession","entrezgene" ));
+            conversions_id1.put(1, new SynergizerParams("ensembl", "uniprot_swissprot","entrezgene" ));
             conversions_id1.put(2,new SynergizerParams("ensembl", "uniprot_sptrembl","entrezgene" ));
             conversions_id1.put(3, new SynergizerParams("ncbi", "uniprot","entrezgene" ));
             //ncbi has no symbols so can only use ensembl
             id2="symbol";
-            conversions_id2.put(1, new SynergizerParams("ensembl", "uniprot_swissprot_accession",symboldb ));
+            conversions_id2.put(1, new SynergizerParams("ensembl", "uniprot_swissprot",symboldb ));
             conversions_id2.put(2, new SynergizerParams("ensembl", "uniprot_sptrembl",symboldb ));
         }else if(oldID.equalsIgnoreCase("symbol")){
             id1="entrezgene";
             conversions_id1.put(1, new SynergizerParams("ensembl",symboldb, "entrezgene"));
 
             id2="UniProt";
-            conversions_id2.put(1, new SynergizerParams("ensembl",symboldb,"uniprot_swissprot_accession"));
-            conversions_id2.put(2, new SynergizerParams("ensembl",symboldb,"uniprot_sptrembl_accession"));
+            conversions_id2.put(1, new SynergizerParams("ensembl",symboldb,"uniprot_swissprot"));
+            conversions_id2.put(2, new SynergizerParams("ensembl",symboldb,"uniprot_sptrembl"));
         }
         //Mouse go files use mgi ids, we need to convert the mgi to three different dbs , instead of the standard 2
         else if(oldID.equalsIgnoreCase("mgi")){
@@ -158,8 +158,8 @@ public class GeneSetTranslator {
             //add an additional id.
             String id3="UniProt";
             HashMap<Integer, SynergizerParams> conversions_id3 = new HashMap<Integer,SynergizerParams>();
-            conversions_id3.put(1,new SynergizerParams("ensembl", "mgi_id", "uniprot_swissprot_accession") );
-             conversions_id3.put(2,new SynergizerParams("ensembl", "mgi_id", "uniprot_sptrembl_accession") );
+            conversions_id3.put(1,new SynergizerParams("ensembl", "mgi_id", "uniprot_swissprot") );
+             conversions_id3.put(2,new SynergizerParams("ensembl", "mgi_id", "uniprot_sptrembl") );
              conversions_id3.put(3,new SynergizerParams("ncbi", "mgi", "uniprot"));
             conversions.put(id3, conversions_id3);
             createNewIdTracker(id3,unfoundIds,logs,translated_genesets );
