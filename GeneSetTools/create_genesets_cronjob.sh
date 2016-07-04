@@ -19,4 +19,4 @@ ${ABSPATH}/create_genesets_release.sh > ${ABSPATH}/${BUILDLOG} 2>&1
 
 LOGFILE=`cat ${ABSPATH}/${BUILDLOG}`
 
-./send_mail.py   "Geneset file build log"  "${LOGFILE}"   noreply@baderlab.org ruth.isserlin@utoronto.ca   server1.baderlab.med.utoronto.ca
+./send_mail.py   "Geneset file build log"  "${LOGFILE}"   noreply@baderlab.org ruth.isserlin@utoronto.ca   192.168.81.32
