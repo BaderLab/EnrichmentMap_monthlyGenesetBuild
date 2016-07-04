@@ -72,8 +72,10 @@ function download_biocyc_data {
 function download_GOhuman_data {
 	echo "[Downloading current Go Human EBI data]"
 	URL="ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/HUMAN/"
-	curl ${URL}/gene_association.goa_human.gz -o ${GOSRC}/gene_association.goa_human.gz -s  -w "GO (Human GAF) : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
-	get_webfile_version ${URL}/gene_association.goa_human.gz "GO_Human"
+
+	#June 2016 - looks like they changed the name of the go files !!!
+	curl ${URL}/goa_human.gaf.gz -o ${GOSRC}/gene_association.goa_human.gz -s  -w "GO (Human GAF) : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
+	get_webfile_version ${URL}/goa_human.gaf.gz "GO_Human"
 
 	#get the obo file from the gene ontology website
 	echo "[Downloading current GO OBO file]"
@@ -103,18 +105,25 @@ function download_HPO_data {
 
 	#get the obo file
 	echo "[Downloading current Phenotype OBO file]"
-	URL="http://compbio.charite.de/svn/hpo/trunk/src/ontology/"
-	curl ${URL}/human-phenotype-ontology.obo -o ${DISEASESRC}/human-phenotype-ontology.obo -s  -w "HPO (obo) : HTTP code - %{http_code};time:%{time_total} millisec; size:%{size_download} Bytes\n"
+	#URL="http://compbio.charite.de/svn/hpo/trunk/src/ontology/"
+	#curl ${URL}/human-phenotype-ontology.obo -o ${DISEASESRC}/human-phenotype-ontology.obo -s  -w "HPO (obo) : HTTP code - %{http_code};time:%{time_total} millisec; size:%{size_download} Bytes\n"
+        URL="http://compbio.charite.de/hudson/job/hpo/lastStableBuild/artifact/hp"
+	curl ${URL}/hp.obo -o ${DISEASESRC}/human-phenotype-ontology.obo -s  -w "HPO (obo) : HTTP code - %{http_code};time:%{time_total} millisec; size:%{size_download} Bytes\n"
 	get_webfile_version ${URL}/human-phenotype-ontology.obo "Human_phenotype_OBO_FILE"
 
 }
 
 #download Drugbank files
 function download_drugbank_data {
+	
+	#July 2016 - drugbank changed how we can download data. 
+	# needed to create an account and URL changed
+
 	echo "[Downloading current Drugbank data]"
 	URL="http://www.drugbank.ca/system/downloads/current"
-	curl ${URL}/drugbank.xml.zip -o ${DRUGSSRC}/drugbank.xml.zip -s -w "Drugbank : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
-	get_webfile_version ${URL}/drugbank.xml.zip "DrugBank"
+        curl -L -o drugbank.xml.zip -u ruth.isserlin@gmail.com:emililab http://www.drugbank.ca/releases/5-0-1/downloads/all-full-database	
+        #curl ${URL}/drugbank.xml.zip -o ${DRUGSSRC}/drugbank.xml.zip -s -w "Drugbank : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
+	#get_webfile_version ${URL}/drugbank.xml.zip "DrugBank"
 
 	#echo "[Downloading current Drugbank external identifiers info]"
 	#curl ${URL}/target_links.csv.zip -o ${DRUGSSRC}/target_links.csv.zip -s -w "Drugbank(external links) : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
@@ -316,6 +325,7 @@ function createDivisionDirs {
 	mkdir ${TF}
 	mkdir ${DISEASE}
 	mkdir ${DRUGS}
+        mkdir ${MISC}
 }
 
 #concatenate all the translation summary logs and place in main directory
@@ -458,6 +468,7 @@ MIR=miRs
 TF=TranscriptionFactors
 DISEASE=DiseasePhenotypes
 DRUGS=DrugTargets
+MISC=Misc
 
 NOIEA=no_GO_iea
 WITHIEA=with_GO_iea
@@ -611,9 +622,18 @@ DRUGSSRC=${SOURCE}/DrugBank
 mkdir -p ${DRUGSSRC}
 download_drugbank_data
 cd ${DRUGSSRC}
+
+# if drugbank goes down revert to using static file
+#cp ${STATICDIR}/Drugbank/drugbank.xml.zip ./
+#cp ${STATICDIR}/Drugbank/*.txt ${VERSIONS}
+
 for file in *.zip; do
 	unzip $file	
 done 
+
+#move the xml file to drugbank.xml
+mv *.xml drugbank.xml
+
 #process the drugbank file - all drugs
 perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_all_symbol.gmt -i genename 2>>drugbankparse.err
 #process the drugbank file - approved drugs
@@ -680,7 +700,7 @@ for dir in `ls`; do
 		for file in *.gmt; do
 			translate_gmt $file "9606" "symbol"
 		done
-		copy2release KEGG Human ${PATHWAYS}
+		copy2release KEGG Human ${MISC}
 		cd ${STATICDIR}
 	fi
 	if [[ $dir == "msigdb_path" ]] ; then
@@ -869,26 +889,32 @@ createDivisionDirs ${SYMBOL}
 #done
 #copy2release MouseCyc Mouse ${PATHWAYS}
 
-
+#
+#July 4, 2016 - noticed there are significantly less pathways in the mouse
+# reactome set than in the human set.  This wasn't always the situation. 
+# Comparing file from June 2014 and there were pathways in this set that 
+# were missing from the latest set. 
+# take out direct download and convert the human file.
+#
 #download Reactome biopax data
-REACTOME=${MOUSESOURCE}/Reactome
-mkdir ${REACTOME}
+#REACTOME=${MOUSESOURCE}/Reactome
+#mkdir ${REACTOME}
 #copy reactome file from human src directory
-cp ${SOURCE}/Reactome/*.zip ${REACTOME}/
+#cp ${SOURCE}/Reactome/*.zip ${REACTOME}/
 #copy reactome version into mouse_versions directory.
-cp ${HUMANVERSIONS}/Reactome.txt ${VERSIONS}
-cd ${REACTOME}
-unzip biopax.zip *musculus.owl
-mv Mus\ musculus.owl Musmusculus.owl
+#cp ${HUMANVERSIONS}/Reactome.txt ${VERSIONS}
+#cd ${REACTOME}
+#unzip biopax.zip *musculus.owl
+#mv Mus\ musculus.owl Musmusculus.owl
 
 #for some reason the validated and fixed Reactome file hangs.
-for file in *.owl; do
-	process_biopax_novalidation $file "UniProt" "Reactome"
-done
-for file in *.gmt; do
-	translate_gmt $file "10090" "UniProt"
-done
-copy2release Reactome Mouse ${PATHWAYS}
+#for file in *.owl; do
+#	process_biopax_novalidation $file "UniProt" "Reactome"
+#done
+#for file in *.gmt; do
+#	translate_gmt $file "10090" "UniProt"
+#done
+#copy2release Reactome Mouse ${PATHWAYS}
 
 
 #process GO
@@ -942,8 +968,9 @@ cp ${HUMANGMTS}/${PATHWAYS}/*IOB*.gmt ./
 cp ${HUMANGMTS}/${PATHWAYS}/*MSig*.gmt ./
 cp ${HUMANGMTS}/${PATHWAYS}/*NCI*.gmt ./
 cp ${HUMANGMTS}/${PATHWAYS}/*HumanCyc*.gmt ./
-cp ${HUMANGMTS}/${PATHWAYS}/*KEGG*.gmt ./
+#cp ${HUMANGMTS}/${PATHWAYS}/*KEGG*.gmt ./
 cp ${HUMANGMTS}/${PATHWAYS}/*Panther*.gmt ./
+cp ${HUMANGMTS}/${PATHWAYS}/*Reactome*.gmt ./
 
 #copy the human drugs files
 cp ${HUMANGMTS}/${DRUGS}/*DrugBank*.gmt ./
@@ -1206,7 +1233,7 @@ cp ${HUMANGMTS}/${PATHWAYS}/*IOB*.gmt ./
 cp ${HUMANGMTS}/${PATHWAYS}/*MSig*.gmt ./
 cp ${HUMANGMTS}/${PATHWAYS}/*NCI*.gmt ./
 cp ${HUMANGMTS}/${PATHWAYS}/*HumanCyc*.gmt ./
-cp ${HUMANGMTS}/${PATHWAYS}/*KEGG*.gmt ./
+#cp ${HUMANGMTS}/${PATHWAYS}/*KEGG*.gmt ./
 cp ${HUMANGMTS}/${PATHWAYS}/*Panther*.gmt ./
 
 #copy the human drugs files
