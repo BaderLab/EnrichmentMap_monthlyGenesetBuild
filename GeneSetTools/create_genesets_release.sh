@@ -121,7 +121,7 @@ function download_drugbank_data {
 
 	echo "[Downloading current Drugbank data]"
 	URL="http://www.drugbank.ca/system/downloads/current"
-        curl -L -o drugbank.xml.zip -u ruth.isserlin@gmail.com:emililab http://www.drugbank.ca/releases/5-0-1/downloads/all-full-database	
+        curl -k -L -o drugbank.xml.zip -u ruth.isserlin@gmail.com:emililab http://www.drugbank.ca/releases/5-0-1/downloads/all-full-database	
         #curl ${URL}/drugbank.xml.zip -o ${DRUGSSRC}/drugbank.xml.zip -s -w "Drugbank : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
 	#get_webfile_version ${URL}/drugbank.xml.zip "DrugBank"
 
