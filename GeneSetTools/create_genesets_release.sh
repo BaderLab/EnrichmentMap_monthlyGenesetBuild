@@ -620,8 +620,8 @@ copy2release_nomerge DiseasePhenotypes Human ${DISEASE}
 #parse drugbank data
 DRUGSSRC=${SOURCE}/DrugBank
 mkdir -p ${DRUGSSRC}
-download_drugbank_data
 cd ${DRUGSSRC}
+download_drugbank_data
 
 # if drugbank goes down revert to using static file
 #cp ${STATICDIR}/Drugbank/drugbank.xml.zip ./
