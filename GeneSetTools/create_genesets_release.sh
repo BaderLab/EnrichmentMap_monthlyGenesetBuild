@@ -508,8 +508,8 @@ createDivisionDirs ${SYMBOL}
 NCI=${SOURCE}/NCI
 mkdir -p ${NCI}
 cd ${NCI}
-download_nci_data
-#cp ${STATICDIR}/NCI/*.gz ./
+#download_nci_data
+cp ${STATICDIR}/NCI/*.gz ./
 gunzip *.gz
 #modify gmt file so the gmt conforms to our standard with name and description
 for file in *.owl; do
