@@ -1339,7 +1339,7 @@ cp -R ${CUR_RELEASE}/Rat /mnt/build/EM_Genesets/$dir_name/
 
 #create a symbolic link to the latest download indicating it as current_release
 rm /mnt/build/EM_Genesets/current_release
-cd /mnt/build/EM_genesets
+cd /mnt/build/EM_Genesets
 ln -sf $dir_name/ current_release
 
 #rm -rf ${CUR_RELEASE}
