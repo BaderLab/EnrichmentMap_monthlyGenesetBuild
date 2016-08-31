@@ -35,7 +35,7 @@ function get_webfile_version {
 function download_nci_data {
 	echo "[Downloading current NCI data]"
 	URL="ftp://ftp1.nci.nih.gov/pub/PID/BioPAX_Level_3/NCI-Nature_Curated.bp3.owl.gz"
-	ftp ${URL}
+	wget ${URL}
 	#curl ${URL} -o ${NCI}/NCI-Nature_Curated.bp3.owl.gz -s  -w "NCI : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
 	get_webfile_version $URL "NCI_Nature"	
 }
@@ -98,8 +98,8 @@ function download_GOmouse_data {
 function download_HPO_data {
 	#file no longer exists.  Use latest version from June 16, 2013
 	echo "[Downloading current Human Phenotype data]"
-        URL="http://compbio.charite.de/hudson/job/hpo.annotations.monthly/lastStableBuild/artifact/annotation/ALL_SOURCES_ALL_FREQUENCIES_genes_to_phenotype.txt"
-	#URL="http://compbio.charite.de/hudson/job/hpo.annotations.monthly/lastStableBuild/artifact/annotation"
+        #URL="http://compbio.charite.de/hudson/job/hpo.annotations.monthly/lastStableBuild/artifact/annotation/ALL_SOURCES_ALL_FREQUENCIES_genes_to_phenotype.txt"
+	URL="http://compbio.charite.de/jenkins/job/hpo.annotations.monthly/lastStableBuild/artifact/annotation/ALL_SOURCES_ALL_FREQUENCIES_genes_to_phenotype.txt"
 	curl ${URL} -o ${DISEASESRC}/genes_to_phenotype.txt -s -w "HPO (Human annot) : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
 	get_webfile_version ${URL} "Human_Phenotype"
 
@@ -107,7 +107,8 @@ function download_HPO_data {
 	echo "[Downloading current Phenotype OBO file]"
 	#URL="http://compbio.charite.de/svn/hpo/trunk/src/ontology/"
 	#curl ${URL}/human-phenotype-ontology.obo -o ${DISEASESRC}/human-phenotype-ontology.obo -s  -w "HPO (obo) : HTTP code - %{http_code};time:%{time_total} millisec; size:%{size_download} Bytes\n"
-        URL="http://compbio.charite.de/hudson/job/hpo/lastStableBuild/artifact/hp"
+        URL="http://compbio.charite.de/jenkins/job/hpo/lastStableBuild/artifact/hp"
+
 	curl ${URL}/hp.obo -o ${DISEASESRC}/human-phenotype-ontology.obo -s  -w "HPO (obo) : HTTP code - %{http_code};time:%{time_total} millisec; size:%{size_download} Bytes\n"
 	get_webfile_version ${URL}/human-phenotype-ontology.obo "Human_phenotype_OBO_FILE"
 
@@ -568,7 +569,7 @@ mkdir ${HUMANCYC}
 download_biocyc_data "human" ${HUMANCYC}
 cd ${HUMANCYC}
 #unzip and untar human.tar.gz file
-tar -xvzf human.tar.gz *level3.owl
+tar --wildcards -xvzf human.tar.gz *level3.owl
 #the release number keeps changing - need a way to change into the right directory without knowing what the new number is
 # instead of specifying the name of the directory put *.  This will break if
 # they change the data directory structure though.
@@ -1331,14 +1332,15 @@ mergesummaries ${UNIPROT} UniProt
 getstats ${EG}
 
 #copy the files over the webserver
-mkdir /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name
-cp -R ${CUR_RELEASE}/Human /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name/
-cp -R ${CUR_RELEASE}/Mouse /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name/
-cp -R ${CUR_RELEASE}/Rat /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name/
+mkdir /mnt/build/EM_Genesets/$dir_name
+cp -R ${CUR_RELEASE}/Human /mnt/build/EM_Genesets/$dir_name/
+cp -R ${CUR_RELEASE}/Mouse /mnt/build/EM_Genesets/$dir_name/
+cp -R ${CUR_RELEASE}/Rat /mnt/build/EM_Genesets/$dir_name/
 
 #create a symbolic link to the latest download indicating it as current_release
-rm /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/current_release
-ln -sf /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/$dir_name/ /Volumes/RAID/WebServer/Hosting/download.baderlab.org/EM_Genesets/current_release
+rm /mnt/build/EM_Genesets/current_release
+cd /mnt/build/EM_genesets
+ln -sf $dir_name/ current_release
 
 #rm -rf ${CUR_RELEASE}
 
