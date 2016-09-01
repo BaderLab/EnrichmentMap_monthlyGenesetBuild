@@ -1065,8 +1065,8 @@ cat ../Mouse_AllPathways_${dir_name}_entrezgene.gmt Mouse_GOALL_${WITHIEA}_${dir
 cat ../Mouse_AllPathways_${dir_name}_entrezgene.gmt Mouse_GOALL_${NOIEA}_${dir_name}_entrezgene.gmt > ../Mouse_GO_AllPathways_${NOIEA}_${dir_name}_entrezgene.gmt
 
 #create two new all pathways files with GOBP included
-cat ../Mouse_AllPathways_${dir_name}_entrezgene.gmt Mouse_GO_bp_${WITHIEA}_entrezgene.gmt > ../Mouse_GOBP_AllPathways_${WITHIEA}_${dir_name}_entrezgene.gmt
-cat ../Mouse_AllPathways_${dir_name}_entrezgene.gmt Mouse_GO_bp_${NOIEA}_entrezgene.gmt > ../Mouse_GOBP_AllPathways_${NOIEA}_${dir_name}_entrezgene.gmt
+cat ../Mouse_AllPathways_${dir_name}_entrezgene.gmt MOUSE_GO_bp_${WITHIEA}_entrezgene.gmt > ../Mouse_GOBP_AllPathways_${WITHIEA}_${dir_name}_entrezgene.gmt
+cat ../Mouse_AllPathways_${dir_name}_entrezgene.gmt MOUSE_GO_bp_${NOIEA}_entrezgene.gmt > ../Mouse_GOBP_AllPathways_${NOIEA}_${dir_name}_entrezgene.gmt
 
 
 #merge all the summaries
@@ -1079,8 +1079,8 @@ cat ../Mouse_AllPathways_${dir_name}_symbol.gmt Mouse_GOALL_${WITHIEA}_${dir_nam
 cat ../Mouse_AllPathways_${dir_name}_symbol.gmt Mouse_GOALL_${NOIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
 
 #create two new all pathways files with GOBP included
-cat ../Mouse_AllPathways_${dir_name}_symbol.gmt Mouse_GO_bp_${WITHIEA}_symbol.gmt > ../Mouse_GOBP_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
-cat ../Mouse_AllPathways_${dir_name}_symbol.gmt Mouse_GO_bp_${NOIEA}_symbol.gmt > ../Mouse_GOBP_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
+cat ../Mouse_AllPathways_${dir_name}_symbol.gmt MOUSE_GO_bp_${WITHIEA}_symbol.gmt > ../Mouse_GOBP_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
+cat ../Mouse_AllPathways_${dir_name}_symbol.gmt MOUSE_GO_bp_${NOIEA}_symbol.gmt > ../Mouse_GOBP_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
 
 
 #merge all the summaries
@@ -1093,8 +1093,8 @@ cat ../Mouse_AllPathways_${dir_name}_UniProt.gmt Mouse_GOALL_${WITHIEA}_${dir_na
 cat ../Mouse_AllPathways_${dir_name}_UniProt.gmt Mouse_GOALL_${NOIEA}_${dir_name}_UniProt.gmt > ../Mouse_GO_AllPathways_${NOIEA}_${dir_name}_UniProt.gmt
 
 #create two new all pathways files with GOBP included
-cat ../Mouse_AllPathways_${dir_name}_UniProt.gmt Mouse_GO_bp_${WITHIEA}_UniProt.gmt > ../Mouse_GOBP_AllPathways_${WITHIEA}_${dir_name}_UniProt.gmt
-cat ../Mouse_AllPathways_${dir_name}_UniProt.gmt Mouse_GO_bp_${NOIEA}_UniProt.gmt > ../Mouse_GOBP_AllPathways_${NOIEA}_${dir_name}_UniProt.gmt
+cat ../Mouse_AllPathways_${dir_name}_UniProt.gmt MOUSE_GO_bp_${WITHIEA}_UniProt.gmt > ../Mouse_GOBP_AllPathways_${WITHIEA}_${dir_name}_UniProt.gmt
+cat ../Mouse_AllPathways_${dir_name}_UniProt.gmt MOUSE_GO_bp_${NOIEA}_UniProt.gmt > ../Mouse_GOBP_AllPathways_${NOIEA}_${dir_name}_UniProt.gmt
 
 
 #merge all the summaries
@@ -1295,8 +1295,8 @@ cat ../Rat_AllPathways_${dir_name}_entrezgene.gmt Rat_GOALL_${WITHIEA}_${dir_nam
 cat ../Rat_AllPathways_${dir_name}_entrezgene.gmt Rat_GOALL_${NOIEA}_${dir_name}_entrezgene.gmt > ../Rat_GO_AllPathways_${NOIEA}_${dir_name}_entrezgene.gmt
 
 #create two new all pathways files with GOBP included
-cat ../Rat_AllPathways_${dir_name}_entrezgene.gmt Rat_GO_bp_${WITHIEA}_entrezgene.gmt > ../Rat_GOBP_AllPathways_${WITHIEA}_${dir_name}_entrezgene.gmt
-cat ../Rat_AllPathways_${dir_name}_entrezgene.gmt Rat_GO_bp_${NOIEA}_entrezgene.gmt > ../Rat_GOBP_AllPathways_${NOIEA}_${dir_name}_entrezgene.gmt
+cat ../Rat_AllPathways_${dir_name}_entrezgene.gmt RAT_GO_bp_${WITHIEA}_entrezgene.gmt > ../Rat_GOBP_AllPathways_${WITHIEA}_${dir_name}_entrezgene.gmt
+cat ../Rat_AllPathways_${dir_name}_entrezgene.gmt RAT_GO_bp_${NOIEA}_entrezgene.gmt > ../Rat_GOBP_AllPathways_${NOIEA}_${dir_name}_entrezgene.gmt
 
 
 #merge all the summaries
@@ -1309,8 +1309,8 @@ cat ../Rat_AllPathways_${dir_name}_symbol.gmt Rat_GOALL_${WITHIEA}_${dir_name}_s
 cat ../Rat_AllPathways_${dir_name}_symbol.gmt Rat_GOALL_${NOIEA}_${dir_name}_symbol.gmt > ../Rat_GO_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
 
 #create two new all pathways files with GOBP included
-cat ../Rat_AllPathways_${dir_name}_symbol.gmt Rat_GO_bp_${WITHIEA}_symbol.gmt > ../Rat_GOBP_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
-cat ../Rat_AllPathways_${dir_name}_symbol.gmt Rat_GO_bp_${NOIEA}_symbol.gmt > ../Rat_GOBP_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
+cat ../Rat_AllPathways_${dir_name}_symbol.gmt RAT_GO_bp_${WITHIEA}_symbol.gmt > ../Rat_GOBP_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
+cat ../Rat_AllPathways_${dir_name}_symbol.gmt RAT_GO_bp_${NOIEA}_symbol.gmt > ../Rat_GOBP_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
 
 
 #merge all the summaries
@@ -1323,8 +1323,8 @@ cat ../Rat_AllPathways_${dir_name}_UniProt.gmt Rat_GOALL_${WITHIEA}_${dir_name}_
 cat ../Rat_AllPathways_${dir_name}_UniProt.gmt Rat_GOALL_${NOIEA}_${dir_name}_UniProt.gmt > ../Rat_GO_AllPathways_${NOIEA}_${dir_name}_UniProt.gmt
 
 #create two new all pathways files with GOBP included
-cat ../Rat_AllPathways_${dir_name}_UniProt.gmt Rat_GO_bp_${WITHIEA}_UniProt.gmt > ../Rat_GOBP_AllPathways_${WITHIEA}_${dir_name}_UniProt.gmt
-cat ../Rat_AllPathways_${dir_name}_UniProt.gmt Rat_GO_bp_${NOIEA}_UniProt.gmt > ../Rat_GOBP_AllPathways_${NOIEA}_${dir_name}_UniProt.gmt
+cat ../Rat_AllPathways_${dir_name}_UniProt.gmt RAT_GO_bp_${WITHIEA}_UniProt.gmt > ../Rat_GOBP_AllPathways_${WITHIEA}_${dir_name}_UniProt.gmt
+cat ../Rat_AllPathways_${dir_name}_UniProt.gmt RAT_GO_bp_${NOIEA}_UniProt.gmt > ../Rat_GOBP_AllPathways_${NOIEA}_${dir_name}_UniProt.gmt
 
 #merge all the summaries
 mergesummaries ${UNIPROT} UniProt
