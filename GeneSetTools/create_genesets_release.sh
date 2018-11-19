@@ -16,7 +16,9 @@ function download_pc_data {
 
 function download_panther_data {
 	    echo "[Downloading current Panther Pathway data]"
+            # temporarily  change this to get the 3.5 release as the latest release is broken.  Change back once we hear back from  them.
 	    URL="ftp://ftp.pantherdb.org//pathway/current_release/"
+	    #URL="ftp://ftp.pantherdb.org//pathway/3.5/"
 	    curl ${URL}/BioPAX.tar.gz -o ${PANTHER}/BioPAX.tar.gz -s  -w "Panther : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
 	    get_webfile_version ${URL}/BioPAX.tar.gz "Panther"
 }
@@ -53,8 +55,8 @@ function download_netpath_data {
 
 function download_reactome_data {
 	echo "[Downloading current Reactome data]"
-	URL="http://www.reactome.org/download/current/"
-	curl ${URL}/biopax.zip -o ${REACTOME}/biopax.zip -s  -w "Reactome : HTTP code - %{http_code};time:%{time_total} millisec; size:%{size_download} Bytes\n"
+	URL="https://www.reactome.org/download/current/"
+	curl ${URL}/biopax.zip -o ${REACTOME}/biopax.zip -s -L  -w "Reactome : HTTP code - %{http_code};time:%{time_total} millisec; size:%{size_download} Bytes\n"
 	get_webfile_version ${URL}/biopax.zip "Reactome"
 }
 
@@ -1258,6 +1260,10 @@ done
 for file in Rat*.gmt ; do
 	translate_gmt $file "10116" "entrezgene"
 done
+
+#mv all the drugbank files to a separate directory
+mkdir ${DRUGS}
+mv *DrugBank* ${DRUGS}
 
 #copy all the pathway file - can't use the copy function because there are multiple pathway datasets in this set. 
 cp Rat*_Entrezgene.gmt ${EG}/${PATHWAYS}/
