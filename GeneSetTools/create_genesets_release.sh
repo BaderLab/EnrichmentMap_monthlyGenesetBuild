@@ -88,10 +88,11 @@ function download_wikipathways_rat_data {
 #argument 2 - directory to put the file
 function download_biocyc_data {
 	echo "[Downloading current BioCyc data - for species $1]"
-	URL="http://bioinformatics.ai.sri.com/ecocyc/dist/flatfiles-52983746/"
-	echo "${URL}/${1}.tar.gz" >> ${VERSIONS}/${1}cyc.txt
-	curl ${URL}/${1}.tar.gz -u biocyc-flatfiles:data-20541 -I | grep "Last-Modified" >> ${VERSIONS}/${1}cyc.txt
-	curl ${URL}/${1}.tar.gz -o ${2}/${1}.tar.gz -u biocyc-flatfiles:data-20541 -s  -w "Biocyc : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
+	#URL="http://bioinformatics.ai.sri.com/ecocyc/dist/flatfiles-52983746/"
+	URL="http://brg-files.ai.sri.com/public/dist/"
+	echo "${URL}/tier1-tier2-biopax.tar.gz" >> ${VERSIONS}/${1}cyc.txt
+	curl ${URL}/tier1-tier2-biopax.tar.gz -u biocyc-flatfiles:data-20541 -I | grep "Last-Modified" >> ${VERSIONS}/${1}cyc.txt
+	curl ${URL}/tier1-tier2-biopax.tar.gz -o ${2}/${1}.tar.gz -u biocyc-flatfiles:data-20541 -s  -w "Biocyc : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
 }
 
 # Go human data comes directly from ebi as they are the primary curators of human GO annotations
@@ -530,6 +531,31 @@ createDivisionDirs ${SYMBOL}
 #done 
 #copy2release PC_NCI_Nature Human ${PATHWAYS}
 
+#download humancyc
+HUMANCYC=${SOURCE}/Humancyc
+mkdir ${HUMANCYC}
+
+#issue - novemeber 20,2018 -can't download new data without new subscription
+#download_biocyc_data "human" ${HUMANCYC}
+cd ${HUMANCYC}
+
+cp ${STATICDIR}/biocyc/human*.gz ./
+
+#unzip and untar human.tar.gz file
+tar --wildcards -xvzf human.tar.gz *level3.owl
+#the release number keeps changing - need a way to change into the right directory without knowing what the new number is
+# instead of specifying the name of the directory put *.  This will break if
+# they change the data directory structure though.
+cd */data
+for file in *.owl; do
+	process_biopax_novalidation $file "UniProt" "HumanCyc"
+done
+for file in *.gmt; do
+	translate_gmt $file "9606" "UniProt"
+done
+copy2release HumanCyc Human ${PATHWAYS}
+
+
 
 #download the WikiPathways gmt files
 WIKIPATHWAYS=${SOURCE}/WikiPathways
@@ -602,24 +628,6 @@ done
 #merge all the gmt into one NetPath GMT
 copy2release NetPath Human ${PATHWAYS}
 
-#download humancyc
-HUMANCYC=${SOURCE}/Humancyc
-mkdir ${HUMANCYC}
-download_biocyc_data "human" ${HUMANCYC}
-cd ${HUMANCYC}
-#unzip and untar human.tar.gz file
-tar --wildcards -xvzf human.tar.gz *level3.owl
-#the release number keeps changing - need a way to change into the right directory without knowing what the new number is
-# instead of specifying the name of the directory put *.  This will break if
-# they change the data directory structure though.
-cd */data
-for file in *.owl; do
-	process_biopax_novalidation $file "UniProt" "HumanCyc"
-done
-for file in *.gmt; do
-	translate_gmt $file "9606" "UniProt"
-done
-copy2release HumanCyc Human ${PATHWAYS}
 
 
 #download Reactome biopax data
