@@ -60,29 +60,13 @@ function download_reactome_data {
 	get_webfile_version ${URL}/biopax.zip "Reactome"
 }
 
-function download_wikipathways_human_data {
+function download_wikipathways_data {
 	echo "[Downloading current WikiPathways data]"
 	URL="http://data.wikipathways.org/current/gmt/"
-	curl ${URL}/wikipathways-20181110-gmt-Homo_sapiens.gmt -o ${WIKIPATHWAYS}/WikiPathways_Homo_sapiens_Entrezgene.gmt -s -L  -w "wikipathways : HTTP code - %{http_code};time:%{time_total} millisec; size:%{size_download} Bytes\n"
-	get_webfile_version ${URL}/wikipathways-20181110-gmt-Homo_sapiens.gmt "WikiPathways"
+	FILE=`echo "cat //html/body/div/table/tbody/tr/td/a" |  xmllint --html --shell ${URL} | grep -o -E ">(.*$1.gmt)<" | sed -E 's/(<|>)//g'`
+	curl ${URL}/${FILE} -o ${WIKIPATHWAYS}/WikiPathways_${1}_Entrezgene.gmt -s -L  -w "wikipathways : HTTP code - %{http_code};time:%{time_total} millisec; size:%{size_download} Bytes\n"
+	get_webfile_version ${URL}/${FILE} "WikiPathways"
 }
-
-
-function download_wikipathways_mouse_data {
-	echo "[Downloading current Mouse WikiPathways data]"
-	URL="http://data.wikipathways.org/current/gmt/"
-	curl ${URL}/wikipathways-20181110-gmt-Mus_musculus.gmt -o ${WIKIPATHWAYS}/WikiPathways_Mus_musculus_Entrezgene.gmt -s -L  -w "wikipathways : HTTP code - %{http_code};time:%{time_total} millisec; size:%{size_download} Bytes\n"
-	get_webfile_version ${URL}/wikipathways-20181110-gmt-Mus_musculus.gmt "WikiPathways"
-}
-
-
-function download_wikipathways_rat_data {
-	echo "[Downloading current Rat WikiPathways data]"
-	URL="http://data.wikipathways.org/current/gmt/"
-	curl ${URL}/wikipathways-20181110-gmt-Rattus_norvegicus.gmt -o ${WIKIPATHWAYS}/WikiPathways_Rattus_norvegicus_Entrezgene.gmt -s -L  -w "wikipathways : HTTP code - %{http_code};time:%{time_total} millisec; size:%{size_download} Bytes\n"
-	get_webfile_version ${URL}/wikipathways-20181110-gmt-Rattus_norvegicus.gmt "WikiPathways"
-}
-
 
 #argument 1 - species, either human or mouse
 #argument 2 - directory to put the file
@@ -560,7 +544,7 @@ copy2release HumanCyc Human ${PATHWAYS}
 #download the WikiPathways gmt files
 WIKIPATHWAYS=${SOURCE}/WikiPathways
 mkdir ${WIKIPATHWAYS}
-download_wikipathways_human_data
+download_wikipathways_data Homo_sapiens
 cd ${WIKIPATHWAYS}
 for file in *.gmt; do
 	translate_gmt $file "9606" "entrezgene"
@@ -969,7 +953,7 @@ createDivisionDirs ${SYMBOL}
 #download the WikiPathways gmt files
 WIKIPATHWAYS=${MOUSESOURCE}/WikiPathways
 mkdir ${WIKIPATHWAYS}
-download_wikipathways_mouse_data
+download_wikipathways_data Mus_musculus
 cd ${WIKIPATHWAYS}
 for file in *.gmt; do
 	translate_gmt $file "10090" "entrezgene"
@@ -1245,7 +1229,7 @@ copy2release Reactome Rat ${PATHWAYS}
 #download the WikiPathways gmt files
 WIKIPATHWAYS=${RATSOURCE}/WikiPathways
 mkdir ${WIKIPATHWAYS}
-download_wikipathways_rat_data
+download_wikipathways_data Rattus_norvegicus
 cd ${WIKIPATHWAYS}
 for file in *.gmt; do
 	translate_gmt $file "10116" "entrezgene"
