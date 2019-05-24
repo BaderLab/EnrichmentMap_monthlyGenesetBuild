@@ -1,14 +1,14 @@
 
-export PATH=/usr/lib/jvm/java-6-oracle/bin:$PATH
+#export PATH=/usr/lib/jvm/java-6-oracle/bin:$PATH
 
-export JAVA_HOME=/usr/lib/jvm/java-6-oracle/
+#export JAVA_HOME=/usr/lib/jvm/java-6-oracle/
 
 #for required perl libraries for drugbank perl parser
-eval $(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)
+eval $(perl -I$HOMEDIR/perl5/lib/perl5 -Mlocal::lib)
 export PERL5LIB=${PERL5LIB}:~/lib/perl5:~/lib/perl5/lib64/perl5:~/lib/perl5/lib:~/lib/perl5/lib/i386-linux-thread-multi/:~/lib/perl5/lib/perl5/site_perl
 
 BUILDLOG=`date '+%B_%d_%Y'`_build.log
-ABSPATH=/home/baderlab/EnrichmentMap_monthlyGenesetBuild/GeneSetTools
+ABSPATH=$HOMEDIR/EnrichmentMap_monthlyGenesetBuild/GeneSetTools
 
 cd ${ABSPATH}
 
