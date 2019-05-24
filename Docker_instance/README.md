@@ -33,5 +33,5 @@
    ```
  * Run docker
    ```
-   sudo docker run -dit  -v /home/geneset-cron/geneset_build_drive:/home/geneset_build_data --name geneset_build geneset_build/geneset_build  
+   sudo docker run -dit  -v /home/geneset-cron/geneset_build_drive:/mnt/build -v /home/geneset-cron/em_genesets_code_drive:/home/geneset-cron --name geneset_build geneset_build/geneset_build /bin/bash 
    ```
