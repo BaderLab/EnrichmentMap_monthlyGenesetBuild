@@ -9,15 +9,17 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y git
 
-ARG HOME=/home/geneset_cron
+ARG HOME=/home/geneset-cron
 ENV HOMEDIR=$HOME
 
 #create a home directory to store the needed file
 RUN mkdir $HOMEDIR
 WORKDIR $HOMEDIR
 
+#assume that the codebase lives on the host as opposed to on the VM
+# and is mapped using -v at start up.
 #check out the geneset  codebase
-RUN git clone https://github.com/BaderLab/EnrichmentMap_monthlyGenesetBuild.git
+#RUN git clone https://github.com/BaderLab/EnrichmentMap_monthlyGenesetBuild.git
 
 #install maven
 RUN apt-get update -y && apt-get install maven -y
@@ -38,6 +40,7 @@ RUN apt-get update \
     make \
     gcc \
     libxml2-utils \
+    cron \
     tar \
     && apt-get autoremove \
     && apt-get clean
@@ -52,9 +55,11 @@ RUN cd && \
 ENV ANT_HOME /opt/ant
 ENV PATH ${PATH}:/opt/ant/bin
 
+#compile it in the start up script so that we can use the code dir on the 
+# hosting VM
 #compile the geneset tools jar
-WORKDIR $HOMEDIR/EnrichmentMap_monthlyGenesetBuild/GeneSetTools
-RUN ant -f GeneSetTools.xml jars
+#WORKDIR $HOMEDIR/EnrichmentMap_monthlyGenesetBuild/GeneSetTools
+#RUN ant -f GeneSetTools.xml jars
 
 #install the required perl libraries
 #add perl modules needed
@@ -69,3 +74,9 @@ RUN cpanm CPAN::Meta \
  Text::CSV \ 
  Getopt::Long 
  
+#set up to run the docker entry script on start up - compile the jar and 
+# set up the cron job.
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN ln -s usr/local/bin/docker-entrypoint.sh / # backwards compat
+ENTRYPOINT ["docker-entrypoint.sh"]
+
