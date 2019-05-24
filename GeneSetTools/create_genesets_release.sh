@@ -530,7 +530,7 @@ tar --wildcards -xvzf human.tar.gz *level3.owl
 #the release number keeps changing - need a way to change into the right directory without knowing what the new number is
 # instead of specifying the name of the directory put *.  This will break if
 # they change the data directory structure though.
-cd */data
+cd humancyc/*/data
 for file in *.owl; do
 	process_biopax_novalidation $file "UniProt" "HumanCyc"
 done
