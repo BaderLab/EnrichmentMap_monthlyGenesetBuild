@@ -545,8 +545,12 @@ copy2release HumanCyc Human ${PATHWAYS}
 WIKIPATHWAYS=${SOURCE}/WikiPathways
 mkdir ${WIKIPATHWAYS}
 download_wikipathways_data Homo_sapiens
+
+#modify the gmt file so the name is the first thing seen in the description column
 cd ${WIKIPATHWAYS}
 for file in *.gmt; do
+	cat $file | awk -F\\t '{OFS=FS; split($1,b,"%");$2=b[1]; print $0}' > temp.gmt
+        cp temp.gmt $file
 	translate_gmt $file "9606" "entrezgene"
 done
 copy2release WikiPathways Human ${PATHWAYS}
@@ -956,6 +960,8 @@ mkdir ${WIKIPATHWAYS}
 download_wikipathways_data Mus_musculus
 cd ${WIKIPATHWAYS}
 for file in *.gmt; do
+	cat $file | awk -F\\t '{OFS=FS;split($1,b,"%");$2=b[1]; print $0}' > temp.gmt
+	mv temp.gmt $file
 	translate_gmt $file "10090" "entrezgene"
 done
 copy2release WikiPathways Mouse ${PATHWAYS}
@@ -1232,6 +1238,8 @@ mkdir ${WIKIPATHWAYS}
 download_wikipathways_data Rattus_norvegicus
 cd ${WIKIPATHWAYS}
 for file in *.gmt; do
+	cat $file | awk -F\\t '{OFS=FS;split($1,b,"%");$2=b[1]; print $0}' > temp.gmt
+	mv temp.gmt $file
 	translate_gmt $file "10116" "entrezgene"
 done
 copy2release WikiPathways Rat ${PATHWAYS}
