@@ -40,7 +40,6 @@ RUN apt-get update \
     make \
     gcc \
     libxml2-utils \
-    cron \
     tar \
     && apt-get autoremove \
     && apt-get clean
@@ -74,8 +73,7 @@ RUN cpanm CPAN::Meta \
  Text::CSV \ 
  Getopt::Long 
  
-#set up to run the docker entry script on start up - compile the jar and 
-# set up the cron job.
+#set up to run the docker entry script on start up - compile the jar 
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN ln -s usr/local/bin/docker-entrypoint.sh / # backwards compat
 ENTRYPOINT ["docker-entrypoint.sh"]
