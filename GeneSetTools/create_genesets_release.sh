@@ -118,10 +118,11 @@ function download_HPO_data {
 	echo "[Downloading current Phenotype OBO file]"
 	#URL="http://compbio.charite.de/svn/hpo/trunk/src/ontology/"
 	#curl ${URL}/human-phenotype-ontology.obo -o ${DISEASESRC}/human-phenotype-ontology.obo -s  -w "HPO (obo) : HTTP code - %{http_code};time:%{time_total} millisec; size:%{size_download} Bytes\n"
-        URL="http://compbio.charite.de/jenkins/job/hpo/lastStableBuild/artifact/hp"
+        #URL="http://compbio.charite.de/jenkins/job/hpo/lastStableBuild/artifact/hp"
+	URL="https://raw.githubusercontent.com/obophenotype/human-phenotype-ontology/master"
 
 	curl ${URL}/hp.obo -o ${DISEASESRC}/human-phenotype-ontology.obo -s  -w "HPO (obo) : HTTP code - %{http_code};time:%{time_total} millisec; size:%{size_download} Bytes\n"
-	get_webfile_version ${URL}/human-phenotype-ontology.obo "Human_phenotype_OBO_FILE"
+	get_webfile_version ${URL}/hp.obo "Human_phenotype_OBO_FILE"
 
 }
 
