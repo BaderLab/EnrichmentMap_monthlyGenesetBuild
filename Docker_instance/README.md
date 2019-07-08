@@ -31,7 +31,19 @@
    ```
    sudo docker build -t geneset_build/geneset_build .
    ```
- * Run docker
+   
+ * Set up cron job to run the build once a month. - the cronjob will launch the docker, build the geneset files, copy them onto the download server and closer the docker instance.    
+   * The cronjob is associated with the root user. 
+   * log into the root user
    ```
+   cronjob -e
+   ```
+   * Add the following lines to the cronjob file:
+   ```
+   MAILTO=rr.weinberger@gmail.com
+   5 1 1 * * sudo docker run -v /home/geneset-cron/geneset_build_drive:/mnt/build -v /home/geneset-cron/em_genesets_code_drive:/home/geneset-cron geneset_build/geneset_build /home/geneset-cron/EnrichmentMap_monthlyGenesetBuild/GeneSetTools/create_genesets_cronjob.sh  
+   ```
+ * To run the docker independentally you can run the following commnad
+    ```
    sudo docker run -dit  -v /home/geneset-cron/geneset_build_drive:/mnt/build -v /home/geneset-cron/em_genesets_code_drive:/home/geneset-cron --name geneset_build geneset_build/geneset_build /bin/bash 
    ```
