@@ -17,4 +17,4 @@ ${ABSPATH}/create_genesets_release.sh > ${ABSPATH}/${BUILDLOG} 2>&1
 
 LOGFILE=`cat ${ABSPATH}/${BUILDLOG}`
 
-./send_mail.py   "Geneset file build log"  "${LOGFILE}"   auto.geneset.build@gmail.com ruth.isserlin@utoronto.ca smtp.gmail.com BuildAllHumanGenesets  
+./send_mail.py   "Geneset file build log"  "${LOGFILE}"   auto.geneset.build@gmail.com ruth.isserlin@utoronto.ca smtp.gmail.com geneset-cron  
