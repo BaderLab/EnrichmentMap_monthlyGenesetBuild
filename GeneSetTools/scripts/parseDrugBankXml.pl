@@ -131,7 +131,7 @@ foreach my $drug (@{$data->{drug}}){
 					#print "1Orgnaism= $targetOrganism\n";
 					#my $genename = $target->{'components'}->[0]->{'polypeptide'}->[0]->{'gene-name'}->[0];
 
-					if($targetOrganism eq "Human"){
+					if($targetOrganism eq "Humans"){
 						#my $genename = $target->{'components'}->[0]->{'polypeptide'}->[0]->{'gene-name'}->[0];
 						my $genename = $target->{'polypeptide'}->[0]->{'gene-name'}->[0];
 						#print "target GeneName: $genename\n";
@@ -149,7 +149,7 @@ foreach my $drug (@{$data->{drug}}){
 					my $targetOrganism = (@{$target->{'organism'}})[0];	
 					#print "2Orgnaism= $targetOrganism\n";
 
-					if($targetOrganism eq "Human"){
+					if($targetOrganism eq "Humans"){
 						#my $genename = $target->{'components'}->[0]->{'polypeptide'}->[0]->{'gene-name'}->[0];
 						my $genename = $target->{'polypeptide'}->[0]->{'gene-name'}->[0];
 						#print "GeneName GS creation: $genename\n";
@@ -170,7 +170,7 @@ foreach my $drug (@{$data->{drug}}){
 					#i.e." _HUMAN". --> this is a hack but until drugbank adds the
 					# the taxid to the file this is a quick fix.
 					my $targetOrganism = (@{$target->{'organism'}})[0];	
-					if($targetOrganism eq "Human"){
+					if($targetOrganism eq "Humans"){
 						#go through all the external identifiers
 						foreach my $identifiers (@{$target->{'polypeptide'}->[0]->{'external-identifiers'}->[0]->{'external-identifier'}}){
 							my $resource = $identifiers ->{'resource'}->[0];
@@ -193,7 +193,7 @@ foreach my $drug (@{$data->{drug}}){
 					my $targetOrganism = (@{$target->{'organism'}})[0];	
 					#print "4Orgnaism= $targetOrganism\n";
 
-					if($targetOrganism eq "Human"){
+					if($targetOrganism eq "Humans"){
 						#go through all the external identifiers
 						foreach my $identifiers (@{$target->{'polypeptide'}->[0]->{'external-identifiers'}->[0]->{'external-identifier'}}){
 							my $resource = $identifiers->{'resource'}->[0];
