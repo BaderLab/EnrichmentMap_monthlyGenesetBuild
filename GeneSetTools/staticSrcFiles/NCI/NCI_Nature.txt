@@ -1,0 +1,4 @@
+NCI_Nature
+NCI_Nature pathways were downloaded on May 23,2019 but last update of file was March 7, 2014 from:
+ftp://ftp1.nci.nih.gov/pub/PID/Biopax_Level_3/NCI-Nature_Curated.bp3.owl.gz 
+=====================

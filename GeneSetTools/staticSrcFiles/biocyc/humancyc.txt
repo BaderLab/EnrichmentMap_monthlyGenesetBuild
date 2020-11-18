@@ -1,0 +1,4 @@
+biocyc
+biocyc pathways were downloaded on May 23,2019 from humancyc
+version 21.0
+=====================
