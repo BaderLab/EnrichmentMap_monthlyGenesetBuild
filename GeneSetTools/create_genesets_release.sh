@@ -9,17 +9,19 @@ function get_pc_version {
 
 function download_pc_data {
 	    echo "[Downloading current Pathway Commons data]"
+	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Pathway Commons data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	    URL="http://www.pathwaycommons.org/pc-snapshot/current-release/gsea/by_source/"
-	    curl ${URL}/nci-nature-entrez-gene-id.gmt.zip -o ${PATHWAYCOMMONS}/nci-nature-entrez-gene-id.gmt.zip -s  -w "Pathway Commons : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
+	    curl ${URL}/nci-nature-entrez-gene-id.gmt.zip -o ${PATHWAYCOMMONS}/nci-nature-entrez-gene-id.gmt.zip -s
 	    get_pc_version
 }
 
 function download_panther_data {
 	    echo "[Downloading current Panther Pathway data]"
+	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Panther Pathway data"'"}' `cat ${TOOLDIR}/slack_webhook`
             # temporarily  change this to get the 3.5 release as the latest release is broken.  Change back once we hear back from  them.
 	    URL="ftp://ftp.pantherdb.org//pathway/current_release/"
 	    #URL="ftp://ftp.pantherdb.org//pathway/3.5/"
-	    curl ${URL}/BioPAX.tar.gz -o ${PANTHER}/BioPAX.tar.gz -s  -w "Panther : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
+	    curl ${URL}/BioPAX.tar.gz -o ${PANTHER}/BioPAX.tar.gz -s 
 	    get_webfile_version ${URL}/BioPAX.tar.gz "Panther"
 }
 
@@ -36,6 +38,7 @@ function get_webfile_version {
 #download NCI from PID
 function download_nci_data {
 	echo "[Downloading current NCI data]"
+	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current NCI data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	URL="ftp://ftp1.nci.nih.gov/pub/PID/BioPAX_Level_3/NCI-Nature_Curated.bp3.owl.gz"
 	wget ${URL}
 	#curl ${URL} -o ${NCI}/NCI-Nature_Curated.bp3.owl.gz -s  -w "NCI : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
@@ -46,25 +49,29 @@ function download_nci_data {
 # If new pathways are added we have no way of knowing and script will not get them.
 function download_netpath_data {
 	echo "[Downloading current NetPath data]"
+
+	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current NetPath data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	URL="http://www.netpath.org/data/biopax/"
 	for Num in {1..25}; do
 		get_webfile_version ${URL}/NetPath_${Num}.owl "NetPath"
-		curl ${URL}/NetPath_${Num}.owl -o ${NETPATH}/NetPath_${Num}.owl -s  -w "NetPath_${Num}.owl : HTTP code - %{http_code};time:%{time_total} millisec: size:%{size_download} Bytes\n"
+		curl ${URL}/NetPath_${Num}.owl -o ${NETPATH}/NetPath_${Num}.owl -s  
 	done
 }
 
 function download_reactome_data {
 	echo "[Downloading current Reactome data]"
+	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Reactome data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	URL="https://www.reactome.org/download/current/"
-	curl ${URL}/biopax.zip -o ${REACTOME}/biopax.zip -s -L  -w "Reactome : HTTP code - %{http_code};time:%{time_total} millisec; size:%{size_download} Bytes\n"
+	curl ${URL}/biopax.zip -o ${REACTOME}/biopax.zip -s -L 
 	get_webfile_version ${URL}/biopax.zip "Reactome"
 }
 
 function download_wikipathways_data {
 	echo "[Downloading current WikiPathways data]"
+	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current WikiPathways data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	URL="http://data.wikipathways.org/current/gmt/"
 	FILE=`echo "cat //html/body/div/table/tbody/tr/td/a" |  xmllint --html --shell ${URL} | grep -o -E ">(.*$1.gmt)<" | sed -E 's/(<|>)//g'`
-	curl ${URL}/${FILE} -o ${WIKIPATHWAYS}/WikiPathways_${1}_Entrezgene.gmt -s -L  -w "wikipathways : HTTP code - %{http_code};time:%{time_total} millisec; size:%{size_download} Bytes\n"
+	curl ${URL}/${FILE} -o ${WIKIPATHWAYS}/WikiPathways_${1}_entrezgene.gmt -s -L 
 	get_webfile_version ${URL}/${FILE} "WikiPathways"
 }
 
@@ -72,26 +79,29 @@ function download_wikipathways_data {
 #argument 2 - directory to put the file
 function download_biocyc_data {
 	echo "[Downloading current BioCyc data - for species $1]"
+	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current BioCyc data - for species $1"'"}' `cat ${TOOLDIR}/slack_webhook`
 	#URL="http://bioinformatics.ai.sri.com/ecocyc/dist/flatfiles-52983746/"
 	URL="http://brg-files.ai.sri.com/public/dist/"
 	echo "${URL}/tier1-tier2-biopax.tar.gz" >> ${VERSIONS}/${1}cyc.txt
 	curl ${URL}/tier1-tier2-biopax.tar.gz -u biocyc-flatfiles:data-20541 -I | grep "Last-Modified" >> ${VERSIONS}/${1}cyc.txt
-	curl ${URL}/tier1-tier2-biopax.tar.gz -o ${2}/${1}.tar.gz -u biocyc-flatfiles:data-20541 -s  -w "Biocyc : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
+	curl ${URL}/tier1-tier2-biopax.tar.gz -o ${2}/${1}.tar.gz -u biocyc-flatfiles:data-20541 -s 
 }
 
 # Go human data comes directly from ebi as they are the primary curators of human GO annotations
 function download_GOhuman_data {
 	echo "[Downloading current Go Human EBI data]"
+	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Go Human EBI data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	URL="ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/HUMAN/"
 
 	#June 2016 - looks like they changed the name of the go files !!!
-	curl ${URL}/goa_human.gaf.gz -o ${GOSRC}/gene_association.goa_human.gz -s  -w "GO (Human GAF) : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
+	curl ${URL}/goa_human.gaf.gz -o ${GOSRC}/gene_association.goa_human.gz -s 
 	get_webfile_version ${URL}/goa_human.gaf.gz "GO_Human"
 
 	#get the obo file from the gene ontology website
 	echo "[Downloading current GO OBO file]"
+	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Go OBO data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	URL="ftp://ftp.geneontology.org/pub/go/ontology/obo_format_1_2/"
-	curl ${URL}/gene_ontology.1_2.obo -o ${GOSRC}/gene_ontology.1_2.obo -s  -w "GO (obo) : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
+	curl ${URL}/gene_ontology.1_2.obo -o ${GOSRC}/gene_ontology.1_2.obo -s 
 	get_webfile_version ${URL}/gene_ontology.1_2.obo "GO_OBO_FILE"
 
 
@@ -100,8 +110,9 @@ function download_GOhuman_data {
 #Mouse data is downloaded from the Gene ontology website and comes from MGI
 function download_GOmouse_data {
 	echo "[Downloading current Go Mouse MGI  data]"
+	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Go Mouse MGI data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	URL="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.mgi.gz?rev=HEAD"
-	curl $URL -o ${GOSRC}/gene_association.mgi.gz -s  -w "GO (mouse gaf) : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
+	curl $URL -o ${GOSRC}/gene_association.mgi.gz -s 
 	get_webfile_version ${URL} "GO_Mouse"
 }
 
@@ -109,19 +120,21 @@ function download_GOmouse_data {
 function download_HPO_data {
 	#file no longer exists.  Use latest version from June 16, 2013
 	echo "[Downloading current Human Phenotype data]"
+	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Human Phenotypes data"'"}' `cat ${TOOLDIR}/slack_webhook`
         #URL="http://compbio.charite.de/hudson/job/hpo.annotations.monthly/lastStableBuild/artifact/annotation/ALL_SOURCES_ALL_FREQUENCIES_genes_to_phenotype.txt"
 	URL="http://compbio.charite.de/jenkins/job/hpo.annotations.monthly/lastStableBuild/artifact/annotation/ALL_SOURCES_ALL_FREQUENCIES_genes_to_phenotype.txt"
-	curl ${URL} -o ${DISEASESRC}/genes_to_phenotype.txt -s -w "HPO (Human annot) : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
+	curl ${URL} -o ${DISEASESRC}/genes_to_phenotype.txt -s
 	get_webfile_version ${URL} "Human_Phenotype"
 
 	#get the obo file
 	echo "[Downloading current Phenotype OBO file]"
+	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Phenotypes OBO data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	#URL="http://compbio.charite.de/svn/hpo/trunk/src/ontology/"
 	#curl ${URL}/human-phenotype-ontology.obo -o ${DISEASESRC}/human-phenotype-ontology.obo -s  -w "HPO (obo) : HTTP code - %{http_code};time:%{time_total} millisec; size:%{size_download} Bytes\n"
         #URL="http://compbio.charite.de/jenkins/job/hpo/lastStableBuild/artifact/hp"
 	URL="https://raw.githubusercontent.com/obophenotype/human-phenotype-ontology/master"
 
-	curl ${URL}/hp.obo -o ${DISEASESRC}/human-phenotype-ontology.obo -s  -w "HPO (obo) : HTTP code - %{http_code};time:%{time_total} millisec; size:%{size_download} Bytes\n"
+	curl ${URL}/hp.obo -o ${DISEASESRC}/human-phenotype-ontology.obo -s 
 	get_webfile_version ${URL}/hp.obo "Human_phenotype_OBO_FILE"
 
 }
@@ -133,8 +146,9 @@ function download_drugbank_data {
 	# needed to create an account and URL changed
 
 	echo "[Downloading current Drugbank data]"
+	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current DrugBank data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	URL="http://www.drugbank.ca/system/downloads/current"
-        curl -Lf -o drugbank.xml.zip -u ruth.isserlin@gmail.com:emililab https://go.drugbank.com/releases/latest/downloads/all-full-database	
+        curl -Lf -o drugbank.xml.zip -u ruth.isserlin@gmail.com:emililab https://go.drugbank.com/releases/latest/downloads/all-full-database -s	
         #curl ${URL}/drugbank.xml.zip -o ${DRUGSSRC}/drugbank.xml.zip -s -w "Drugbank : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
 	#get_webfile_version ${URL}/drugbank.xml.zip "DrugBank"
 
@@ -220,11 +234,48 @@ function process_gmt {
 	mv temp.txt $1 
 }
 
+#tranlsate ids using synergizer
 # argument 1 - gmt file name
 # argument 2 - taxonomy id
 # argument 3 - id found in gmt file
 function translate_gmt {
-	java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 2>> translate_process.err 1>> translate_output.txt 
+
+		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate_synergizer --gmt $1 --organism $2 --oldID $3 2>> translate_process.err 1>> translate_output.txt 
+
+}
+
+# argument 1 - gmt file name
+# argument 2 - taxonomy id
+# argument 3 - id found in gmt file
+function translate_gmt_UniProt {
+
+
+	if [[ $3 == "UniProt" ]] ; then
+		
+		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "symbol" 2>> translate_process.err 1>> translate_output.txt 
+		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "entrezgene" 2>> translate_process.err 1>> translate_output.txt 
+	fi
+
+	if [[ $3 == "entrezgene" ]] ; then
+	
+		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "symbol" 2>> translate_process.err 1>> translate_output.txt 
+		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "UniProt" 2>> translate_process.err 1>> translate_output.txt 
+	
+	fi
+
+	if [[ $3 == "MGI" ]] ; then
+	
+		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "symbol" 2>> translate_process.err 1>> translate_output.txt 
+		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "UniProt" 2>> translate_process.err 1>> translate_output.txt 
+		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "entrezgene" 2>> translate_process.err 1>> translate_output.txt 
+	fi
+
+	if [[ $3 == "RGD" ]] ; then
+	
+		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "symbol" 2>> translate_process.err 1>> translate_output.txt 
+		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "UniProt" 2>> translate_process.err 1>> translate_output.txt 
+		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "entrezgene" 2>> translate_process.err 1>> translate_output.txt 
+	fi
 }
 
 # argument 1 - gmt file name
@@ -262,19 +313,28 @@ function process_hpo {
 #argument 2 - species
 #argument 3 - division to put data into
 function copy2release {
-	cat *gene.gmt > ${2}_${1}_Entrezgene.gmt
-	cp ${2}_${1}_Entrezgene.gmt ${EG}/${3}/${2}_${1}_${dir_name}_Entrezgene.gmt
+
+	files=$(ls *gene.gmt 2> /dev/null | wc -l)
+	if [ $files != 0 ] ; then
+		cat *gene.gmt > ${2}_${1}_entrezgene.gmt
+		cp ${2}_${1}_entrezgene.gmt ${EG}/${3}/${2}_${1}_${dir_name}_Entrezgene.gmt
+	fi
 	#concatenate all the translation summaries
 	
 	files=$(ls *gene_summary.log 2> /dev/null | wc -l)
 	if [ $files != 0 ] ; then
 	#if [ -e *gene_summary.log ] ; then
-		cat *gene_summary.log > ${2}_${1}_Entrezgene_translation_summary.log
-		cp ${2}_${1}_Entrezgene_translation_summary.log ${EG}/${3}/${2}_${1}_Entrezgene_translation_summary.log
+		cat *gene_summary.log > ${2}_${1}_entrezgene_translation_summary.log
+		cp ${2}_${1}_entrezgene_translation_summary.log ${EG}/${3}/${2}_${1}_Entrezgene_translation_summary.log
 	fi
 
-	cat *UniProt.gmt > ${2}_${1}_UniProt.gmt
-	cp ${2}_${1}_UniProt.gmt ${UNIPROT}/${3}/${2}_${1}_${dir_name}_UniProt.gmt
+	
+	files=$(ls *UniProt.gmt 2> /dev/null | wc -l)
+	if [ $files != 0 ] ; then
+		cat *UniProt.gmt > ${2}_${1}_UniProt.gmt
+		cp ${2}_${1}_UniProt.gmt ${UNIPROT}/${3}/${2}_${1}_${dir_name}_UniProt.gmt
+	fi
+
 	#concatenate all the translation summaries
 	files=$(ls *UniProt_summary.log 2> /dev/null | wc -l)
 	if [ $files != 0 ] ; then
@@ -283,8 +343,12 @@ function copy2release {
 		cp ${2}_${1}_UniProt_translation_summary.log ${UNIPROT}/${3}/${2}_${1}_UniProt_translation_summary.log
 	fi
 	
-	cat *symbol.gmt > ${2}_${1}_symbol.gmt
-	cp ${2}_${1}_symbol.gmt ${SYMBOL}/${3}/${2}_${1}_${dir_name}_symbol.gmt
+	files=$(ls *symbol.gmt 2> /dev/null | wc -l)
+	if [ $files != 0 ] ; then
+		cat *symbol.gmt > ${2}_${1}_symbol.gmt
+		cp ${2}_${1}_symbol.gmt ${SYMBOL}/${3}/${2}_${1}_${dir_name}_symbol.gmt
+	fi
+
 	#concatenate all the translation summaries
 	files=$(ls *symbol_summary.log 2> /dev/null | wc -l)
 	if [ $files != 0 ] ; then
@@ -305,8 +369,8 @@ function copy2release_nomerge {
 	files=$(ls *gene_summary.log 2> /dev/null | wc -l)
 	if [ $files != 0 ] ; then
 	#if [ -e *gene_summary.log ] ; then
-		cat *gene_summary.log > ${2}_${1}_Entrezgene_translation_summary.log
-		cp ${2}_${1}_Entrezgene_translation_summary.log ${EG}/${3}/${2}_${1}_Entrezgene_translation_summary.log
+		cat *gene_summary.log > ${2}_${1}_entrezgene_translation_summary.log
+		cp ${2}_${1}_entrezgene_translation_summary.log ${EG}/${3}/${2}_${1}_Entrezgene_translation_summary.log
 	fi
 
 	cp *UniProt.gmt ${UNIPROT}/${3}/
@@ -376,72 +440,75 @@ function mergesummaries {
 #summarize the number of genesets in one file
 #argument 1 - directory to comile from
 function getstats {
-      echo 'Gene Set Statistics for Release ' ${dir_name} > ${1}/Summary_GeneSet_Counts.txt
+      echo 'Gene Set Statistics for Release ' ${dir_name} > ${1}/Summary_GeneSet_Counts_${2}.txt
         cd ${1}/${GO}
         files=$(ls *.gmt 2> /dev/null | wc -l)
         if [ $files != 0 ] ; then
 
-                echo 'GO with IEA Stats:' >> ${1}/Summary_Geneset_Counts.txt
-                wc -l *bp_with* >> ${1}/Summary_Geneset_Counts.txt
-                wc -l *mf_with* >> ${1}/Summary_Geneset_Counts.txt
-                wc -l *cc_with* >> ${1}/Summary_Geneset_Counts.txt
-                echo 'Total GO with IEA:' >> ${1}/Summary_Geneset_Counts.txt
-                wc -l *ALL_with* >> ${1}/Summary_Geneset_Counts.txt
-                echo '------------------'  >> ${1}/Summary_Geneset_Counts.txt
-                echo 'GO no IEA Stats:' >> ${1}/Summary_Geneset_Counts.txt
-                wc -l *bp_no* >> ${1}/Summary_Geneset_Counts.txt
-                wc -l *mf_no* >> ${1}/Summary_Geneset_Counts.txt
-                wc -l *cc_no* >> ${1}/Summary_Geneset_Counts.txt
-                echo 'Total GO no IEA:' >> ${1}/Summary_Geneset_Counts.txt
-                wc -l *ALL_no* >> ${1}/Summary_Geneset_Counts.txt
-                echo '------------------'  >> ${1}/Summary_Geneset_Counts.txt
+                echo 'GO with IEA Stats:' >> ${1}/Summary_GeneSet_Counts_${2}.txt
+                wc -l *bp_with* >> ${1}/Summary_GeneSet_Counts_${2}.txt
+                wc -l *mf_with* >> ${1}/Summary_GeneSet_Counts_${2}.txt
+                wc -l *cc_with* >> ${1}/Summary_GeneSet_Counts_${2}.txt
+                echo 'Total GO with IEA:' >> ${1}/Summary_GeneSet_Counts_${2}.txt
+                wc -l *ALL_with* >> ${1}/Summary_GeneSet_Counts_${2}.txt
+                echo '------------------'  >> ${1}/Summary_GeneSet_Counts_${2}.txt
+                echo 'GO no IEA Stats:' >> ${1}/Summary_GeneSet_Counts_${2}.txt
+                wc -l *bp_no* >> ${1}/Summary_GeneSet_Counts_${2}.txt
+                wc -l *mf_no* >> ${1}/Summary_GeneSet_Counts_${2}.txt
+                wc -l *cc_no* >> ${1}/Summary_GeneSet_Counts_${2}.txt
+                echo 'Total GO no IEA:' >> ${1}/Summary_GeneSet_Counts_${2}.txt
+                wc -l *ALL_no* >> ${1}/Summary_GeneSet_Counts_${2}.txt
+                echo '------------------'  >> ${1}/Summary_GeneSet_Counts_${2}.txt
         fi
 
         cd ${1}/${PATHWAYS}
         files=$(ls *.gmt 2> /dev/null | wc -l)
         if [ $files != 0 ] ; then
 
-                echo 'Pathway Stats:' >> ${1}/Summary_Geneset_Counts.txt
-                wc -l *.gmt >> ${1}/Summary_Geneset_Counts.txt
-                echo '------------------'  >> ${1}/Summary_Geneset_Counts.txt
+                echo 'Pathway Stats:' >> ${1}/Summary_GeneSet_Counts_${2}.txt
+                wc -l *.gmt >> ${1}/Summary_GeneSet_Counts_${2}.txt
+                echo '------------------'  >> ${1}/Summary_GeneSet_Counts_${2}.txt
         fi
 
 	 cd ${1}/${MIR}
         files=$(ls *.gmt 2> /dev/null | wc -l)
         if [ $files != 0 ] ; then
-                echo 'miR Stats:' >> ${1}/Summary_Geneset_Counts.txt
-                wc -l *.gmt >> ${1}/Summary_Geneset_Counts.txt
-                echo '------------------'  >> ${1}/Summary_Geneset_Counts.txt
+                echo 'miR Stats:' >> ${1}/Summary_GeneSet_Counts_${2}.txt
+                wc -l *.gmt >> ${1}/Summary_GeneSet_Counts_${2}.txt
+                echo '------------------'  >> ${1}/Summary_GeneSet_Counts_${2}.txt
         fi
 
         cd ${1}/${TF}
         files=$(ls *.gmt 2> /dev/null | wc -l)
         if [ $files != 0 ] ; then
 
-                echo 'Transcription Factor Stats:' >> ${1}/Summary_Geneset_Counts.txt
-                wc -l *.gmt >> ${1}/Summary_Geneset_Counts.txt
-                echo '------------------'  >> ${1}/Summary_Geneset_Counts.txt
+                echo 'Transcription Factor Stats:' >> ${1}/Summary_GeneSet_Counts_${2}.txt
+                wc -l *.gmt >> ${1}/Summary_GeneSet_Counts_${2}.txt
+                echo '------------------'  >> ${1}/Summary_GeneSet_Counts_${2}.txt
         fi
 
         cd ${1}/${DISEASE}
         files=$(ls *.gmt 2> /dev/null | wc -l)
         if [ $files != 0 ] ; then
 
-                echo 'Disease Phenotypes Stats:' >> ${1}/Summary_Geneset_Counts.txt
-                wc -l *.gmt >> ${1}/Summary_Geneset_Counts.txt
+                echo 'Disease Phenotypes Stats:' >> ${1}/Summary_GeneSet_Counts_${2}.txt
+                wc -l *.gmt >> ${1}/Summary_GeneSet_Counts_${2}.txt
         fi
 
         cd ${1}/${DRUGS}
         files=$(ls *.gmt 2> /dev/null | wc -l)
         if [ $files != 0 ] ; then
 
-                echo 'Drug Targets Stats:' >> ${1}/Summary_Geneset_Counts.txt
-                wc -l *.gmt >> ${1}/Summary_Geneset_Counts.txt
+                echo 'Drug Targets Stats:' >> ${1}/Summary_GeneSet_Counts_${2}.txt
+                wc -l *.gmt >> ${1}/Summary_GeneSet_Counts_${2}.txt
         fi
 
-        mv ${1}/Summary_Geneset_Counts.txt ${OUTPUTDIR}
+        mv ${1}/Summary_GeneSet_Counts_${2}.txt ${OUTPUTDIR}
 
+	#Summarize all the log files
 
+	${TOOLDIR}/GetAllStats.sh ${2} ${1}/Build_summary_stats_${2}.log ${3}
+	mv ${1}/Build_summary_stats_${2}.log ${OUTPUTDIR}
 }
 
 #source all configuration parameters we need (contains paths to output directories and the like)
@@ -469,7 +536,7 @@ CUR_RELEASE=${WORKINGDIR}/${dir_name}
 
 OUTPUTDIR=${CUR_RELEASE}/Human
 UNIPROT=${OUTPUTDIR}/UniProt
-EG=${OUTPUTDIR}/Entrezgene
+EG=${OUTPUTDIR}/entrezgene
 SYMBOL=${OUTPUTDIR}/symbol
 SOURCE=${CUR_RELEASE}/SRC
 VERSIONS=${CUR_RELEASE}/version
@@ -512,7 +579,7 @@ createDivisionDirs ${SYMBOL}
 #modify gmt file so the gmt conforms to our standard with name and description
 #for file in *.gmt; do
 #	process_gmt $file "PC_NCI" 1
-#	translate_gmt $file "9606" "entrezgene"
+#	translate_gmt_UniProt $file "9606" "entrezgene"
 #done 
 #copy2release PC_NCI_Nature Human ${PATHWAYS}
 
@@ -536,7 +603,7 @@ for file in *.owl; do
 	process_biopax_novalidation $file "UniProt" "HumanCyc"
 done
 for file in *.gmt; do
-	translate_gmt $file "9606" "UniProt"
+	translate_gmt_UniProt $file "9606" "UniProt"
 done
 copy2release HumanCyc Human ${PATHWAYS}
 
@@ -552,7 +619,7 @@ cd ${WIKIPATHWAYS}
 for file in *.gmt; do
 	cat $file | awk -F\\t '{OFS=FS; split($1,b,"%");$2=b[1]; print $0}' > temp.gmt
         cp temp.gmt $file
-	translate_gmt $file "9606" "entrezgene"
+	translate_gmt_UniProt $file "9606" "entrezgene"
 done
 copy2release WikiPathways Human ${PATHWAYS}
 
@@ -563,6 +630,7 @@ NCI=${SOURCE}/NCI
 mkdir -p ${NCI}
 cd ${NCI}
 #download_nci_data
+
 cp ${STATICDIR}/NCI/*.gz ./
 gunzip *.gz
 #modify gmt file so the gmt conforms to our standard with name and description
@@ -570,7 +638,7 @@ for file in *.owl; do
 	process_biopax_novalidation $file "UniProt" "NCI_Nature"
 done
 for file in *.gmt; do
-	translate_gmt $file "9606" "UniProt"
+	translate_gmt_UniProt $file "9606" "UniProt"
 done 
 copy2release NCI_Nature Human ${PATHWAYS}
 
@@ -588,7 +656,7 @@ download_panther_data
 #unzip and untar human.tar.gz file
 cd ${PANTHER}
 tar -xvzf BioPAX.tar.gz --strip=1 >/dev/null
-#Go through each pathway file and grab the uniprots
+#Go through each pathway file and grab the UniProts
 for file in *.owl; do
 	process_biopax_novalidation $file "UniProt" "Panther"
 done
@@ -597,7 +665,7 @@ for file in *.gmt; do
         #we get duplicated lines.  Get rid of all lines that don't have a Panther ID
 	grep "%PANTHER Pathway%" $file > temp_file.gmt
 	mv temp_file.gmt $file
-	translate_gmt $file "9606" "UniProt"
+	translate_gmt_UniProt $file "9606" "UniProt"
 done
 copy2release Panther Human ${PATHWAYS}
 
@@ -612,7 +680,7 @@ for file in *.owl; do
 	process_biopax_novalidation $file "Entrez gene" "NetPath"
 done
 for file in *.gmt; do
-	translate_gmt $file "9606" "entrezgene"
+	translate_gmt_UniProt $file "9606" "entrezgene"
 done
 #merge all the gmt into one NetPath GMT
 copy2release NetPath Human ${PATHWAYS}
@@ -632,7 +700,7 @@ for file in *sapiens.owl; do
 	process_biopax_novalidation $file "UniProt" "Reactome"
 done
 for file in *.gmt; do
-	translate_gmt $file "9606" "UniProt"
+	translate_gmt_UniProt $file "9606" "UniProt"
 done
 copy2release Reactome Human ${PATHWAYS}
 
@@ -648,11 +716,11 @@ cd ${DISEASESRC}
 #cp ${STATICDIR}/DiseasePhenotypes/gene_to_phenotype_june142013.txt ./
 
 #parse the the phenotypes and obo file.
-process_hpo genes_to_phenotype.txt human-phenotype-ontology.obo Human_DiseasePhenotypes_Entrezgene.gmt
+process_hpo genes_to_phenotype.txt human-phenotype-ontology.obo Human_DiseasePhenotypes_entrezgene.gmt
 
 #translate the new file into other identifiers
 for file in *.gmt; do
-	translate_gmt $file "9606" "entrezgene"
+	translate_gmt_UniProt $file "9606" "entrezgene"
 done
 copy2release_nomerge DiseasePhenotypes Human ${DISEASE}
 
@@ -686,22 +754,22 @@ perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_nu
 #process the drugbank file - small molecule drugs
 perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_smallmolecule_symbol.gmt -d "small molecule" -i genename  2>>drugbankparse.err
 
-#uniprot computation
+#UniProt computation
 #process the drugbank file - all drugs
-perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_all_drugb_uniprot.gmt -i uniprot 2>>drugbankparse.err
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_all_UniProt.gmt -i uniprot 2>>drugbankparse.err
 #process the drugbank file - approved drugs
-perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_approved_drugb_uniprot.gmt -d "approved" -i uniprot  2>>drugbankparse.err
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_approved_UniProt.gmt -d "approved" -i uniprot  2>>drugbankparse.err
 #process the drugbank file - illicit drugs
-perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_illicit_drugb_uniprot.gmt -d "illicit" -i uniprot  2>>drugbankparse.err
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_illicit_UniProt.gmt -d "illicit" -i uniprot  2>>drugbankparse.err
 #process the drugbank file - experimental drugs
-perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_experimental_drugb_uniprot.gmt -d "experimental" -i uniprot  2>>drugbankparse.err
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_experimental_UniProt.gmt -d "experimental" -i uniprot  2>>drugbankparse.err
 #process the drugbank file - nutraceutical drugs
-perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_nutraceutical_drugb_uniprot.gmt -d "nutraceutical" -i uniprot  2>>drugbankparse.err
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_nutraceutical_UniProt.gmt -d "nutraceutical" -i uniprot  2>>drugbankparse.err
 #process the drugbank file - small molecule drugs
-perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_smallmolecule_drugb_uniprot.gmt -d "small molecule" -i uniprot  2>>drugbankparse.err
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_smallmolecule_UniProt.gmt -d "small molecule" -i uniprot  2>>drugbankparse.err
 
-for file in *symbol.gmt; do
-	translate_gmt $file "9606" "symbol"
+for file in *UniProt.gmt; do
+	translate_gmt_UniProt $file "9606" "UniProt"
 done
 copy2release_nomerge DrugBank Human ${DRUGS}
 
@@ -722,7 +790,7 @@ for dir in `ls`; do
 			process_biopax_novalidation $file "Entrez gene" "IOB"
 		done
 		for file in *.gmt; do
-			translate_gmt $file "9606" "entrezgene"
+			translate_gmt_UniProt $file "9606" "entrezgene"
 		done
 
 		copy2release IOB Human ${PATHWAYS}
@@ -737,7 +805,7 @@ for dir in `ls`; do
 		cp *.txt ${VERSIONS}
 		cd ${SOURCE}/$dir
 		for file in *.gmt; do
-			translate_gmt $file "9606" "symbol"
+			translate_gmt_UniProt $file "9606" "symbol"
 		done
 		copy2release KEGG Human ${MISC}
 		cd ${STATICDIR}
@@ -750,7 +818,7 @@ for dir in `ls`; do
 		cd ${SOURCE}/$dir
 		for file in *.gmt; do
 			process_gmt $file "MSigdb_C2" 1
-			translate_gmt $file "9606" "entrezgene"
+			translate_gmt_UniProt $file "9606" "entrezgene"
 		done
 		copy2release MSigdb Human ${PATHWAYS}
 		cd ${STATICDIR}
@@ -762,7 +830,7 @@ for dir in `ls`; do
 #		cp *version.txt ${VERSIONS}
 #		cd ${SOURCE}/$dir
 #		for file in *.gmt; do
-#			translate_gmt $file "9606" "entrezgene"
+#			translate_gmt_UniProt $file "9606" "entrezgene"
 #		done
 #		copy2release DiseasePhenotypes Human ${DISEASE}
 #		cd ${STATICDIR}
@@ -775,7 +843,7 @@ for dir in `ls`; do
 		cd ${SOURCE}/$dir
 		for file in *.gmt; do
 			process_gmt $file "MSigdb_C3" 1
-			translate_gmt $file "9606" "entrezgene"
+			translate_gmt_UniProt $file "9606" "entrezgene"
 		done
 		copy2release miRs_MSigdb Human ${MIR}
 		cd ${STATICDIR}
@@ -788,7 +856,7 @@ for dir in `ls`; do
 		cd ${SOURCE}/$dir
 		for file in *.gmt; do
 			process_gmt $file "MSigdb_C3" 1
-			translate_gmt $file "9606" "entrezgene"
+			translate_gmt_UniProt $file "9606" "entrezgene"
 		done
 		copy2release TranscriptionFactors_MSigdb Human ${TF}
 		cd ${STATICDIR}
@@ -811,7 +879,7 @@ for file in *.goa*; do
 	process_gaf_noiea  $file "9606" "cc" ${GOOBO}
 done
 for file in *.gmt; do
-	translate_gmt $file "9606" "UniProt"
+	translate_gmt_UniProt $file "9606" "UniProt"
 done
 
 #create  the compilation of all branches
@@ -883,7 +951,9 @@ cat ../Human_AllPathways_${dir_name}_UniProt.gmt Human_GO_bp_${NOIEA}_UniProt.gm
 mergesummaries ${UNIPROT} UniProt
 
 #create the stats summary
-getstats ${EG}
+getstats ${EG} "entrezgene" ${SOURCE}
+getstats ${UNIPROT} "UniProt" ${SOURCE}
+getstats ${SYMBOL} "symbol" ${SOURCE}
 
 #################################################################
 # Create Mouse Genesets.
@@ -894,7 +964,7 @@ HUMANVERSIONS=${VERSIONS}
 
 OUTPUTDIR=${CUR_RELEASE}/Mouse
 UNIPROT=${OUTPUTDIR}/UniProt
-EG=${OUTPUTDIR}/Entrezgene
+EG=${OUTPUTDIR}/entrezgene
 SYMBOL=${OUTPUTDIR}/symbol
 MOUSESOURCE=${CUR_RELEASE}/SRC_Mouse
 VERSIONS=${CUR_RELEASE}/version_mouse
@@ -924,7 +994,7 @@ createDivisionDirs ${SYMBOL}
 #	process_biopax $file "UniProt" "MouseCyc"
 #done
 #for file in *.gmt; do
-#	translate_gmt $file "10090" "UniProt"
+#	translate_gmt_UniProt $file "10090" "UniProt"
 #done
 #copy2release MouseCyc Mouse ${PATHWAYS}
 
@@ -951,7 +1021,7 @@ createDivisionDirs ${SYMBOL}
 #	process_biopax_novalidation $file "UniProt" "Reactome"
 #done
 #for file in *.gmt; do
-#	translate_gmt $file "10090" "UniProt"
+#	translate_gmt_UniProt $file "10090" "UniProt"
 #done
 #copy2release Reactome Mouse ${PATHWAYS}
 
@@ -963,7 +1033,7 @@ cd ${WIKIPATHWAYS}
 for file in *.gmt; do
 	cat $file | awk -F\\t '{OFS=FS;split($1,b,"%");$2=b[1]; print $0}' > temp.gmt
 	mv temp.gmt $file
-	translate_gmt $file "10090" "entrezgene"
+	translate_gmt_UniProt $file "10090" "entrezgene"
 done
 copy2release WikiPathways Mouse ${PATHWAYS}
 
@@ -984,7 +1054,7 @@ for file in *.mgi*; do
 	process_gaf_noiea  $file "10090" "cc" ${GOOBO}
 done
 for file in *.gmt; do
-	translate_gmt $file "10090" "MGI"
+	translate_gmt_UniProt $file "10090" "MGI"
 done
 
 #create  the compilation of all branches
@@ -1044,9 +1114,9 @@ for file in Human*.gmt ; do
 	convert_gmt $file "10090" "Mouse"
 done
 
-#got through all the newly created Mouse gmt file and translate them from eg to uniprot and symbol
+#got through all the newly created Mouse gmt file and translate them from eg to UniProt and symbol
 for file in Mouse*.gmt ; do
-	translate_gmt $file "10090" "entrezgene"
+	translate_gmt_UniProt $file "10090" "entrezgene"
 done
 
 #mv all the drugbank files to a separate directory
@@ -1054,15 +1124,15 @@ mkdir ${DRUGS}
 mv *DrugBank* ${DRUGS}
 
 #copy all the pathway file - can't use the copy function because there are multiple pathway datasets in this set. 
-cp Mouse*_Entrezgene.gmt ${EG}/${PATHWAYS}/
+cp Mouse*_entrezgene.gmt ${EG}/${PATHWAYS}/
 cp Mouse*_UniProt.gmt ${UNIPROT}/${PATHWAYS}/
 cp Mouse*_symbol.gmt ${SYMBOL}/${PATHWAYS}/
 
 #concatenate all the translation summaries	
 files=$(ls *10090_conversion.log 2> /dev/null | wc -l)
 if [ $files != 0 ] ; then
-	cat *10090_conversion.log > Mouse_translatedPathways_Entrezgene_translation_summary.log
-	cp Mouse_translatedPathways_Entrezgene_translation_summary.log ${EG}/${PATHWAYS}/Mouse_translatedPathways_Entrezgene_translation_summary.log
+	cat *10090_conversion.log > Mouse_translatedPathways_entrezgene_translation_summary.log
+	cp Mouse_translatedPathways_entrezgene_translation_summary.log ${EG}/${PATHWAYS}/Mouse_translatedPathways_Entrezgene_translation_summary.log
 fi
 	
 files=$(ls *UniProt_summary.log 2> /dev/null | wc -l)
@@ -1087,8 +1157,8 @@ cp Mouse*_symbol.gmt ${SYMBOL}/${DRUGS}/
 #concatenate all the translation summaries	
 files=$(ls *10090_conversion.log 2> /dev/null | wc -l)
 if [ $files != 0 ] ; then
-	cat *10090_conversion.log > Mouse_translatedDrugs_Entrezgene_translation_summary.log
-	cp Mouse_translatedDrugs_Entrezgene_translation_summary.log ${EG}/${DRUGS}/Mouse_translatedDrugs_Entrezgene_translation_summary.log
+	cat *10090_conversion.log > Mouse_translatedDrugs_entrezgene_translation_summary.log
+	cp Mouse_translatedDrugs_entrezgene_translation_summary.log ${EG}/${DRUGS}/Mouse_translatedDrugs_Entrezgene_translation_summary.log
 fi
 	
 files=$(ls *UniProt_summary.log 2> /dev/null | wc -l)
@@ -1152,20 +1222,25 @@ cat ../Mouse_AllPathways_${dir_name}_UniProt.gmt MOUSE_GO_bp_${NOIEA}_UniProt.gm
 mergesummaries ${UNIPROT} UniProt
 
 #create the stats summary
-getstats ${EG}
+getstats ${EG} "entrezgene" ${MOUSESOURCE}
+getstats ${UNIPROT} "UniProt" ${MOUSESOURCE}
+getstats ${SYMBOL} "symbol" ${MOUSESOURCE}
 
 
 #Rat data is downloaded from the Gene ontology website and comes from RGD
 function download_GORat_data {
 	echo "[Downloading current Go Rat  data]"
+	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Go Rat data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	URL="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.rgd.gz?rev=HEAD"
-	curl $URL -o ${GOSRC}/gene_association.rgd.gz -s  -w "GO (Rat gaf) : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
+	curl $URL -o ${GOSRC}/gene_association.rgd.gz -s 
 	get_webfile_version ${URL} "GO_Rat"
 
 	#get the obo file from the gene ontology website
 	echo "[Downloading current GO OBO file]"
+	
+	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Go Rat OBO"'"}' `cat ${TOOLDIR}/slack_webhook`
 	URL="ftp://ftp.geneontology.org/pub/go/ontology/obo_format_1_2/"
-	curl ${URL}/gene_ontology.1_2.obo -o ${GOSRC}/gene_ontology.1_2.obo -s  -w "GO (obo) : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
+	curl ${URL}/gene_ontology.1_2.obo -o ${GOSRC}/gene_ontology.1_2.obo -s 
 	get_webfile_version ${URL}/gene_ontology.1_2.obo "GO_OBO_FILE"
 
 }
@@ -1178,7 +1253,7 @@ function download_GORat_data {
 
 OUTPUTDIR=${CUR_RELEASE}/Rat
 UNIPROT=${OUTPUTDIR}/UniProt
-EG=${OUTPUTDIR}/Entrezgene
+EG=${OUTPUTDIR}/entrezgene
 SYMBOL=${OUTPUTDIR}/symbol
 RatSOURCE=${CUR_RELEASE}/SRC_Rat
 VERSIONS=${CUR_RELEASE}/version_Rat
@@ -1208,7 +1283,7 @@ createDivisionDirs ${SYMBOL}
 #	process_biopax $file "UniProt" "RatCyc"
 #done
 #for file in *.gmt; do
-#	translate_gmt $file "10090" "UniProt"
+#	translate_gmt_UniProt $file "10090" "UniProt"
 #done
 #copy2release RatCyc Rat ${PATHWAYS}
 
@@ -1228,7 +1303,7 @@ for file in *.owl; do
 	process_biopax_novalidation $file "UniProt" "Reactome"
 done
 for file in *.gmt; do
-	translate_gmt $file "10116" "UniProt"
+	translate_gmt_UniProt $file "10116" "UniProt"
 done
 copy2release Reactome Rat ${PATHWAYS}
 
@@ -1241,7 +1316,7 @@ cd ${WIKIPATHWAYS}
 for file in *.gmt; do
 	cat $file | awk -F\\t '{OFS=FS;split($1,b,"%");$2=b[1]; print $0}' > temp.gmt
 	mv temp.gmt $file
-	translate_gmt $file "10116" "entrezgene"
+	translate_gmt_UniProt $file "10116" "entrezgene"
 done
 copy2release WikiPathways Rat ${PATHWAYS}
 
@@ -1263,7 +1338,7 @@ for file in *.rgd*; do
 	process_gaf_noiea  $file "10116" "cc" ${GOOBO}
 done
 for file in *.gmt; do
-	translate_gmt $file "10116" "RGD"
+	translate_gmt_UniProt $file "10116" "RGD"
 done
 
 #create  the compilation of all branches
@@ -1319,9 +1394,9 @@ for file in Human*.gmt ; do
 	convert_gmt $file "10116" "Rat"
 done
 
-#got through all the newly created Rat gmt file and translate them from eg to uniprot and symbol
+#got through all the newly created Rat gmt file and translate them from eg to UniProt and symbol
 for file in Rat*.gmt ; do
-	translate_gmt $file "10116" "entrezgene"
+	translate_gmt_UniProt $file "10116" "entrezgene"
 done
 
 #mv all the drugbank files to a separate directory
@@ -1329,15 +1404,15 @@ mkdir ${DRUGS}
 mv *DrugBank* ${DRUGS}
 
 #copy all the pathway file - can't use the copy function because there are multiple pathway datasets in this set. 
-cp Rat*_Entrezgene.gmt ${EG}/${PATHWAYS}/
+cp Rat*_entrezgene.gmt ${EG}/${PATHWAYS}/
 cp Rat*_UniProt.gmt ${UNIPROT}/${PATHWAYS}/
 cp Rat*_symbol.gmt ${SYMBOL}/${PATHWAYS}/
 
 #concatenate all the translation summaries	
 files=$(ls *10116_conversion.log 2> /dev/null | wc -l)
 if [ $files != 0 ] ; then
-	cat *10116_conversion.log > Rat_translatedPathways_Entrezgene_translation_summary.log
-	cp Rat_translatedPathways_Entrezgene_translation_summary.log ${EG}/${PATHWAYS}/Rat_translatedPathways_Entrezgene_translation_summary.log
+	cat *10116_conversion.log > Rat_translatedPathways_entrezgene_translation_summary.log
+	cp Rat_translatedPathways_entrezgene_translation_summary.log ${EG}/${PATHWAYS}/Rat_translatedPathways_Entrezgene_translation_summary.log
 fi
 	
 files=$(ls *UniProt_summary.log 2> /dev/null | wc -l)
@@ -1398,18 +1473,22 @@ cat ../Rat_AllPathways_${dir_name}_UniProt.gmt RAT_GO_bp_${NOIEA}_UniProt.gmt > 
 #merge all the summaries
 mergesummaries ${UNIPROT} UniProt
 
-getstats ${EG}
+getstats ${EG} "entrezgene" ${RatSOURCE}
+getstats ${UNIPROT} "UniProt" ${RatSOURCE}
+getstats ${SYMBOL} "symbol" ${RatSOURCE}
+
+
 
 #copy the files over the webserver
-mkdir /mnt/build/EM_Genesets/$dir_name
-cp -R ${CUR_RELEASE}/Human /mnt/build/EM_Genesets/$dir_name/
-cp -R ${CUR_RELEASE}/Mouse /mnt/build/EM_Genesets/$dir_name/
-cp -R ${CUR_RELEASE}/Rat /mnt/build/EM_Genesets/$dir_name/
+#mkdir /mnt/build/EM_Genesets/$dir_name
+#cp -R ${CUR_RELEASE}/Human /mnt/build/EM_Genesets/$dir_name/
+#cp -R ${CUR_RELEASE}/Mouse /mnt/build/EM_Genesets/$dir_name/
+#cp -R ${CUR_RELEASE}/Rat /mnt/build/EM_Genesets/$dir_name/
 
 #create a symbolic link to the latest download indicating it as current_release
-rm /mnt/build/EM_Genesets/current_release
-cd /mnt/build/EM_Genesets
-ln -sf $dir_name/ current_release
+#rm /mnt/build/EM_Genesets/current_release
+#cd /mnt/build/EM_Genesets
+#ln -sf $dir_name/ current_release
 
 #rm -rf ${CUR_RELEASE}
 
