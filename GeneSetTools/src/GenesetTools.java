@@ -23,7 +23,7 @@ public class GenesetTools {
         if (argv.length == 0) {
             help();
         } else {
-            Command.valueOf(argv[0]).run(argv);
+		Command.valueOf(argv[0]).run(argv);
         }
     }
 
@@ -96,11 +96,32 @@ public class GenesetTools {
 
     /**
      * Given a gmt file, the current species, current identifier type, the desired identifier type
-     * This Method translates all identifiers in each geneset to the new identifier using synergizer Java Api
+     *  and a set of optional files (ensembl conversions, uniprot conversions, ncbi conversions)
+     * This Method translates all identifiers in each geneset to the new identifier using those files or uniprot rest webservice
      * @param args - array of command line arguments,
      * @throws IOException
      */
     public static void translate(String args[]) throws IOException {
+         GeneSetTranslator_UniprotWebservice translator = new GeneSetTranslator_UniprotWebservice();
+         CmdLineParser parser = new CmdLineParser(translator);
+        try {
+           parser.parseArgument(args);
+	        } catch (CmdLineException e) {
+            System.err.println(e.getMessage());
+            help();
+            parser.printUsage(System.err);
+            return;
+        }
+        translator.translate();
+    }
+
+    /**
+     * Given a gmt file, the current species, current identifier type, the desired identifier type
+     * This Method translates all identifiers in each geneset to the new identifier using synergizer Java Api
+     * @param args - array of command line arguments,
+     * @throws IOException
+     */
+    public static void translate_synergizer(String args[]) throws IOException {
          GeneSetTranslator translator = new GeneSetTranslator();
          CmdLineParser parser = new CmdLineParser(translator);
         try {
@@ -245,8 +266,10 @@ public class GenesetTools {
 
      enum Command {
         translate("fileIn fileOut species currentID newID\t\ttakes gmt file and translates all of it ids to new id", 3)
-		        {public void run(String[] argv) throws IOException{translate(Arrays.copyOfRange(argv,1,argv.length));} },
-        compare("GMTfile GCTfile2 outputFile Diretory\t\t\tcompares gmt file to given gct (expression file) to generate stats relating to how many genesets each gene is found in", 2)
+		{public void run(String[] argv) throws IOException{translate(Arrays.copyOfRange(argv,1,argv.length));} },
+        translate_synergizer("fileIn fileOut species currentID newID\t\ttakes gmt file and translates all of it ids to new id", 4)	
+		{public void run(String[] argv) throws IOException{translate_synergizer(Arrays.copyOfRange(argv,1,argv.length));} },
+	compare("GMTfile GCTfile2 outputFile Diretory\t\t\tcompares gmt file to given gct (expression file) to generate stats relating to how many genesets each gene is found in", 2)
 		        {public void run(String[] argv) throws IOException{compare(Arrays.copyOfRange(argv,1,argv.length));} },
         createGo("Species Branch File", 3)
                 {public void run(String[] argv) throws IOException,SQLException{createGo(Arrays.copyOfRange(argv,1,argv.length));} },
