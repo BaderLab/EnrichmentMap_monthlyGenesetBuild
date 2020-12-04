@@ -31,6 +31,7 @@ public class GeneSetTranslator {
     private SynergizerClient client;
     private String taxon;
     private String symboldb;
+    private int query_set_size = 0;
 
     public GeneSetTranslator() {
 
@@ -205,9 +206,12 @@ public class GeneSetTranslator {
                 if(hash2gene.containsKey(current_key)){
                     String current_id = hash2gene.get(current_key);
                     GeneQuerySet.add(current_id);
-                }
+                } else
+			System.out.println(current_key + "is not in the hash2gene");
             }
          }
+	
+	 this.query_set_size = GeneQuerySet.size();
 
         //convert all the identifiers
         //create a set of translations
@@ -314,9 +318,11 @@ public class GeneSetTranslator {
             log_sum.write("File name:\t" + gmt_filename + "\n");
             log_sum.write("original Identifier\t" + oldID + "\n");
             log_sum.write("ID translated to\t" + id + "\n");
-            log_sum.write("total Number of genes in file:\t" + translations.keySet().size() + "\n");
+            log_sum.write("total Number of genes in file:\t" + this.query_set_size + "\n");
+	    //the translations set contains all the gene whether there is a translation or not. 
+            log_sum.write("total Number of genes in file with translations:\t" + (this.query_set_size - unfoundIds.size())  + "\n");
             log_sum.write("total Number Identifiers unable to map\t" + unfoundIds.size() + "\n");
-            log_sum.write("Percentage ids not translated\t" + (((unfoundIds.size()/1.0) / (translations.keySet().size()/1.0)) * 100) + "%\n" );
+            log_sum.write("Percentage ids not translated\t" + (((unfoundIds.size()/1.0) / (this.query_set_size/1.0)) * 100) + "%\n" );
             log_sum.write("Total annotations in the file\t" + totalAnnotations + "\n");
             log_sum.write("Total Untranslated annotations\t" + totalUnfoundAnnotations + "\n");
             log_sum.write("Percentage annotations not translated\t" + (((totalUnfoundAnnotations/1.0)/(totalAnnotations/1.0)) * 100) + "%\n");
@@ -415,12 +421,15 @@ public class GeneSetTranslator {
             Integer current_key = (Integer)j.next();
             if(hash2gene.containsKey(current_key)){
                 String current_id = hash2gene.get(current_key);
-                //is this id converted or not
-                if(conversions.containsKey(current_id))
+                
+		if(current_id == "" || current_id == null)
+			System.out.println("mapping id is empty");
+		
+		//is this id converted or not
+                if(unfoundIds.contains(current_id)) 
+	     	     missingQuerySet.add(current_id);
+		else if(conversions.containsKey(current_id))
                     convertedGenes.addAll(conversions.get(current_id));
-                else if(unfoundIds.contains(current_id))
-                    missingQuerySet.add(current_id);
-
             }
       }
 
