@@ -18,13 +18,14 @@ public class QueryUniprotWebservice
 
   private String oldID_index;
   private String newID_index;
+  private int organism;
   private HashSet<String> ids;
 
   private ParameterNameValue[] params;
 
 //One of the IDs need to be uniprot.  You can't convert symbol -> entrezgene with this service
 //In order to get that conversion you have to convert symbol -> uniport -> entrezgene
- public QueryUniprotWebservice(String oldID, String newID, HashSet<String> ids){
+ public QueryUniprotWebservice(String oldID, String newID, HashSet<String> ids, int organism){
  	
 	if(oldID.equalsIgnoreCase("uniprot"))
 		this.oldID_index = "ACC";
@@ -45,6 +46,7 @@ public class QueryUniprotWebservice
 		System.out.println("No match for new id");
 	
 	this.ids = ids;
+	this.organism = organism;
 
  }
  
@@ -83,8 +85,9 @@ public class QueryUniprotWebservice
     		this.params =  new ParameterNameValue[] {
       			new ParameterNameValue("from", this.oldID_index),
       			new ParameterNameValue("to", this.newID_index),
-      			new ParameterNameValue("format", "tab"),
-      			new ParameterNameValue("query", String.join(" ", current_ids)),
+			new ParameterNameValue("format", "tab"),
+			new ParameterNameValue("Organism", Integer.toString(this.organism)),
+			new ParameterNameValue("query", String.join(" ", current_ids)),
     		};
 	
    	
