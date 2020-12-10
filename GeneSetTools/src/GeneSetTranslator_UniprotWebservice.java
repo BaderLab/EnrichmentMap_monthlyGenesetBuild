@@ -23,7 +23,7 @@ public class GeneSetTranslator_UniprotWebservice {
     private String gmt_filename;
 
      @Option(name = "--organism", usage = "taxonomy id of organism", required = true)
-    private int TaxonomyId;
+    private int taxonomyId;
 
      @Option(name = "--oldID", usage = "id currently used in the gmt file", required = true)
     private String oldID;
@@ -56,7 +56,7 @@ public class GeneSetTranslator_UniprotWebservice {
 
     public GeneSetTranslator_UniprotWebservice(String gmt_filename, int taxonomyId, String oldID, String newID, String conversionFileName)  {
         this.gmt_filename = gmt_filename;
-        TaxonomyId = taxonomyId;
+        this.taxonomyId = taxonomyId;
         this.oldID = oldID;
 	this.newID = newID;
 	this.conversionFileName = conversionFileName;
@@ -65,7 +65,7 @@ public class GeneSetTranslator_UniprotWebservice {
 
     public GeneSetTranslator_UniprotWebservice(String gmt_filename, int taxonomyId, String oldID, String newID, String uniprotFileName, String ncbiFileName)  {
         this.gmt_filename = gmt_filename;
-        TaxonomyId = taxonomyId;
+        this.taxonomyId = taxonomyId;
         this.oldID = oldID;
 	this.newID = newID;
 	this.uniprotFileName = uniprotFileName;
@@ -74,7 +74,7 @@ public class GeneSetTranslator_UniprotWebservice {
 
     public GeneSetTranslator_UniprotWebservice(String gmt_filename, int taxonomyId, String oldID, String newID, String uniprotFileName, String ncbiFileName, String conversionFileName)  {
         this.gmt_filename = gmt_filename;
-        TaxonomyId = taxonomyId;
+        this.taxonomyId = taxonomyId;
         this.oldID = oldID;
 	this.newID = newID;
 	this.uniprotFileName = uniprotFileName;
@@ -85,9 +85,9 @@ public class GeneSetTranslator_UniprotWebservice {
 
     public void setup() {
 
-        if((TaxonomyId == 10090) && (oldID.equalsIgnoreCase("mgi"))){
+        if((this.taxonomyId == 10090) && (oldID.equalsIgnoreCase("mgi"))){
 	    oldID = "MGI_ID";
-        }else if((TaxonomyId == 10116) && (oldID.equalsIgnoreCase("rgd"))){
+        }else if((this.taxonomyId == 10116) && (oldID.equalsIgnoreCase("rgd"))){
 		oldID = "RGD_ID"; 
         }
 
@@ -200,11 +200,11 @@ public class GeneSetTranslator_UniprotWebservice {
 		translations_id = convert(GeneQuerySet,oldID, newID, unfoundIds.get(oldID),logs.get(oldID)); 
 	else{
 		if(oldID.equalsIgnoreCase("Uniprot"))
-			translations_id = convertUniprotWebservice(GeneQuerySet,oldID, newID, unfoundIds.get(oldID),logs.get(oldID)); 
+			translations_id = convertUniprotWebservice(GeneQuerySet,oldID, newID, unfoundIds.get(oldID),logs.get(oldID),taxonomyId); 
 		else{
 			if(oldID.equalsIgnoreCase("entrezgene") || oldID.equalsIgnoreCase("symbol")){
 					
-				translations_id = twoStepConversions(GeneQuerySet,oldID, newID, unfoundIds.get(oldID),logs.get(oldID)); 
+				translations_id = twoStepConversions(GeneQuerySet,oldID, newID, unfoundIds.get(oldID),logs.get(oldID),taxonomyId); 
 
 			}
 
@@ -246,16 +246,16 @@ public class GeneSetTranslator_UniprotWebservice {
  */
 
     private HashMap<String, Set<String>> twoStepConversions(Set GeneQuerySet,String oldID,String newID,    
-		HashSet<String> unfoundIds, HashMap<String, logInfo> logs){
+		HashSet<String> unfoundIds, HashMap<String, logInfo> logs, int taxonomyId){
 
 	HashMap<String, Set<String>> first_step, second_step, merged_set = null;
-	first_step = convertUniprotWebservice(GeneQuerySet,oldID, "Uniprot", unfoundIds,logs); 
+	first_step = convertUniprotWebservice(GeneQuerySet,oldID, "Uniprot", unfoundIds,logs,taxonomyId); 
 	HashSet<String> new_query_set = new HashSet<String>();
 	for (String key : first_step.keySet()) {
 		new_query_set.addAll(first_step.get(key));
 	}
 	
-	second_step = convertUniprotWebservice(new_query_set,"Uniprot", newID, unfoundIds,logs);
+	second_step = convertUniprotWebservice(new_query_set,"Uniprot", newID, unfoundIds,logs, taxonomyId);
 	
 	//create a translations from the first set to the second set
 	merged_set = new HashMap<String, Set<String>>();
@@ -543,7 +543,7 @@ public HashMap<String, Set<String>> convertNCBIUniprot(Set GeneQuerySet,String o
  * logs - a hashmap of all the messages that we want logged in the log file.
  */
 public HashMap<String, Set<String>> convertUniprotWebservice(Set GeneQuerySet,String oldID,String newID , 
-		HashSet<String> unfoundIds, HashMap<String, logInfo> logs){
+		HashSet<String> unfoundIds, HashMap<String, logInfo> logs, int taxonomyId){
 
 	    HashMap<String, Set<String>> new_genes = null;
 	    HashSet<String> queryset = new HashSet<String>();
@@ -551,7 +551,7 @@ public HashMap<String, Set<String>> convertUniprotWebservice(Set GeneQuerySet,St
 
 
 		try {
-			QueryUniprotWebservice uniprot_query = new QueryUniprotWebservice(oldID,newID, queryset);
+			QueryUniprotWebservice uniprot_query = new QueryUniprotWebservice(oldID,newID, queryset,taxonomyId);
 
 			new_genes = uniprot_query.runQuery("uploadlists");
 			
@@ -680,7 +680,7 @@ public HashMap<String, Set<String>> convert(Set GeneQuerySet,String oldID,String
 			additional_ids = convertNCBIUniprot(temp_unfoundIds,oldID,newID,unfoundIds,logs);
 		else{
 			try {
-				QueryUniprotWebservice uniprot_query = new QueryUniprotWebservice(oldID, newID, temp_unfoundIds);
+				QueryUniprotWebservice uniprot_query = new QueryUniprotWebservice(oldID, newID, temp_unfoundIds,taxonomyId);
 
 				additional_ids = uniprot_query.runQuery("uploadlists");
 			
