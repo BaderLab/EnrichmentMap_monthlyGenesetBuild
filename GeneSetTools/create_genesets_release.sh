@@ -263,6 +263,13 @@ function translate_gmt_UniProt {
 	
 	fi
 
+
+	if [[ $3 == "symbol" ]] ; then
+	
+		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "UniProt" 2>> translate_process.err 1>> translate_output.txt 
+		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "entrezgene" 2>> translate_process.err 1>> translate_output.txt 
+	fi
+
 	if [[ $3 == "MGI" ]] ; then
 	
 		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "symbol" 2>> translate_process.err 1>> translate_output.txt 
@@ -742,17 +749,17 @@ done
 mv *.xml drugbank.xml
 
 #process the drugbank file - all drugs
-perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_all_symbol.gmt -i genename 2>>drugbankparse.err
+#perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_all_symbol.gmt -i genename 2>>drugbankparse.err
 #process the drugbank file - approved drugs
-perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_approved_symbol.gmt -d "approved" -i genename  2>>drugbankparse.err
+#perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_approved_symbol.gmt -d "approved" -i genename  2>>drugbankparse.err
 #process the drugbank file - illicit drugs
-perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_illicit_symbol.gmt -d "illicit" -i genename  2>>drugbankparse.err
+#perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_illicit_symbol.gmt -d "illicit" -i genename  2>>drugbankparse.err
 #process the drugbank file - experimental drugs
-perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_experimental_symbol.gmt -d "experimental" -i genename  2>>drugbankparse.err
+#perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_experimental_symbol.gmt -d "experimental" -i genename  2>>drugbankparse.err
 #process the drugbank file - nutraceutical drugs
-perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_nutraceutical_symbol.gmt -d "nutraceutical" -i genename  2>>drugbankparse.err
+#perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_nutraceutical_symbol.gmt -d "nutraceutical" -i genename  2>>drugbankparse.err
 #process the drugbank file - small molecule drugs
-perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_smallmolecule_symbol.gmt -d "small molecule" -i genename  2>>drugbankparse.err
+#perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_smallmolecule_symbol.gmt -d "small molecule" -i genename  2>>drugbankparse.err
 
 #UniProt computation
 #process the drugbank file - all drugs
@@ -1053,8 +1060,8 @@ for file in *.mgi*; do
 	process_gaf $file "10090" "cc" ${GOOBO}
 	process_gaf_noiea  $file "10090" "cc" ${GOOBO}
 done
-for file in *.gmt; do
-	translate_gmt_UniProt $file "10090" "MGI"
+for file in *_symbol.gmt; do
+	translate_gmt_UniProt $file "10090" "symbol"
 done
 
 #create  the compilation of all branches
@@ -1338,7 +1345,7 @@ for file in *.rgd*; do
 	process_gaf_noiea  $file "10116" "cc" ${GOOBO}
 done
 for file in *.gmt; do
-	translate_gmt_UniProt $file "10116" "RGD"
+	translate_gmt_UniProt $file "10116" "symbol"
 done
 
 #create  the compilation of all branches
@@ -1480,15 +1487,15 @@ getstats ${SYMBOL} "symbol" ${RatSOURCE}
 
 
 #copy the files over the webserver
-#mkdir /mnt/build/EM_Genesets/$dir_name
-#cp -R ${CUR_RELEASE}/Human /mnt/build/EM_Genesets/$dir_name/
-#cp -R ${CUR_RELEASE}/Mouse /mnt/build/EM_Genesets/$dir_name/
-#cp -R ${CUR_RELEASE}/Rat /mnt/build/EM_Genesets/$dir_name/
+mkdir /mnt/build/EM_Genesets/$dir_name
+cp -R ${CUR_RELEASE}/Human /mnt/build/EM_Genesets/$dir_name/
+cp -R ${CUR_RELEASE}/Mouse /mnt/build/EM_Genesets/$dir_name/
+cp -R ${CUR_RELEASE}/Rat /mnt/build/EM_Genesets/$dir_name/
 
 #create a symbolic link to the latest download indicating it as current_release
-#rm /mnt/build/EM_Genesets/current_release
-#cd /mnt/build/EM_Genesets
-#ln -sf $dir_name/ current_release
+rm /mnt/build/EM_Genesets/current_release
+cd /mnt/build/EM_Genesets
+ln -sf $dir_name/ current_release
 
 #rm -rf ${CUR_RELEASE}
 
