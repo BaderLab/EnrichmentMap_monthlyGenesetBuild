@@ -20,4 +20,5 @@ LOGFILE=`cat ${ABSPATH}/${BUILDLOG}`
 #./send_mail.py   "Geneset file build log"  "${LOGFILE}"   auto.geneset.build@gmail.com ruth.isserlin@utoronto.ca smtp.gmail.com geneset-cron
 
 #sending log file via gmail no longer works - send log file through slack.
-curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"${LOGFILE}"'"}' `cat ${ABSPATH}/slack_webhook`
+#curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"${LOGFILE}"'"}' `cat ${ABSPATH}/slack_webhook`
+curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"Finished Geneset build - see log file for details"'"}' `cat ${ABSPATH}/slack_webhook`
