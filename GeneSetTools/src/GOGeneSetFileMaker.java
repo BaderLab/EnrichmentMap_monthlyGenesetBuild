@@ -263,6 +263,7 @@ public class GOGeneSetFileMaker {
         HashMap<String, HashSet<String>> file_gs = new HashMap<String, HashSet<String>>();
         HashMap<String, HashSet<String>> file_gs_symbol = new HashMap<String, HashSet<String>>();
 
+	String fQueryFilename_symbol = "";
         //open GMT file
         if(gafFilename != null || !gafFilename.equalsIgnoreCase("")){
             TextFileReader reader = new TextFileReader(gafFilename);
@@ -397,15 +398,18 @@ public class GOGeneSetFileMaker {
         }
 		else
 			fQueryFilename = fTaxonomyId + "_GO";
-
-        if(exclude)
+	
+        if(exclude){
             fQueryFilename = fQueryFilename + "_" + fBranch + "_" + noiea +"_"+id+".gmt";
-        else
+            fQueryFilename_symbol = fQueryFilename + "_" + fBranch + "_" + noiea +"_"+id+"_symbol.gmt";
+	} else{
             fQueryFilename = fQueryFilename + "_" + fBranch + "_"+ withiea + "_"+id+".gmt";
-            }
+            fQueryFilename_symbol = fQueryFilename + "_" + fBranch + "_"+ withiea + "_"+id+"_symbol.gmt";
+	}
+	}
 
             PrintWriter writer = new PrintWriter(new File(fQueryFilename));
-            PrintWriter writer_symbol = new PrintWriter(new File(fQueryFilename + "_symbol"));
+            PrintWriter writer_symbol = new PrintWriter(new File(fQueryFilename_symbol));
             //HashMap<String,String> goterms = getGoterms();
 
             //use OBO instead of DB
