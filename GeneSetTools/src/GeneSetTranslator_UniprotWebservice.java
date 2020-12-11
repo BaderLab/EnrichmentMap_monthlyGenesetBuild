@@ -108,7 +108,7 @@ public class GeneSetTranslator_UniprotWebservice {
 
        if(newID.equalsIgnoreCase("Uniprot")){
        		ensembl_newID = "UniProt ID";
-		newID_print = "uniprot";
+		newID_print = "UniProt";
        }else if(newID.equalsIgnoreCase("symbol")){
 		ensembl_newID = "Gene Name";
 		newID_print = "symbol";
@@ -306,7 +306,7 @@ public class GeneSetTranslator_UniprotWebservice {
                             HashSet<String> unfoundIds, HashMap<String, logInfo> logs,GMTParameters params)throws IOException{
         //open output file
         String baseFilename = gmt_filename.split(".gmt")[0];
-        String id = newID_print.toLowerCase();
+        String id = newID_print;  //.toLowerCase();
 
         //if the baseFileName has the old id in the name then take it out
         String baseFilename_nooldid = "";
