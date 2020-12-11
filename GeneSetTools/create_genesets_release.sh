@@ -885,7 +885,14 @@ for file in *.goa*; do
 	process_gaf $file "9606" "cc" ${GOOBO}
 	process_gaf_noiea  $file "9606" "cc" ${GOOBO}
 done
-for file in *.gmt; do
+
+#GO with create two files _UniProt.gmt and _Uniprot_symbol.gmt
+#before going on move all the _symbol.gmt to .gmt_symbol
+for file in *UniProt_symbol.gmt; do
+	mv $file ${file}_symbol
+done
+
+for file in *UniProt.gmt; do
 	translate_gmt_UniProt $file "9606" "UniProt"
 done
 
@@ -1083,7 +1090,8 @@ cat *UniProt_summary.log > ${UNIPROT}/${GO}/Mouse_GO_UniProt_translation_summary
 
 cp *symbol.gmt ${SYMBOL}/${GO}
 #create report of translations
-cat *UniProt_summary.log > ${UNIPROT}/${GO}/Mouse_GO_UniProt_translation_summary.log
+#there are no translation logs for mouse.
+#cat *symbol_summary.log > ${SYMBOL}/${GO}/Mouse_GO_symbol_translation_summary.log
 
 
 #create a directory will all the gmt from human we want to convert to mouse
