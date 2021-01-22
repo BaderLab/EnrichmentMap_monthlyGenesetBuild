@@ -291,6 +291,13 @@ function translate_gmt_UniProt {
 function convert_gmt {
 	java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar convertGeneSets --gmt $1 --homology ${TOOLDIR}/testFiles/homologene.data --newtaxid $2 --outfile ${3}_${1//[[:Human:]]} 2>> convert_process.err 1>> convert_output.txt 
 }
+# argument 1 - gmt file name
+# argument 2 - taxonomy id
+# argument 3 - taxonomy name
+function convert_gmt_woodchuck {
+	java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar convertGeneSets --gmt $1 --homology ${TOOLDIR}/woodchuck_gmt_conversion/homologroupHumanWoodchuck_addedcol.tsv --newtaxid $2 --outfile ${3}_${1//[[:Human:]]} 2>> convert_process.err 1>> convert_output.txt 
+}
+
 
 #exclude Inferred by electronic annotations
 # argument 1 - gaf file name
@@ -1139,7 +1146,7 @@ mkdir ${DRUGS}
 mv *DrugBank* ${DRUGS}
 
 #copy all the pathway file - can't use the copy function because there are multiple pathway datasets in this set. 
-cp Mouse*_entrezgene.gmt ${EG}/${PATHWAYS}/
+cp Mouse*_Entrezgene.gmt ${EG}/${PATHWAYS}/
 cp Mouse*_UniProt.gmt ${UNIPROT}/${PATHWAYS}/
 cp Mouse*_symbol.gmt ${SYMBOL}/${PATHWAYS}/
 
@@ -1159,7 +1166,7 @@ fi
 files=$(ls *symbol_summary.log 2> /dev/null | wc -l)
 if [ $files != 0 ] ; then
 	cat *symbol_summary.log > Mouse_translatedPathways_symbol_translation_summary.log
-	cp $Mouse_translatedPathways_symbol_translation_summary.log ${SYMBOL}/${PATHWAYS}/Mouse_translatedPathways_symbol_translation_summary.log
+	cp Mouse_translatedPathways_symbol_translation_summary.log ${SYMBOL}/${PATHWAYS}/Mouse_translatedPathways_symbol_translation_summary.log
 fi
 
 #copy the drugbank converted files
@@ -1419,7 +1426,7 @@ mkdir ${DRUGS}
 mv *DrugBank* ${DRUGS}
 
 #copy all the pathway file - can't use the copy function because there are multiple pathway datasets in this set. 
-cp Rat*_entrezgene.gmt ${EG}/${PATHWAYS}/
+cp Rat*_Entrezgene.gmt ${EG}/${PATHWAYS}/
 cp Rat*_UniProt.gmt ${UNIPROT}/${PATHWAYS}/
 cp Rat*_symbol.gmt ${SYMBOL}/${PATHWAYS}/
 
@@ -1492,6 +1499,185 @@ getstats ${EG} "entrezgene" ${RatSOURCE}
 getstats ${UNIPROT} "UniProt" ${RatSOURCE}
 getstats ${SYMBOL} "symbol" ${RatSOURCE}
 
+#########################################################
+# Create Woodchuck Genesets.
+##########################################################
+#get the directory where the pathways to be converted are
+
+OUTPUTDIR=${CUR_RELEASE}/Woodchuck
+#UNIPROT=${OUTPUTDIR}/UniProt
+EG=${OUTPUTDIR}/entrezgene
+#SYMBOL=${OUTPUTDIR}/symbol
+WOODCHUCKSOURCE=${CUR_RELEASE}/SRC_Woodchuck
+VERSIONS=${CUR_RELEASE}/version_Woodchuck
+
+mkdir ${WOODCHUCKSOURCE}
+mkdir ${VERSIONS}
+#mkdir -p ${UNIPROT}
+mkdir -p ${EG}
+#mkdir -p ${SYMBOL}
+
+#createDivisionDirs ${UNIPROT}
+createDivisionDirs ${EG}
+#createDivisionDirs ${SYMBOL}
+
+#process GO
+GOSRC=${WOODCHUCKSOURCE}/GO
+mkdir ${GOSRC}
+cd ${GOSRC}
+
+
+
+
+#create a directory will all the gmt from human we want to convert to mouse
+CONV=${WOODCHUCKSOURCE}/ToBeConverted
+mkdir ${CONV}
+
+#copy the following files to mouse directory to be converted from human to mouse
+cd ${CONV}
+cp ${HUMANGMTS}/${PATHWAYS}/*NetPath*.gmt ./
+cp ${HUMANGMTS}/${PATHWAYS}/*IOB*.gmt ./
+cp ${HUMANGMTS}/${PATHWAYS}/*MSig*.gmt ./
+cp ${HUMANGMTS}/${PATHWAYS}/*NCI*.gmt ./
+cp ${HUMANGMTS}/${PATHWAYS}/*HumanCyc*.gmt ./
+cp ${HUMANGMTS}/${PATHWAYS}/*Wiki*.gmt ./
+#cp ${HUMANGMTS}/${PATHWAYS}/*KEGG*.gmt ./
+cp ${HUMANGMTS}/${PATHWAYS}/*Panther*.gmt ./
+cp ${HUMANGMTS}/${PATHWAYS}/*Reactome*.gmt ./
+
+#copy the human drugs files
+cp ${HUMANGMTS}/${DRUGS}/*DrugBank*.gmt ./
+
+#copy the GO files
+cp ${HUMANGMTS}/${GO}/Human_GO*.gmt ./
+
+#copy all version into mouse_versions directory.
+cp ${HUMANVERSIONS}/NetPath.txt ${VERSIONS}
+cp ${HUMANVERSIONS}/IOB.txt ${VERSIONS}
+cp ${HUMANVERSIONS}/msigdb_path.txt ${VERSIONS}
+cp ${HUMANVERSIONS}/NCI_Nature.txt ${VERSIONS}
+cp ${HUMANVERSIONS}/humancyc.txt ${VERSIONS}
+cp ${HUMANVERSIONS}/KEGG.txt ${VERSIONS}
+cp ${HUMANVERSIONS}/Panther.txt ${VERSIONS}
+cp ${HUMANVERSIONS}/WikiPathways.txt ${VERSIONS}
+cp ${HUMANVERSIONS}/GO_Human.txt ${VERSIONS}
+
+#go through each of the gmt file and convert to mouse entrez genes
+for file in Human*.gmt ; do
+	convert_gmt_woodchuck $file "9995" "Woodchuck"
+done
+
+#copy all the GO pathways over to the GO directory
+
+mv Woodchuck_Human_GO* ${EG}/${GO}/
+
+#mv all the drugbank files to a separate directory
+mkdir ${DRUGS}
+mv *DrugBank* ${DRUGS}
+
+#copy all the pathway file - can't use the copy function because there are multiple pathway datasets in this set. 
+cp Woodchuck*_Entrezgene.gmt ${EG}/${PATHWAYS}/
+#cp Mouse*_UniProt.gmt ${UNIPROT}/${PATHWAYS}/
+#cp Mouse*_symbol.gmt ${SYMBOL}/${PATHWAYS}/
+
+#concatenate all the translation summaries	
+files=$(ls *10090_conversion.log 2> /dev/null | wc -l)
+if [ $files != 0 ] ; then
+	cat *9995_conversion.log > Woodchuck_translatedPathways_entrezgene_translation_summary.log
+	cp Woodchuck_translatedPathways_entrezgene_translation_summary.log ${EG}/${PATHWAYS}/Woodchuck_translatedPathways_Entrezgene_translation_summary.log
+fi
+	
+#files=$(ls *UniProt_summary.log 2> /dev/null | wc -l)
+#if [ $files != 0 ] ; then
+#	cat *UniProt_summary.log > Woodchuck_translatedPathways_UniProt_translation_summary.log
+#	cp Woodchuck_translatedPathways_UniProt_translation_summary.log ${UNIPROT}/${PATHWAYS}/Woodchuck_translatedPathways_UniProt_translation_summary.log
+#fi
+		
+#files=$(ls *symbol_summary.log 2> /dev/null | wc -l)
+#if [ $files != 0 ] ; then
+#	cat *symbol_summary.log > Woodchuck_translatedPathways_symbol_translation_summary.log
+#	cp Woodchuck_translatedPathways_symbol_translation_summary.log ${SYMBOL}/${PATHWAYS}/Woodchuck_translatedPathways_symbol_translation_summary.log
+#fi
+
+#copy the drugbank converted files
+cd ${DRUGS}
+#copy all the pathway file - can't use the copy function because there are multiple pathway datasets in this set. 
+cp Woodchuck*_entrezgene.gmt ${EG}/${DRUGS}/
+#cp Woodchuck*_UniProt.gmt ${UNIPROT}/${DRUGS}/
+#cp Woodchuck*_symbol.gmt ${SYMBOL}/${DRUGS}/
+
+#concatenate all the translation summaries	
+files=$(ls *9995_conversion.log 2> /dev/null | wc -l)
+if [ $files != 0 ] ; then
+	cat *9995_conversion.log > Woodchuck_translatedDrugs_entrezgene_translation_summary.log
+	cp Woodchuck_translatedDrugs_entrezgene_translation_summary.log ${EG}/${DRUGS}/Woodchuck_translatedDrugs_Entrezgene_translation_summary.log
+fi
+	
+#files=$(ls *UniProt_summary.log 2> /dev/null | wc -l)
+#if [ $files != 0 ] ; then
+#	cat *UniProt_summary.log > Woodchuck_translatedDrugs_UniProt_translation_summary.log
+#	cp Woodchuck_translatedDrugs_UniProt_translation_summary.log ${UNIPROT}/${DRUGS}/Woodchuck_translatedDrugs_UniProt_translation_summary.log
+#fi
+		
+#files=$(ls *symbol_summary.log 2> /dev/null | wc -l)
+#if [ $files != 0 ] ; then
+#	cat *symbol_summary.log > Woodchuck_translatedDrugs_symbol_translation_summary.log
+#	cp Woodchuck_translatedDrugs_symbol_translation_summary.log ${SYMBOL}/${DRUGS}/Woodchuck_translatedDrugs_symbol_translation_summary.log
+#fi
+
+
+#compile all the different versions
+cd ${VERSIONS}
+cat *.txt > ${OUTPUTDIR}/${dir_name}_versions.txt
+
+#create all the different distributions
+cd ${EG}/${PATHWAYS}
+cat *.gmt > ../Woodchuck_AllPathways_${dir_name}_entrezgene.gmt
+cd ${EG}/${GO}
+cat ../Woodchuck_AllPathways_${dir_name}_entrezgene.gmt Woodchuck_GOALL_${WITHIEA}_${dir_name}_entrezgene.gmt > ../Woodchuck_GO_AllPathways_${WITHIEA}_${dir_name}_entrezgene.gmt
+cat ../Woodchuck_AllPathways_${dir_name}_entrezgene.gmt Woodchuck_GOALL_${NOIEA}_${dir_name}_entrezgene.gmt > ../Woodchuck_GO_AllPathways_${NOIEA}_${dir_name}_entrezgene.gmt
+
+#create two new all pathways files with GOBP included
+cat ../Woodchuck_AllPathways_${dir_name}_entrezgene.gmt Woodchuck_GO_bp_${WITHIEA}_entrezgene.gmt > ../Woodchuck_GOBP_AllPathways_${WITHIEA}_${dir_name}_entrezgene.gmt
+cat ../Woodchuck_AllPathways_${dir_name}_entrezgene.gmt Woodchuck_GO_bp_${NOIEA}_entrezgene.gmt > ../Woodchuck_GOBP_AllPathways_${NOIEA}_${dir_name}_entrezgene.gmt
+
+
+#merge all the summaries
+mergesummaries ${EG} entrezgene
+
+#cd ${SYMBOL}/${PATHWAYS}
+#cat *.gmt > ../Woodchuck_AllPathways_${dir_name}_symbol.gmt
+#cd ${SYMBOL}/${GO}
+#cat ../Woodchuck_AllPathways_${dir_name}_symbol.gmt Woodchuck_GOALL_${WITHIEA}_${dir_name}_symbol.gmt > ../Woodchuck_GO_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
+#cat ../Woodchuck_AllPathways_${dir_name}_symbol.gmt Woodchuck_GOALL_${NOIEA}_${dir_name}_symbol.gmt > ../Woodchuck_GO_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
+
+#create two new all pathways files with GOBP included
+#cat ../Woodchuck_AllPathways_${dir_name}_symbol.gmt Woodchuck_GO_bp_${WITHIEA}_symbol.gmt > ../Woodchuck_GOBP_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
+#cat ../Woodchuck_AllPathways_${dir_name}_symbol.gmt Woodchuck_GO_bp_${NOIEA}_symbol.gmt > ../Woodchuck_GOBP_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
+
+
+#merge all the summaries
+#mergesummaries ${SYMBOL} symbol
+
+#cd ${UNIPROT}/${PATHWAYS}
+#cat *.gmt > ../Woodchuck_AllPathways_${dir_name}_UniProt.gmt
+#cd ${UNIPROT}/${GO}
+#cat ../Woodchuck_AllPathways_${dir_name}_UniProt.gmt Woodchuck_GOALL_${WITHIEA}_${dir_name}_UniProt.gmt > ../Woodchuck_GO_AllPathways_${WITHIEA}_${dir_name}_UniProt.gmt
+#cat ../Woodchuck_AllPathways_${dir_name}_UniProt.gmt Woodchuck_GOALL_${NOIEA}_${dir_name}_UniProt.gmt > ../Woodchuck_GO_AllPathways_${NOIEA}_${dir_name}_UniProt.gmt
+
+#create two new all pathways files with GOBP included
+#cat ../Woodchuck_AllPathways_${dir_name}_UniProt.gmt Woodchuck_GO_bp_${WITHIEA}_UniProt.gmt > ../Woodchuck_GOBP_AllPathways_${WITHIEA}_${dir_name}_UniProt.gmt
+#cat ../Woodchuck_AllPathways_${dir_name}_UniProt.gmt Woodchuck_GO_bp_${NOIEA}_UniProt.gmt > ../Woodchuck_GOBP_AllPathways_${NOIEA}_${dir_name}_UniProt.gmt
+
+
+#merge all the summaries
+#mergesummaries ${UNIPROT} UniProt
+
+#create the stats summary
+getstats ${EG} "entrezgene" ${WOODCHUCKSOURCE}
+#getstats ${UNIPROT} "UniProt" ${WOODCHUCKSOURCE}
+#getstats ${SYMBOL} "symbol" ${WOODCHUCKSOURCE}
+
 
 
 #copy the files over the webserver
@@ -1499,6 +1685,7 @@ mkdir /mnt/build/EM_Genesets/$dir_name
 cp -R ${CUR_RELEASE}/Human /mnt/build/EM_Genesets/$dir_name/
 cp -R ${CUR_RELEASE}/Mouse /mnt/build/EM_Genesets/$dir_name/
 cp -R ${CUR_RELEASE}/Rat /mnt/build/EM_Genesets/$dir_name/
+cp -R ${CUR_RELEASE}/Woodchuck /mnt/build/EM_Genesets/$dir_name/
 
 #create a symbolic link to the latest download indicating it as current_release
 rm /mnt/build/EM_Genesets/current_release
