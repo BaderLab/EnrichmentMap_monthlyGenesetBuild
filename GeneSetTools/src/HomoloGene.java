@@ -21,7 +21,10 @@ public class HomoloGene {
 
     private Integer taxid;
 
-    private Integer entrezgeneid;
+    //In order to use with woodchuck which doesn't have entrezgene ids we want to 
+    // convert to their native ids which aren't integers.  Change this to be a STring
+    // eventhough for other species it is integer
+    private String entrezgeneid;
 
     private String symbol;
 
@@ -29,7 +32,7 @@ public class HomoloGene {
 
     private String accession;
 
-    public HomoloGene(Integer homologGroup, Integer taxid, Integer entrezgeneid, String symbol, Integer gi, String accession) {
+    public HomoloGene(Integer homologGroup, Integer taxid, String entrezgeneid, String symbol, Integer gi, String accession) {
         this.homologGroup = homologGroup;
         this.taxid = taxid;
         this.entrezgeneid = entrezgeneid;
@@ -54,11 +57,11 @@ public class HomoloGene {
         this.taxid = taxid;
     }
 
-    public Integer getEntrezgeneid() {
+    public String getEntrezgeneid() {
         return entrezgeneid;
     }
 
-    public void setEntrezgeneid(Integer entrezgeneid) {
+    public void setEntrezgeneid(String entrezgeneid) {
         this.entrezgeneid = entrezgeneid;
     }
 
