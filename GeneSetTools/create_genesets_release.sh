@@ -1634,12 +1634,12 @@ cat *.txt > ${OUTPUTDIR}/${dir_name}_versions.txt
 cd ${EG}/${PATHWAYS}
 cat *.gmt > ../Woodchuck_AllPathways_${dir_name}_entrezgene.gmt
 cd ${EG}/${GO}
-cat ../Woodchuck_AllPathways_${dir_name}_entrezgene.gmt Woodchuck_GOALL_${WITHIEA}_${dir_name}_entrezgene.gmt > ../Woodchuck_GO_AllPathways_${WITHIEA}_${dir_name}_entrezgene.gmt
-cat ../Woodchuck_AllPathways_${dir_name}_entrezgene.gmt Woodchuck_GOALL_${NOIEA}_${dir_name}_entrezgene.gmt > ../Woodchuck_GO_AllPathways_${NOIEA}_${dir_name}_entrezgene.gmt
+cat ../Woodchuck_AllPathways_${dir_name}_entrezgene.gmt Woodchuck_Human_GOALL_${WITHIEA}_${dir_name}_entrezgene.gmt > ../Woodchuck_Human_GO_AllPathways_${WITHIEA}_${dir_name}_entrezgene.gmt
+cat ../Woodchuck_AllPathways_${dir_name}_entrezgene.gmt Woodchuck_Human_GOALL_${NOIEA}_${dir_name}_entrezgene.gmt > ../Woodchuck_Human_GO_AllPathways_${NOIEA}_${dir_name}_entrezgene.gmt
 
 #create two new all pathways files with GOBP included
-cat ../Woodchuck_AllPathways_${dir_name}_entrezgene.gmt Woodchuck_GO_bp_${WITHIEA}_entrezgene.gmt > ../Woodchuck_GOBP_AllPathways_${WITHIEA}_${dir_name}_entrezgene.gmt
-cat ../Woodchuck_AllPathways_${dir_name}_entrezgene.gmt Woodchuck_GO_bp_${NOIEA}_entrezgene.gmt > ../Woodchuck_GOBP_AllPathways_${NOIEA}_${dir_name}_entrezgene.gmt
+cat ../Woodchuck_AllPathways_${dir_name}_entrezgene.gmt Woodchuck_Human_GO_bp_${WITHIEA}_entrezgene.gmt > ../Woodchuck_Human_GOBP_AllPathways_${WITHIEA}_${dir_name}_entrezgene.gmt
+cat ../Woodchuck_AllPathways_${dir_name}_entrezgene.gmt Woodchuck_Human_GO_bp_${NOIEA}_entrezgene.gmt > ../Woodchuck_Human_GOBP_AllPathways_${NOIEA}_${dir_name}_entrezgene.gmt
 
 
 #merge all the summaries
