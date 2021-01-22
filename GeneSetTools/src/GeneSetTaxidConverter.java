@@ -60,7 +60,7 @@ public class GeneSetTaxidConverter {
 
          //also track the entrez gene id to the homolog group it belongs to
          //hashmap of eg to homolog group
-         HashMap<Integer, Integer> eg2homologgroup = new HashMap<Integer, Integer>();
+         HashMap<String, Integer> eg2homologgroup = new HashMap<String, Integer>();
 
         if(homolog_file != null || !homolog_file.equalsIgnoreCase("")){
             TextFileReader reader = new TextFileReader(homolog_file);
@@ -78,7 +78,7 @@ public class GeneSetTaxidConverter {
                 if(tokens.length == 6){
                     Integer homologGroup = Integer.parseInt(tokens[0]);
                     Integer taxid= Integer.parseInt(tokens[1]);
-                    Integer entrezgeneid= Integer.parseInt(tokens[2]);
+                    String entrezgeneid= tokens[2];
                     String symbol= tokens[3];
                     Integer gi= Integer.parseInt(tokens[4]);
                     String accession= tokens[5];
@@ -121,7 +121,7 @@ public class GeneSetTaxidConverter {
         int num_annotations_original = 0;
         int num_missing_annotations = 0;
 
-        HashSet<Integer> all_missing_genes = new HashSet<Integer>();
+        HashSet<String> all_missing_genes = new HashSet<String>();
 
         for(Iterator k = genesets.keySet().iterator(); k.hasNext(); ){
             String geneset_name = k.next().toString();
@@ -135,13 +135,13 @@ public class GeneSetTaxidConverter {
             num_annotations_original += geneset_genes.size();
 
             int num_missing_genes = 0;
-            HashSet<Integer> missing_egs = new HashSet<Integer>();
+            HashSet<String> missing_egs = new HashSet<String>();
 
             for(Iterator j = geneset_genes.iterator();j.hasNext();){
                 //get corresponding Gene from hash key
                 Integer current_key = (Integer)j.next();
                 if(hash2gene.containsKey(current_key)){
-                    Integer current_id = Integer.parseInt(hash2gene.get(current_key));
+                    String current_id = hash2gene.get(current_key);
 
                     //get the homolog of this gene
                     if(eg2homologgroup.containsKey(current_id)){
