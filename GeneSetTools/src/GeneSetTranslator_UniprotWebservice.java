@@ -196,9 +196,14 @@ public class GeneSetTranslator_UniprotWebservice {
 	// Depending on the number of files that we supplied we use a different method.
 	// If ensembl file has been supplied then convert with ensembl
 	HashMap<String, Set<String>> translations_id = null;
-	if( this.conversionFileName != null)
-		translations_id = convert(GeneQuerySet,oldID, newID, unfoundIds.get(oldID),logs.get(oldID)); 
-	else{
+	if( this.conversionFileName != null){
+		if(this.taxonomyId == 9995){
+		
+			translations_id = convertWoodchuck(GeneQuerySet,oldID, newID, unfoundIds.get(oldID),logs.get(oldID)); 
+		}else{
+			translations_id = convert(GeneQuerySet,oldID, newID, unfoundIds.get(oldID),logs.get(oldID)); 
+		}
+	}else{
 		if(oldID.equalsIgnoreCase("Uniprot"))
 			translations_id = convertUniprotWebservice(GeneQuerySet,oldID, newID, unfoundIds.get(oldID),logs.get(oldID),taxonomyId); 
 		else{
@@ -701,6 +706,69 @@ public HashMap<String, Set<String>> convert(Set GeneQuerySet,String oldID,String
 	}
 
 	    return new_genes_querysubset;
+    }
+
+/*
+ * convertWoodchuck - use the homologene like file to convert ids.  
+ * (Will only work for "entrezgene" to symbol (entrezgene in quotes as it isn't really
+ * an entrez gene id but it was an id used instead of EG in the fake homologene file supplied by Zoe.
+ *
+ * GeneQuerySet - a Set of identifiers that we need to convert
+ * oldID - the type of ID that we are converting from (expecting Uniprot, symbol or entrezgene)
+ * newID - the type of ID that we are converted to (exprecting Uniprot, symbol or entrezgene)
+ * unfoundIds - a hashset of strings that store the ids that are not converted.
+ * logs - a hashmap of all the messages that we want logged in the log file.
+ */
+public HashMap<String, Set<String>> convertWoodchuck(Set GeneQuerySet,String oldID,String newID , HashSet<String> unfoundIds, HashMap<String, logInfo> logs){
+    
+	    HashMap<String, Set<String>> new_genes = new HashMap<String, Set<String>>();
+    
+           //load in the conversion file
+	   try {
+		File myObj = new File(this.conversionFileName);
+		Scanner myReader = new Scanner(myObj);
+		int oldID_index = 2;
+		int newID_index = 3;
+		while (myReader.hasNextLine()) {
+			String data = myReader.nextLine();
+			
+			String[] current_row = data.split("\t");
+			//only add the ids that are associated with woodchuck (taxid = 9995)
+			if(current_row[1].equalsIgnoreCase("9995")){
+				//add the mapping
+				new_genes.put(current_row[oldID_index],new HashSet<>(Arrays.asList(current_row[newID_index])));
+				System.out.println("Added " + current_row[oldID_index] + " mapping to " + current_row[newID_index]);
+			}		
+		}
+		myReader.close();
+	} catch (FileNotFoundException e) {
+		System.out.println("An error occurred.");
+	        e.printStackTrace();
+	     }
+	System.out.println("There are "+ GeneQuerySet.size() + "query genes");
+
+	HashMap<String, Set<String>> new_genes_querysubset = new HashMap<String, Set<String>>();
+    	
+	HashSet<String> temp_unfoundIds = new HashSet<String>();
+
+	//Go through the query genes and see how many of then can be converted
+	for(Iterator k = GeneQuerySet.iterator(); k.hasNext();){
+		//get the current genes
+		String current_gene = (String) k.next();
+		//System.out.println("looking for: " + current_gene);
+		//if the gene is not found in the translations then add it to the unfound ids
+		if(!new_genes.containsKey(current_gene)){
+			temp_unfoundIds.add(current_gene);
+			//System.out.println("ID not found: " + current_gene);
+		} else{
+			new_genes_querysubset.put(current_gene, new_genes.get(current_gene));
+			//System.out.println("Current id found: " + current_gene + "maps to:" + new_genes.get(current_gene));
+		}
+	}
+
+
+	unfoundIds.addAll(temp_unfoundIds);
+	return new_genes_querysubset;
     }
 
   public HashSet<String> convertGeneSet(GeneSet current_set, HashMap<String, Set<String>> conversions, HashMap<Integer, String> hash2gene,
