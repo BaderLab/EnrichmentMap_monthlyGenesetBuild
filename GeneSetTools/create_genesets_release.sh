@@ -244,6 +244,18 @@ function translate_gmt {
 
 }
 
+#tranlsate ids just for woodchuck
+# argument 1 - gmt file name
+# argument 2 - taxonomy id
+# argument 3 - homologene like file of conversions
+function translate_gmt_woodchuck {
+
+		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID "entrezgene" --newID "symbol" --idconversionfile $3 2>> translate_process.err 1>> translate_output.txt 
+
+}
+
+
+
 # argument 1 - gmt file name
 # argument 2 - taxonomy id
 # argument 3 - id found in gmt file
@@ -1507,7 +1519,7 @@ getstats ${SYMBOL} "symbol" ${RatSOURCE}
 OUTPUTDIR=${CUR_RELEASE}/Woodchuck
 #UNIPROT=${OUTPUTDIR}/UniProt
 EG=${OUTPUTDIR}/entrezgene
-#SYMBOL=${OUTPUTDIR}/symbol
+SYMBOL=${OUTPUTDIR}/symbol
 WOODCHUCKSOURCE=${CUR_RELEASE}/SRC_Woodchuck
 VERSIONS=${CUR_RELEASE}/version_Woodchuck
 
@@ -1515,11 +1527,11 @@ mkdir ${WOODCHUCKSOURCE}
 mkdir ${VERSIONS}
 #mkdir -p ${UNIPROT}
 mkdir -p ${EG}
-#mkdir -p ${SYMBOL}
+mkdir -p ${SYMBOL}
 
 #createDivisionDirs ${UNIPROT}
 createDivisionDirs ${EG}
-#createDivisionDirs ${SYMBOL}
+createDivisionDirs ${SYMBOL}
 
 #process GO
 GOSRC=${WOODCHUCKSOURCE}/GO
@@ -1567,9 +1579,16 @@ for file in Human*.gmt ; do
 	convert_gmt_woodchuck $file "9995" "Woodchuck"
 done
 
+#translate all the gmt files to symbols
+for file in Woodchuck_Human*.gmt ; do
+	translate_gmt_woodchuck $file "9995" ${TOOLDIR}/woodchuck_gmt_conversion/homologroupHumanWoodchuck_addedcol.tsv
+done
+
+
 #copy all the GO pathways over to the GO directory
 
-mv Woodchuck_Human_GO* ${EG}/${GO}/
+mv Woodchuck_Human_GO*gene.gmt ${EG}/${GO}/
+mv Woodchuck_Human_GO*_symbol.gmt ${SYMBOL}/${GO}/
 
 #mv all the drugbank files to a separate directory
 mkdir ${DRUGS}
@@ -1578,7 +1597,7 @@ mv *DrugBank* ${DRUGS}
 #copy all the pathway file - can't use the copy function because there are multiple pathway datasets in this set. 
 cp Woodchuck*_Entrezgene.gmt ${EG}/${PATHWAYS}/
 #cp Mouse*_UniProt.gmt ${UNIPROT}/${PATHWAYS}/
-#cp Mouse*_symbol.gmt ${SYMBOL}/${PATHWAYS}/
+cp Woodchuck*_symbol.gmt ${SYMBOL}/${PATHWAYS}/
 
 #concatenate all the translation summaries	
 files=$(ls *10090_conversion.log 2> /dev/null | wc -l)
@@ -1593,18 +1612,18 @@ fi
 #	cp Woodchuck_translatedPathways_UniProt_translation_summary.log ${UNIPROT}/${PATHWAYS}/Woodchuck_translatedPathways_UniProt_translation_summary.log
 #fi
 		
-#files=$(ls *symbol_summary.log 2> /dev/null | wc -l)
-#if [ $files != 0 ] ; then
-#	cat *symbol_summary.log > Woodchuck_translatedPathways_symbol_translation_summary.log
-#	cp Woodchuck_translatedPathways_symbol_translation_summary.log ${SYMBOL}/${PATHWAYS}/Woodchuck_translatedPathways_symbol_translation_summary.log
-#fi
+files=$(ls *symbol_summary.log 2> /dev/null | wc -l)
+if [ $files != 0 ] ; then
+	cat *symbol_summary.log > Woodchuck_translatedPathways_symbol_translation_summary.log
+	cp Woodchuck_translatedPathways_symbol_translation_summary.log ${SYMBOL}/${PATHWAYS}/Woodchuck_translatedPathways_symbol_translation_summary.log
+fi
 
 #copy the drugbank converted files
 cd ${DRUGS}
 #copy all the pathway file - can't use the copy function because there are multiple pathway datasets in this set. 
 cp Woodchuck*_entrezgene.gmt ${EG}/${DRUGS}/
 #cp Woodchuck*_UniProt.gmt ${UNIPROT}/${DRUGS}/
-#cp Woodchuck*_symbol.gmt ${SYMBOL}/${DRUGS}/
+cp Woodchuck*_symbol.gmt ${SYMBOL}/${DRUGS}/
 
 #concatenate all the translation summaries	
 files=$(ls *9995_conversion.log 2> /dev/null | wc -l)
@@ -1619,11 +1638,11 @@ fi
 #	cp Woodchuck_translatedDrugs_UniProt_translation_summary.log ${UNIPROT}/${DRUGS}/Woodchuck_translatedDrugs_UniProt_translation_summary.log
 #fi
 		
-#files=$(ls *symbol_summary.log 2> /dev/null | wc -l)
-#if [ $files != 0 ] ; then
-#	cat *symbol_summary.log > Woodchuck_translatedDrugs_symbol_translation_summary.log
-#	cp Woodchuck_translatedDrugs_symbol_translation_summary.log ${SYMBOL}/${DRUGS}/Woodchuck_translatedDrugs_symbol_translation_summary.log
-#fi
+files=$(ls *symbol_summary.log 2> /dev/null | wc -l)
+if [ $files != 0 ] ; then
+	cat *symbol_summary.log > Woodchuck_translatedDrugs_symbol_translation_summary.log
+	cp Woodchuck_translatedDrugs_symbol_translation_summary.log ${SYMBOL}/${DRUGS}/Woodchuck_translatedDrugs_symbol_translation_summary.log
+fi
 
 
 #compile all the different versions
@@ -1645,19 +1664,19 @@ cat ../Woodchuck_AllPathways_${dir_name}_entrezgene.gmt Woodchuck_Human_GO_bp_${
 #merge all the summaries
 mergesummaries ${EG} entrezgene
 
-#cd ${SYMBOL}/${PATHWAYS}
-#cat *.gmt > ../Woodchuck_AllPathways_${dir_name}_symbol.gmt
-#cd ${SYMBOL}/${GO}
-#cat ../Woodchuck_AllPathways_${dir_name}_symbol.gmt Woodchuck_GOALL_${WITHIEA}_${dir_name}_symbol.gmt > ../Woodchuck_GO_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
-#cat ../Woodchuck_AllPathways_${dir_name}_symbol.gmt Woodchuck_GOALL_${NOIEA}_${dir_name}_symbol.gmt > ../Woodchuck_GO_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
+cd ${SYMBOL}/${PATHWAYS}
+cat *.gmt > ../Woodchuck_AllPathways_${dir_name}_symbol.gmt
+cd ${SYMBOL}/${GO}
+cat ../Woodchuck_AllPathways_${dir_name}_symbol.gmt Woodchuck_Human_GOALL_${WITHIEA}_${dir_name}_symbol.gmt > ../Woodchuck_Human_GO_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
+cat ../Woodchuck_AllPathways_${dir_name}_symbol.gmt Woodchuck_Human_GOALL_${NOIEA}_${dir_name}_symbol.gmt > ../Woodchuck_Human_GO_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
 
-#create two new all pathways files with GOBP included
-#cat ../Woodchuck_AllPathways_${dir_name}_symbol.gmt Woodchuck_GO_bp_${WITHIEA}_symbol.gmt > ../Woodchuck_GOBP_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
-#cat ../Woodchuck_AllPathways_${dir_name}_symbol.gmt Woodchuck_GO_bp_${NOIEA}_symbol.gmt > ../Woodchuck_GOBP_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
+create two new all pathways files with GOBP included
+cat ../Woodchuck_AllPathways_${dir_name}_symbol.gmt Woodchuck_Human_GO_bp_${WITHIEA}_symbol.gmt > ../Woodchuck_Huamn_GOBP_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
+cat ../Woodchuck_AllPathways_${dir_name}_symbol.gmt Woodchuck_Human_GO_bp_${NOIEA}_symbol.gmt > ../Woodchuck_Human_GOBP_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
 
 
 #merge all the summaries
-#mergesummaries ${SYMBOL} symbol
+mergesummaries ${SYMBOL} symbol
 
 #cd ${UNIPROT}/${PATHWAYS}
 #cat *.gmt > ../Woodchuck_AllPathways_${dir_name}_UniProt.gmt
@@ -1676,7 +1695,7 @@ mergesummaries ${EG} entrezgene
 #create the stats summary
 getstats ${EG} "entrezgene" ${WOODCHUCKSOURCE}
 #getstats ${UNIPROT} "UniProt" ${WOODCHUCKSOURCE}
-#getstats ${SYMBOL} "symbol" ${WOODCHUCKSOURCE}
+getstats ${SYMBOL} "symbol" ${WOODCHUCKSOURCE}
 
 
 
