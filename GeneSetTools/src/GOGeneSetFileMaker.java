@@ -399,12 +399,12 @@ public class GOGeneSetFileMaker {
 		else
 			fQueryFilename = fTaxonomyId + "_GO";
 	
-        if(exclude){
-            fQueryFilename = fQueryFilename + "_" + fBranch + "_" + noiea +"_"+id+".gmt";
+        if(exclude){    
             fQueryFilename_symbol = fQueryFilename + "_" + fBranch + "_" + noiea +"_"+id+"_symbol.gmt";
-	} else{
-            fQueryFilename = fQueryFilename + "_" + fBranch + "_"+ withiea + "_"+id+".gmt";
+		fQueryFilename = fQueryFilename + "_" + fBranch + "_" + noiea +"_"+id+".gmt";
+	} else{    
             fQueryFilename_symbol = fQueryFilename + "_" + fBranch + "_"+ withiea + "_"+id+"_symbol.gmt";
+		fQueryFilename = fQueryFilename + "_" + fBranch + "_"+ withiea + "_"+id+".gmt";
 	}
 	}
 
