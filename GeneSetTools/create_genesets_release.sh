@@ -122,7 +122,7 @@ function download_HPO_data {
 	echo "[Downloading current Human Phenotype data]"
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Human Phenotypes data"'"}' `cat ${TOOLDIR}/slack_webhook`
         #URL="http://compbio.charite.de/hudson/job/hpo.annotations.monthly/lastStableBuild/artifact/annotation/ALL_SOURCES_ALL_FREQUENCIES_genes_to_phenotype.txt"
-	URL="http://compbio.charite.de/jenkins/job/hpo.annotations.monthly/lastStableBuild/artifact/annotation/ALL_SOURCES_ALL_FREQUENCIES_genes_to_phenotype.txt"
+	URL="http://purl.obolibrary.org/obo/hp/hpoa/genes_to_phenotype.txt"
 	curl ${URL} -o ${DISEASESRC}/genes_to_phenotype.txt -s
 	get_webfile_version ${URL} "Human_Phenotype"
 
@@ -132,10 +132,11 @@ function download_HPO_data {
 	#URL="http://compbio.charite.de/svn/hpo/trunk/src/ontology/"
 	#curl ${URL}/human-phenotype-ontology.obo -o ${DISEASESRC}/human-phenotype-ontology.obo -s  -w "HPO (obo) : HTTP code - %{http_code};time:%{time_total} millisec; size:%{size_download} Bytes\n"
         #URL="http://compbio.charite.de/jenkins/job/hpo/lastStableBuild/artifact/hp"
-	URL="https://raw.githubusercontent.com/obophenotype/human-phenotype-ontology/master"
 
-	curl ${URL}/hp.obo -o ${DISEASESRC}/human-phenotype-ontology.obo -s 
-	get_webfile_version ${URL}/hp.obo "Human_phenotype_OBO_FILE"
+	URL="https://raw.githubusercontent.com/obophenotype/human-phenotype-ontology/master/hp.obo"
+
+	curl ${URL} -o ${DISEASESRC}/human-phenotype-ontology.obo -s 
+	get_webfile_version ${URL} "Human_phenotype_OBO_FILE"
 
 }
 
@@ -1701,16 +1702,16 @@ getstats ${SYMBOL} "symbol" ${WOODCHUCKSOURCE}
 
 
 #copy the files over the webserver
-#mkdir /mnt/build/EM_Genesets/$dir_name
-#cp -R ${CUR_RELEASE}/Human /mnt/build/EM_Genesets/$dir_name/
-#cp -R ${CUR_RELEASE}/Mouse /mnt/build/EM_Genesets/$dir_name/
-#cp -R ${CUR_RELEASE}/Rat /mnt/build/EM_Genesets/$dir_name/
-#cp -R ${CUR_RELEASE}/Woodchuck /mnt/build/EM_Genesets/$dir_name/
+mkdir /mnt/build/EM_Genesets/$dir_name
+cp -R ${CUR_RELEASE}/Human /mnt/build/EM_Genesets/$dir_name/
+cp -R ${CUR_RELEASE}/Mouse /mnt/build/EM_Genesets/$dir_name/
+cp -R ${CUR_RELEASE}/Rat /mnt/build/EM_Genesets/$dir_name/
+cp -R ${CUR_RELEASE}/Woodchuck /mnt/build/EM_Genesets/$dir_name/
 
 #create a symbolic link to the latest download indicating it as current_release
-#rm /mnt/build/EM_Genesets/current_release
-#cd /mnt/build/EM_Genesets
-#ln -sf $dir_name/ current_release
+rm /mnt/build/EM_Genesets/current_release
+cd /mnt/build/EM_Genesets
+ln -sf $dir_name/ current_release
 
 #rm -rf ${CUR_RELEASE}
 
