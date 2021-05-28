@@ -100,9 +100,9 @@ function download_GOhuman_data {
 	#get the obo file from the gene ontology website
 	echo "[Downloading current GO OBO file]"
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Go OBO data"'"}' `cat ${TOOLDIR}/slack_webhook`
-	URL="ftp://ftp.geneontology.org/pub/go/ontology/obo_format_1_2/"
-	curl ${URL}/gene_ontology.1_2.obo -o ${GOSRC}/gene_ontology.1_2.obo -s 
-	get_webfile_version ${URL}/gene_ontology.1_2.obo "GO_OBO_FILE"
+	URL="http://current.geneontology.org/ontology"
+	curl ${URL}/go.obo -o ${GOSRC}/go.obo -s 
+	get_webfile_version ${URL}/go.obo "GO_OBO_FILE"
 
 
 }
@@ -893,7 +893,7 @@ done
 GOSRC=${SOURCE}/GO
 mkdir ${GOSRC}
 download_GOhuman_data
-GOOBO=${GOSRC}/gene_ontology.1_2.obo
+GOOBO=${GOSRC}/go.obo
 cd ${GOSRC}
 gunzip *.gz
 for file in *.goa*; do
@@ -1274,9 +1274,9 @@ function download_GORat_data {
 	echo "[Downloading current GO OBO file]"
 	
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Go Rat OBO"'"}' `cat ${TOOLDIR}/slack_webhook`
-	URL="ftp://ftp.geneontology.org/pub/go/ontology/obo_format_1_2/"
-	curl ${URL}/gene_ontology.1_2.obo -o ${GOSRC}/gene_ontology.1_2.obo -s 
-	get_webfile_version ${URL}/gene_ontology.1_2.obo "GO_OBO_FILE"
+	URL="http://current.geneontology.org/ontology"
+	curl ${URL}/go.obo -o ${GOSRC}/go.obo -s 
+	get_webfile_version ${URL}/go.obo "GO_OBO_FILE"
 
 }
 
@@ -1362,7 +1362,7 @@ GOSRC=${RatSOURCE}/GO
 mkdir ${GOSRC}
 download_GORat_data
 cd ${GOSRC}
-GOOBO=${GOSRC}/gene_ontology.1_2.obo
+GOOBO=${GOSRC}/go.obo
 gunzip *.gz
 for file in *.rgd*; do
 	process_gaf $file "10116" "bp" ${GOOBO}
@@ -1701,16 +1701,16 @@ getstats ${SYMBOL} "symbol" ${WOODCHUCKSOURCE}
 
 
 #copy the files over the webserver
-mkdir /mnt/build/EM_Genesets/$dir_name
-cp -R ${CUR_RELEASE}/Human /mnt/build/EM_Genesets/$dir_name/
-cp -R ${CUR_RELEASE}/Mouse /mnt/build/EM_Genesets/$dir_name/
-cp -R ${CUR_RELEASE}/Rat /mnt/build/EM_Genesets/$dir_name/
-cp -R ${CUR_RELEASE}/Woodchuck /mnt/build/EM_Genesets/$dir_name/
+#mkdir /mnt/build/EM_Genesets/$dir_name
+#cp -R ${CUR_RELEASE}/Human /mnt/build/EM_Genesets/$dir_name/
+#cp -R ${CUR_RELEASE}/Mouse /mnt/build/EM_Genesets/$dir_name/
+#cp -R ${CUR_RELEASE}/Rat /mnt/build/EM_Genesets/$dir_name/
+#cp -R ${CUR_RELEASE}/Woodchuck /mnt/build/EM_Genesets/$dir_name/
 
 #create a symbolic link to the latest download indicating it as current_release
-rm /mnt/build/EM_Genesets/current_release
-cd /mnt/build/EM_Genesets
-ln -sf $dir_name/ current_release
+#rm /mnt/build/EM_Genesets/current_release
+#cd /mnt/build/EM_Genesets
+#ln -sf $dir_name/ current_release
 
 #rm -rf ${CUR_RELEASE}
 
