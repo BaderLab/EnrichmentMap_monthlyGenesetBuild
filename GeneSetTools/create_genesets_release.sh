@@ -308,7 +308,7 @@ function convert_gmt {
 # argument 2 - taxonomy id
 # argument 3 - taxonomy name
 function convert_gmt_woodchuck {
-	java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar convertGeneSets --gmt $1 --homology ${TOOLDIR}/woodchuck_gmt_conversion/homologroupHumanWoodchuck_addedcol.tsv --newtaxid $2 --outfile ${3}_${1//[[:Human:]]} 2>> convert_process.err 1>> convert_output.txt 
+	java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar convertGeneSets --gmt $1 --homology ${TOOLDIR}/woodchuck_gmt_conversion/homologroupHumanWoodchuck_May29_2021_addedcol.tsv --newtaxid $2 --outfile ${3}_${1//[[:Human:]]} 2>> convert_process.err 1>> convert_output.txt 
 }
 
 
@@ -1583,7 +1583,7 @@ done
 
 #translate all the gmt files to symbols
 for file in Woodchuck_Human*.gmt ; do
-	translate_gmt_woodchuck $file "9995" ${TOOLDIR}/woodchuck_gmt_conversion/homologroupHumanWoodchuck_addedcol.tsv
+	translate_gmt_woodchuck $file "9995" ${TOOLDIR}/woodchuck_gmt_conversion/homologroupHumanWoodchuck_May29_2021_addedcol.tsv
 done
 
 
