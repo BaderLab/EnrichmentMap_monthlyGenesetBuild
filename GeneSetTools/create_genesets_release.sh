@@ -122,7 +122,8 @@ function download_HPO_data {
 	echo "[Downloading current Human Phenotype data]"
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Human Phenotypes data"'"}' `cat ${TOOLDIR}/slack_webhook`
         #URL="http://compbio.charite.de/hudson/job/hpo.annotations.monthly/lastStableBuild/artifact/annotation/ALL_SOURCES_ALL_FREQUENCIES_genes_to_phenotype.txt"
-	URL="http://purl.obolibrary.org/obo/hp/hpoa/genes_to_phenotype.txt"
+	#URL="http://purl.obolibrary.org/obo/hp/hpoa/genes_to_phenotype.txt"
+	URL="https://ci.monarchinitiative.org/view/hpo/job/hpo.annotations/lastSuccessfulBuild/artifact/rare-diseases/util/annotation/genes_to_phenotype.txt"
 	curl ${URL} -o ${DISEASESRC}/genes_to_phenotype.txt -s
 	get_webfile_version ${URL} "Human_Phenotype"
 
