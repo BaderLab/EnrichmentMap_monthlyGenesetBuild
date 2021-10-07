@@ -69,8 +69,11 @@ function download_reactome_data {
 function download_wikipathways_data {
 	echo "[Downloading current WikiPathways data]"
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current WikiPathways data"'"}' `cat ${TOOLDIR}/slack_webhook`
-	URL="http://data.wikipathways.org/current/gmt/"
-	FILE=`echo "cat //html/body/div/table/tbody/tr/td/a" |  xmllint --html --shell ${URL} | grep -o -E ">(.*$1.gmt)<" | sed -E 's/(<|>)//g'`
+	#URL="http://data.wikipathways.org/current/gmt/"
+	#FILE=`echo "cat //html/body/div/table/tbody/tr/td/a" |  xmllint --html --shell ${URL} | grep -o -E ">(.*$1.gmt)<" | sed -E 's/(<|>)//g'`
+	URL="https://wikipathways-data.wmcloud.org/current/gmt/"
+	#not elegant but the only way to pull out the file name is pull out the name between '> and < tokens.  Might brake in the future. (xmllint does not work with https 
+	FILE=`curl -s ${URL} |  grep -o -E ">(.*$1.gmt)<" | grep -o -P "(?<='>).*(?=<)"`
 	curl ${URL}/${FILE} -o ${WIKIPATHWAYS}/WikiPathways_${1}_entrezgene.gmt -s -L 
 	get_webfile_version ${URL}/${FILE} "WikiPathways"
 }
@@ -111,7 +114,8 @@ function download_GOhuman_data {
 function download_GOmouse_data {
 	echo "[Downloading current Go Mouse MGI  data]"
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Go Mouse MGI data"'"}' `cat ${TOOLDIR}/slack_webhook`
-	URL="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.mgi.gz?rev=HEAD"
+	#URL="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.mgi.gz?rev=HEAD"
+	URL="http://www.informatics.jax.org/downloads/reports/gene_association.mgi.gz"
 	curl $URL -o ${GOSRC}/gene_association.mgi.gz -s 
 	get_webfile_version ${URL} "GO_Mouse"
 }
@@ -1268,7 +1272,8 @@ getstats ${SYMBOL} "symbol" ${MOUSESOURCE}
 function download_GORat_data {
 	echo "[Downloading current Go Rat  data]"
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Go Rat data"'"}' `cat ${TOOLDIR}/slack_webhook`
-	URL="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.rgd.gz?rev=HEAD"
+	#URL="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.rgd.gz?rev=HEAD"
+	URL="http://current.geneontology.org/annotations/rgd.gaf.gz"
 	curl $URL -o ${GOSRC}/gene_association.rgd.gz -s 
 	get_webfile_version ${URL} "GO_Rat"
 
