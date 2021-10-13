@@ -1,0 +1,233 @@
+---
+title: "Geneset Growth Stats"
+output: html_document
+params:
+  species: Human
+  identifier: entrezgene
+  year: 2017
+---
+
+```{r load libraries, echo=FALSE}
+
+## Load in required libraries
+
+#install required R and bioconductor packages
+tryCatch(expr = { library("RCurl")}, 
+         error = function(e) {  install.packages("RCurl")}, 
+         finally = library("RCurl"))
+
+```
+
+
+```{r include=FALSE}
+#Download all the directory names from the downloads website.
+
+download_url = "http://download.baderlab.org/EM_Genesets/"
+
+#list all the files on the server
+filenames = getURL(download_url)
+tc = textConnection(filenames)
+contents = readLines(tc)
+close(tc)
+
+rx = gregexpr('(?<=<a href=\")(.*_.*_.*)(?=\">)',contents, perl = TRUE)
+download_directories = unlist(regmatches(contents, rx))
+download_directories <- download_directories [grep(download_directories,pattern = ".php",invert=TRUE)]
+```
+
+
+```{r message=FALSE, warning=FALSE,include=FALSE}
+
+get_summary_file <- function(species = "Human", identifier="entrezgene", year=2014) {
+      
+      
+      stats_summary_table <- c()
+      stats_summary_ggplot <- c()
+      
+      #get the summary files for each directory 
+      for(i in 1:length(download_directories )){
+             #only go back as far as December 2014
+          if(length(grep(download_directories[i], pattern=year )>0)){
+            break
+          }
+              current_directory = paste(download_url,download_directories [i], species,"/",sep="")
+            
+            #list all the files in this directory
+            current_filenames = getURL(current_directory)
+            tc = textConnection(current_filenames)
+            contents = readLines(tc)
+            close(tc)
+            
+            rx = gregexpr("(?<=<a href=\")(Summary_Gene.*.)(.txt)(?=\">)",
+              contents, perl = TRUE)
+            log_files = unlist(regmatches(contents, rx))
+            
+            current_log_file <- log_files[grep(log_files,pattern=identifier)]
+            
+            if(length(current_log_file) == 0 && length(log_files == 1)){
+              current_log_file = log_files
+            }
+            
+            dest_log_file <- file.path(getwd(),current_log_file )
+            
+            download.file(
+                paste(current_directory,current_log_file,sep=""),
+                destfile=dest_log_file,quiet = TRUE
+            )
+            
+            current_log_contents <- read.table(dest_log_file,header=FALSE,sep="\t",stringsAsFactors = FALSE,strip.white = TRUE)
+            current_log_contents <- current_log_contents[grep(current_log_contents[,1],pattern=".gmt"),]
+            #current_log_contents <- sapply(current_log_contents,FUN = function(x){strsplit(x,pattern=" ")})
+            
+            stats <- data.frame(gmt_file = tolower(sapply(current_log_contents,FUN = function(x){unlist(strsplit(x,split=" ")[[1]][2])})),
+                           num_sets = as.integer(sapply(current_log_contents,FUN = function(x){unlist(strsplit(x,split=" ")[[1]][1])})))
+            
+            rownames(stats) <- c()
+            
+            #replace the dates with nothing so they are comparable
+            stats[,1] <- gsub(stats[,1],pattern = tolower(substr(download_directories [i],1,nchar(download_directories [i])-1)),replacement = "")
+            
+            #make sure that stats table is unique (there is an issue with multiple rows being added)
+            stats <- aggregate(stats, by=list(stats$gmt_file),FUN=max)
+            
+            #get the date of this data
+            proper_date <- as.Date(download_directories [i],"%B_%d_%Y")
+            
+            #colnames(stats)[2] <- proper_date
+      
+            
+            if(i == 1){
+      
+              stats_summary_ggplot <- data.frame(stats, date = proper_date)
+              colnames(stats)[2] <- download_directories [i]
+              stats_summary_table <- stats
+            } else{
+              stats_summary_ggplot <- rbind(stats_summary_ggplot, 
+                                            data.frame(stats, date = proper_date))
+              colnames(stats)[2] <- download_directories [i]
+              merged_data <- merge(stats_summary_table, stats,by.x = 1, by.y=1,
+                                   all = TRUE)
+              stats_summary_table <- merged_data
+              
+            }
+      }
+      
+      return(stats_summary_ggplot)
+}
+```
+
+```{r  message=FALSE, warning=FALSE,include=FALSE}
+library(ggplot2)
+
+species = params$species
+identifier = params$identifier
+year = params$year
+
+#make a dir for the current figures
+figure_directory <- file.path( "figures",paste(species, identifier,year,
+"to",format(Sys.Date(),"%B_%Y"),sep="_"))
+
+if(!dir.exists(file.path(getwd(),figure_directory))){
+	dir.create(file.path(getwd(),figure_directory))
+}
+
+stats_summary_ggplot <- get_summary_file(species,identifier,year)
+
+overall_figure_filename <- "Overall_geneset_stats.png"
+png(file.path(getwd(), figure_directory, overall_figure_filename))
+
+ggplot(stats_summary_ggplot, aes(x=date, y=num_sets, group=gmt_file,color=gmt_file)) +
+    geom_line() +  
+        theme(legend.position = "right", 
+        legend.key.size = unit(0.25, 'cm'), #change legend key size
+        legend.key.height = unit(0.25, 'cm'), #change legend key height
+        legend.key.width = unit(0.25, 'cm'), #change legend key width
+        legend.title = element_text(size=9), #change legend title font size
+        legend.direction = "vertical",
+         legend.spacing = unit(0.04, "cm"),
+        legend.text = element_text(size=7)) + #change legend text font size
+       ggtitle(paste("Number of genesets over time for", species,"from", year, "- Present", sep = " " )) +
+  guides(colour = guide_legend(ncol = 1)) + 
+    ylab("Number of genesets") + xlab("time")
+
+dev.off()
+```
+
+![](`r file.path(".",figure_directory, overall_figure_filename)`)
+
+
+```{r include=FALSE}
+subset_go <- stats_summary_ggplot[grep(stats_summary_ggplot[,1],pattern = "go"),]
+
+GO_figure_filename <- "GO_geneset_stats.png"
+
+png(file.path(getwd(),figure_directory,GO_figure_filename))
+
+ggplot(subset_go, aes(x=date, y=num_sets, group=gmt_file,color=gmt_file)) +
+    geom_line() + theme(legend.position = "right", 
+        legend.key.size = unit(0.25, 'cm'), #change legend key size
+        legend.key.height = unit(0.25, 'cm'), #change legend key height
+        legend.key.width = unit(0.25, 'cm'), #change legend key width
+        legend.title = element_text(size=9), #change legend title font size
+        legend.direction = "vertical",
+         legend.spacing = unit(0.04, "cm"),
+        legend.text = element_text(size=7)) + #change legend text font size  
+       ggtitle(paste("Number of GO genesets for", species,"from", year, "- Present", sep = " " )) +
+  guides(colour = guide_legend(ncol = 1)) + 
+    ylab("Number of genesets")  + xlab("time")
+dev.off()
+```
+
+![](`r file.path(".",figure_directory, GO_figure_filename)`)
+
+```{r include=FALSE}
+subset_drugbank <- stats_summary_ggplot[grep(stats_summary_ggplot[,1],pattern = "drug|phenotype|mirs|transcription"),] 
+
+Other_figure_filename <- "Other_geneset_stats.png"
+
+png(file.path(getwd(),figure_directory, Other_figure_filename))
+
+
+ggplot(subset_drugbank, aes(x=date, y=num_sets, group=gmt_file,color=gmt_file)) +
+    geom_line() + theme(legend.position = "right", 
+        legend.key.size = unit(0.25, 'cm'), #change legend key size
+        legend.key.height = unit(0.25, 'cm'), #change legend key height
+        legend.key.width = unit(0.25, 'cm'), #change legend key width
+        legend.title = element_text(size=9), #change legend title font size
+        legend.direction = "vertical",
+         legend.spacing = unit(0.04, "cm"),
+        legend.text = element_text(size=7)) + #change legend text font size   
+        ggtitle(paste("Number of Phenotype genesets over time for", species,"from", year, "- Present", sep = " " )) +
+  guides(colour = guide_legend(ncol = 1)) + 
+    ylab("Number of genesets") + xlab("time")
+dev.off()
+```
+
+
+![](`r file.path(".",figure_directory, Other_figure_filename)`)
+
+```{r include=FALSE}
+subset_pathways <- stats_summary_ggplot[grep(stats_summary_ggplot[,1],pattern = "drug|phenotype|mirs|go|transcription", invert = TRUE),] 
+
+Pathway_figure_filename <- "Pathway_geneset_stats.png"
+
+png(file.path(getwd(),figure_directory, Pathway_figure_filename))
+
+
+ggplot(subset_pathways, aes(x=date, y=num_sets, group=gmt_file,color=gmt_file)) +
+    geom_line() + theme(legend.position = "right", 
+        legend.key.size = unit(0.25, 'cm'), #change legend key size
+        legend.key.height = unit(0.25, 'cm'), #change legend key height
+        legend.key.width = unit(0.25, 'cm'), #change legend key width
+        legend.title = element_text(size=9), #change legend title font size
+        legend.direction = "vertical",
+         legend.spacing = unit(0.04, "cm"),
+        legend.text = element_text(size=7)) + #change legend text font size  
+    ggtitle(paste("Number of Pathway genesets over time for", species,"from", year, "- Present", sep = " " )) +
+  guides(colour = guide_legend(ncol = 1)) + 
+    ylab("Number of genesets") + xlab("time")
+dev.off()
+```
+
+![](`r file.path(".",figure_directory, Pathway_figure_filename)`)
+
