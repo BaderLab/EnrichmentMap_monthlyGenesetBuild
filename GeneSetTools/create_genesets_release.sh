@@ -19,9 +19,9 @@ function download_panther_data {
 	    echo "[Downloading current Panther Pathway data]"
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Panther Pathway data"'"}' `cat ${TOOLDIR}/slack_webhook`
             # temporarily  change this to get the 3.5 release as the latest release is broken.  Change back once we hear back from  them.
-	    URL="ftp://ftp.pantherdb.org//pathway/current_release/"
+	    URL="ftp://ftp.pantherdb.org/pathway/current_release/"
 	    #URL="ftp://ftp.pantherdb.org//pathway/3.5/"
-	    curl ${URL}/BioPAX.tar.gz -o ${PANTHER}/BioPAX.tar.gz -s 
+	    curl  ${URL}/BioPAX.tar.gz -o ${PANTHER}/BioPAX.tar.gz -s 
 	    get_webfile_version ${URL}/BioPAX.tar.gz "Panther"
 }
 
@@ -1546,7 +1546,8 @@ GOSRC=${WOODCHUCKSOURCE}/GO
 mkdir ${GOSRC}
 cd ${GOSRC}
 
-
+echo "[Processing Woodchuck   data]"
+	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Processing Woodchuck data"'"}' `cat ${TOOLDIR}/slack_webhook`
 
 
 #create a directory will all the gmt from human we want to convert to mouse
@@ -1581,6 +1582,9 @@ cp ${HUMANVERSIONS}/KEGG.txt ${VERSIONS}
 cp ${HUMANVERSIONS}/Panther.txt ${VERSIONS}
 cp ${HUMANVERSIONS}/WikiPathways.txt ${VERSIONS}
 cp ${HUMANVERSIONS}/GO_Human.txt ${VERSIONS}
+
+echo "[Converting Woodchuck data]"
+	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Converting Woodchuck data"'"}' `cat ${TOOLDIR}/slack_webhook`
 
 #go through each of the gmt file and convert to mouse entrez genes
 for file in Human*.gmt ; do
@@ -1705,7 +1709,8 @@ getstats ${EG} "entrezgene" ${WOODCHUCKSOURCE}
 #getstats ${UNIPROT} "UniProt" ${WOODCHUCKSOURCE}
 getstats ${SYMBOL} "symbol" ${WOODCHUCKSOURCE}
 
-
+echo "[Finished Woodchuck  data]"
+	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Finished woodchuck data"'"}' `cat ${TOOLDIR}/slack_webhook`
 
 #copy the files over the webserver
 mkdir /mnt/build/EM_Genesets/$dir_name
@@ -1721,3 +1726,5 @@ ln -sf $dir_name/ current_release
 
 #rm -rf ${CUR_RELEASE}
 
+echo "[data build complete]"
+	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[data build complete"'"}' `cat ${TOOLDIR}/slack_webhook`
