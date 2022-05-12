@@ -1,5 +1,5 @@
-import com.sun.org.apache.xalan.internal.xsltc.compiler.Template;
-import com.sun.org.apache.xpath.internal.FoundIndex;
+//import org.apache.xalan.internal.xsltc.compiler.Template;
+//import org.apache.xpath.internal.FoundIndex;
 import org.json.JSONException;
 import org.kohsuke.args4j.Option;
 import synergizer.SynergizerClient;

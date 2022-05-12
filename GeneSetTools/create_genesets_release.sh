@@ -71,7 +71,7 @@ function download_wikipathways_data {
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current WikiPathways data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	#URL="http://data.wikipathways.org/current/gmt/"
 	#FILE=`echo "cat //html/body/div/table/tbody/tr/td/a" |  xmllint --html --shell ${URL} | grep -o -E ">(.*$1.gmt)<" | sed -E 's/(<|>)//g'`
-	URL="https://wikipathways-data.wmcloud.org/current/gmt/"
+	URL="https://wikipathways-data.toolforge.org/current/gmt/"
 	#not elegant but the only way to pull out the file name is pull out the name between '> and < tokens.  Might brake in the future. (xmllint does not work with https 
 	FILE=`curl -s ${URL} |  grep -o -E ">(.*$1.gmt)<" | grep -o -P "(?<='>).*(?=<)"`
 	curl ${URL}/${FILE} -o ${WIKIPATHWAYS}/WikiPathways_${1}_entrezgene.gmt -s -L 
@@ -84,7 +84,8 @@ function download_biocyc_data {
 	echo "[Downloading current BioCyc data - for species $1]"
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current BioCyc data - for species $1"'"}' `cat ${TOOLDIR}/slack_webhook`
 	#URL="http://bioinformatics.ai.sri.com/ecocyc/dist/flatfiles-52983746/"
-	URL="http://brg-files.ai.sri.com/public/dist/"
+	URL="https://bioinformatics.ai.sri.com/ecocyc/dist/flatfiles-52983746/"
+	#URL="http://brg-files.ai.sri.com/public/dist/"
 	echo "${URL}/tier1-tier2-biopax.tar.gz" >> ${VERSIONS}/${1}cyc.txt
 	curl ${URL}/tier1-tier2-biopax.tar.gz -u biocyc-flatfiles:data-20541 -I | grep "Last-Modified" >> ${VERSIONS}/${1}cyc.txt
 	curl ${URL}/tier1-tier2-biopax.tar.gz -o ${2}/${1}.tar.gz -u biocyc-flatfiles:data-20541 -s 
@@ -175,7 +176,7 @@ function process_biopax {
 	CURRENTDIR=`pwd`
 	cd ${VALIDATORDIR}
 	#latest version of the validator will generate the output to a .modified.owl file.
-	./validate.sh "file:${CURRENTDIR}/$1"  --auto-fix  --profile=notstrict 2>> biopax_process.err
+	sh validate.sh "file:${CURRENTDIR}/$1"  --auto-fix  --profile=notstrict 2>> biopax_process.err
 
 	#create an auto-fix biopax file to use to create the gmt file
 	#./validate.sh "file:${CURRENTDIR}/$1" --output=${CURRENTDIR}/${1}_updated_v1.owl --auto-fix --return-biopax 2>> biopax_process.err
@@ -546,7 +547,7 @@ function getstats {
 #source all configuration parameters we need (contains paths to output directories and the like)
 
 #make sure we are using Java 6
-export JAVA_HOME="/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home"
+#export JAVA_HOME="/System/Library/Frameworks/JavaVM.framework/Versions/1.6/Home"
 
 LOCAL=/Users/risserlin
 
@@ -556,7 +557,7 @@ export PERL5LIB=${PERL5LIB}:${LOCAL}/lib/perl5:${LOCAL}/lib/perl5/lib64/perl5:${
 #create a new directory for this release (the directory name will be the date that it was built)
 dir_name=`date '+%B_%d_%Y'`
 TOOLDIR=`pwd`
-VALIDATORDIR=${TOOLDIR}/biopax-validator-3.0.0
+VALIDATORDIR=${TOOLDIR}/biopax-validator-5.0.0-SNAPSHOT
 STATICDIR=${TOOLDIR}/staticSrcFiles
 WORKINGDIR=`pwd`
 CUR_RELEASE=${WORKINGDIR}/${dir_name}
@@ -620,19 +621,20 @@ HUMANCYC=${SOURCE}/Humancyc
 mkdir ${HUMANCYC}
 
 #issue - novemeber 20,2018 -can't download new data without new subscription
-#download_biocyc_data "human" ${HUMANCYC}
+#retrying download after U of T sponsored subscriptions.
+download_biocyc_data "human" ${HUMANCYC}
 cd ${HUMANCYC}
 
-cp ${STATICDIR}/biocyc/human*.gz ./
+#cp ${STATICDIR}/biocyc/human*.gz ./
 
 #unzip and untar human.tar.gz file
-tar --wildcards -xvzf human.tar.gz *level3.owl
+tar --wildcards -xvzf human.tar.gz humancyc/*level3.owl
 #the release number keeps changing - need a way to change into the right directory without knowing what the new number is
 # instead of specifying the name of the directory put *.  This will break if
 # they change the data directory structure though.
-cd humancyc/*/data
+cd humancyc/
 for file in *.owl; do
-	process_biopax_novalidation $file "UniProt" "HumanCyc"
+	process_biopax $file "UniProt" "HumanCyc"
 done
 for file in *.gmt; do
 	translate_gmt_UniProt $file "9606" "UniProt"

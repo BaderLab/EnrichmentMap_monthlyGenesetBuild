@@ -11,13 +11,13 @@ import java.util.*;
 
 //import com.mysql.jdbc.Driver;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
+//import org.apache.bcel.internal.generic.NEW;
 import cytoscape.data.readers.TextFileReader;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.Option;
-import org.springframework.jmx.export.UnableToRegisterMBeanException;
-import sun.font.TrueTypeFont;
+//import org.springframework.jmx.export.UnableToRegisterMBeanException;
+//import sun.font.TrueTypeFont;
 
 import javax.print.DocFlavor;
 

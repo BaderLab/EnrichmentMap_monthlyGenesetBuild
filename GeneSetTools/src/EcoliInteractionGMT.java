@@ -1,4 +1,4 @@
-import com.hp.hpl.jena.reasoner.rulesys.builtins.Remove;
+//import com.hp.hpl.jena.reasoner.rulesys.builtins.Remove;
 import org.kohsuke.args4j.Option;
 
 import java.io.BufferedWriter;
