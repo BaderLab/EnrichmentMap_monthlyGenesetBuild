@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk8:latest
+FROM adoptopenjdk/openjdk11:latest
 #FROM ubuntu:18.04
 
 # Install requirement (wget)
@@ -28,10 +28,9 @@ RUN apt-get update -y && apt-get install maven -y
 RUN apt-get update \
     && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends \
-    python-pip \
     python2.7 \
     python2.7-dev \
-    python-pip \
+    python3-pip \
     ssh \
     vim \
     curl \
@@ -45,9 +44,9 @@ RUN apt-get update \
     && apt-get clean
 
 #install ant
-ENV ANT_VERSION 1.10.5
+ENV ANT_VERSION 1.10.12
 RUN cd && \
-    wget -q http://www.us.apache.org/dist//ant/binaries/apache-ant-${ANT_VERSION}-bin.tar.gz && \
+    wget -q https://dlcdn.apache.org//ant/binaries/apache-ant-${ANT_VERSION}-bin.tar.gz && \
     tar -xzf apache-ant-${ANT_VERSION}-bin.tar.gz && \
     mv apache-ant-${ANT_VERSION} /opt/ant && \
     rm apache-ant-${ANT_VERSION}-bin.tar.gz
