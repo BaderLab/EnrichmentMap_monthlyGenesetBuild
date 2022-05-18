@@ -39,13 +39,13 @@ public class BulkGSEAConverter {
                     //create gsea file using Uniprot identifiers
                     id="UniProt";
                     current_outfilename = outdir.getAbsolutePath() + File.separator + children[k].split(".owl")[0] + "_UniProt.gmt";
-                    Biopax2GMT converter = new Biopax2GMT(current_filename,current_outfilename,id,speciescheck);
+                    Biopax2GMT converter = new Biopax2GMT(current_filename,current_outfilename,id,new Boolean(speciescheck));
                     converter.toGSEA();
 
                     //create gsea file using Entrez gene identifiers
                     id="Entrez Gene";
                     current_outfilename = outdir.getAbsolutePath() + File.separator + children[k].split(".owl")[0] +"_eg.gmt";
-                    converter = new Biopax2GMT(current_filename,current_outfilename,id,speciescheck);
+                    converter = new Biopax2GMT(current_filename,current_outfilename,id,new Boolean(speciescheck));
                     converter.toGSEA();
 
                     //convert entrez gene file to symbols

@@ -56,17 +56,21 @@ public class Biopax2GMT  {
     @Option(name = "--source", usage = "name of the source, if it is not encoded in biopax file ability for the user to specify it")
     private String source;
 
-    @Option(name = "--speciescheck", usage = "TRUE/FALSE - check that all ids are from one species", required = true)
-    private String speciescheck;
+    @Option(name = "--speciescheck", usage = "TRUE/FALSE - check that all ids are from one species", required = false)
+    private boolean speciescheck=false;
+
+
+    @Option(name = "--species", usage = "taxon of the ids that you want to extract from the biopax file", required = false)
+    private String species;
 
 	// following vars used during traversal
-	String database;
-	boolean crossSpeciesCheck;
-	String taxID;
+	//String database;
+	//boolean crossSpeciesCheck;
+	//String taxID;
 
 	private final IdFetcher idFetcher;
-	private boolean skipSubPathways;
-	private boolean skipOutsidePathways;
+	private boolean skipSubPathways = true;
+	private boolean skipOutsidePathways = true;
 	private int minNumIdsPerEntry;
 
     public static String DBSOURCE_SEPARATOR = "%";
@@ -75,7 +79,8 @@ public class Biopax2GMT  {
 	 * Constructor.
 	 */
 	public Biopax2GMT() {
-		this("", true, "");
+//		this();
+		this("", "",false);
 	}
 
 
@@ -113,34 +118,17 @@ public class Biopax2GMT  {
 	public void setMinNumIdsPerEntry(int minNumIdsPerEntry) {
 		this.minNumIdsPerEntry = minNumIdsPerEntry;
 	}
-    /**
-     * Constructor for when you are calling this internally.
-     *
-     * @param owl_filename
-     * @param outFilename
-     * @param id
-     * @param speciescheck
-     */
 
-    public Biopax2GMT(String owl_filename, String outFilename, String id, String speciescheck) {
-        this.owl_filename = owl_filename;
-        OutFilename = outFilename;
-        this.id = id;
-        this.speciescheck = speciescheck;
-   
-	idFetcher = new IdFetcher().seqDbStartsWithOrEquals(this.id);
-	}
-
-    public Biopax2GMT(String owl_filename, String outFilename, String id, String source, String speciescheck) {
-        this.owl_filename = owl_filename;
-        OutFilename = outFilename;
-        this.id = id;
+    public Biopax2GMT(String id, String source,String species, boolean speciescheck) {
         this.source = source;
-        this.speciescheck = speciescheck;
+	this.speciescheck = speciescheck;
+        //System.out.println("constructor 3");
+        this.id = id;
+	this.species = species;
 	idFetcher = new IdFetcher().seqDbStartsWithOrEquals(this.id);
     }
 
-    /**
+	/**
 	 * Constructor.
 	 *
 	 * See class declaration for more information.
@@ -149,15 +137,11 @@ public class Biopax2GMT  {
 	 * @param crossSpeciesCheck - if true, enforces no cross species participants in output
 	 *
 	 */
-	public Biopax2GMT(String id, boolean crossSpeciesCheck, String source) {
+	public Biopax2GMT(String id,  String source,boolean speciescheck) {
 		this.source = source;
-        	//this.database = database;
-    		this.crossSpeciesCheck = crossSpeciesCheck;
-        	//final String db = this.database;
-	
-		//if id is empty then default to uniprot
+		this.speciescheck = speciescheck;
+        	//System.out.println("constructor 4");
 		this.id=id;
-	
 		idFetcher = new IdFetcher().seqDbStartsWithOrEquals(this.id);
 
 	}
@@ -165,7 +149,10 @@ public class Biopax2GMT  {
     public void toGSEA() throws IOException{
         SimpleIOHandler io = new SimpleIOHandler();
         Model model = io.convertFromOWL(new FileInputStream(owl_filename));
-        (new Biopax2GMT(id, new Boolean(speciescheck),source)).writeToGSEA(model, new FileOutputStream(OutFilename));
+	if(!speciescheck)
+        	(new Biopax2GMT(id,source,this.speciescheck)).writeToGSEA(model, new FileOutputStream(OutFilename));
+    	else
+        	(new Biopax2GMT(id,source,species,this.speciescheck)).writeToGSEA(model, new FileOutputStream(OutFilename));
     }
 
 	/**
@@ -233,8 +220,8 @@ public class Biopax2GMT  {
      * @return a set of GSEA entries
      */
     public Collection<GMTEntry> convert(final Model model) {
-/*
-    	// setup some vars
+
+/*    	// setup some vars
     	Model l3Model = null;
 
     	Collection<GeneSet> toReturn = new HashSet<GeneSet>();
@@ -296,7 +283,7 @@ public class Biopax2GMT  {
 		for (Pathway pathway : pathways)
 		{
 			
-            		GeneSet current = getFormattedGeneSetName(l3Model, pathway, database);
+            		GeneSet current = getFormattedGeneSetName(l3Model, pathway, id);
 
 			
 			String name = (pathway.getDisplayName() == null) ? pathway.getStandardName() : pathway.getDisplayName();
@@ -305,7 +292,7 @@ public class Biopax2GMT  {
 
 			final Pathway currentPathway = pathway;
 			final String currentPathwayName = name;
-
+			final String database = this.id;
 			//System.out.println("Begin converting " + currentPathwayName + " pathway, uri=" + currentPathway.getUri());
 			final Set<EntityReference> ers = new HashSet<EntityReference>();
 			final Traverser traverser = new AbstractTraverser(SimpleEditorMap.L3,
@@ -314,8 +301,13 @@ public class Biopax2GMT  {
 				protected void visit(Object range, BioPAXElement domain, Model model, PropertyEditor editor)
 				{
 					BioPAXElement bpe = (BioPAXElement) range; //cast is safe (due to objectPropertiesOnlyFilter)
-					if(bpe instanceof EntityReference) {
-						ers.add((EntityReference) bpe);
+					if(bpe instanceof EntityReference/* && !(bpe instanceof Pathway)*/) {
+						boolean checkDatabase = (database != null 
+								&& database.length() > 0 
+								&& !database.equals("NONE"));
+
+						if(checkEntity((EntityReference)bpe,checkDatabase) != null)
+							ers.add((EntityReference) bpe);
 					}
 					if(bpe instanceof Pathway) {
 						if(skipSubPathways)
@@ -333,18 +325,41 @@ public class Biopax2GMT  {
 			traverser.traverse(currentPathway, null);
 
 			if(!ers.isEmpty()) {
-				//System.out.println("For pathway: " + currentPathwayName + " (" + currentPathway.getUri()
-				//		+ "), got " + ers.size() + " ERs");
 				// create GMT entries
 				Collection<GMTEntry> entries = createGseaEntries(currentPathway.getUri(),
 						current.getName(), currentPathwayName, ers);
 				if(!entries.isEmpty())
 					toReturn.addAll(entries);
 				entityReferences.removeAll(ers);//keep not processed PRs (a PR can be processed multiple times)
-			//	System.out.println("- collected " + entries.size() + "entries.");
 			}
-		}
+		
+			//if the datasource is Panther then iterate over the process instead of the pathways
+			//The assumption is that the Panther pathways are each in a separate file
+	            	//but their catalysis are not listed in the pathways and the easiest way to get
+			//at them to recurse through the processes instead
+			//IF THERE ARE MULTIPLE PATHWAYS IN THE FILE THIS WILL NOT WORK
+			// iterate over all pathways in the model
+			// Some of the panther pathways have the entities in the pathway.  Only iterate over the 
+			// processes if we haven't found anything in the pathways. 
+			if(this.source.equalsIgnoreCase("Panther") && toReturn.isEmpty()) {
+			//go through all the individual processes but add them to the same overall pathway
+				for (Process aProcess : l3Model.getObjects(Process.class)){
+					traverser.traverse(aProcess, null);
+					
+				}
+				if(!ers.isEmpty()) {
+						// create GMT entries
+						Collection<GMTEntry> entries = createGseaEntries(currentPathway.getUri(),
+							current.getName(), currentPathwayName, ers);
+						if(!entries.isEmpty())
+							toReturn.addAll(entries);
+						entityReferences.removeAll(ers);//keep not processed PRs (a PR can be processed multiple times)
+					}
 
+				 
+				}
+			
+		}
 		//when there're no pathways, only empty pathays, pathways w/o PRs, then use all/rest of PRs -
 		//organize PRs by species (GSEA s/w can handle only same species identifiers in a data row)
 		if(!entityReferences.isEmpty() && !skipOutsidePathways) {
@@ -394,14 +409,6 @@ public class Biopax2GMT  {
 		//toReturn.setName(name);
         	toReturn.setDataSource(name);
 
-
-		// tax id
-        	String taxID = null;
-        	if(aPathway.getOrganism() != null)
-		    taxID = getTaxID(aPathway.getOrganism().getXref());
-		taxID = (taxID == null) ? "TAX-ID" : taxID;
-		toReturn.setTaxID(taxID);
-		
 		// data source
 		String dataSource = getDataSource(aPathway.getDataSource());
         	if(dataSource == null || dataSource.equals("")){
@@ -410,9 +417,6 @@ public class Biopax2GMT  {
             		else
                 		dataSource = "N/A";
         	}
-
-		//dataSource = (dataSource == null) ? "N/A" : dataSource;
-		//toReturn.setDataSource(dataSource);
 
         	//If there is an ID available for this pathway we want to use the pathway ID as
        		//the main key in the GMT file
@@ -424,15 +428,12 @@ public class Biopax2GMT  {
             		if(aXref.getClass().getSimpleName().equalsIgnoreCase( "UnificationXrefImpl")){
 
 				if (aXref.getDb() != null && aXref.getId() != null && aXref.getIdVersion() != null) {
-                    			//pathwayID = aXref.getDb() + DBSOURCE_SEPARATOR + aXref.getId() + "." + aXref.getIdVersion() ;
                     			pathwayID = name + DBSOURCE_SEPARATOR + aXref.getDb() + DBSOURCE_SEPARATOR + aXref.getId() + "." + aXref.getIdVersion() ;
                 		}
                 	else if(aXref.getDb() != null && aXref.getId() != null && aXref.getIdVersion() == null) {
-                     		//pathwayID = aXref.getDb() + DBSOURCE_SEPARATOR + aXref.getId();
                      		pathwayID = name + DBSOURCE_SEPARATOR + aXref.getDb() + DBSOURCE_SEPARATOR + aXref.getId();
                 	}
                 	else if(aXref.getDb() == null && aXref.getId() != null) {
-                     		//pathwayID = "NO_DATABASE_DEFINED" + DBSOURCE_SEPARATOR + aXref.getId();
                      		pathwayID = name + DBSOURCE_SEPARATOR + "NO_DATABASE_DEFINED" + DBSOURCE_SEPARATOR + aXref.getId();
                 	}
 			
@@ -447,10 +448,8 @@ public class Biopax2GMT  {
 			}
         	}
 		if(!stableID.equals("")){
-				//pathwayID = dataSource + DBSOURCE_SEPARATOR + stableID;
 				pathwayID =name + DBSOURCE_SEPARATOR + dataSource + DBSOURCE_SEPARATOR + stableID;
 		}else if(stableID.equals("") && !tempID.equals("")){
-            		//pathwayID = dataSource + DBSOURCE_SEPARATOR + tempID;
             		pathwayID =name + DBSOURCE_SEPARATOR + dataSource + DBSOURCE_SEPARATOR + tempID;
         	}
 
@@ -459,34 +458,67 @@ public class Biopax2GMT  {
 		toReturn.setName(name);
 		return toReturn;
 	}
-/*
-	private void visitProtein(Object range, boolean checkDatabase) {
 
-    	if (range instanceof Protein) {
-    		Protein aProtein = (Protein)range;
+private EntityReference checkEntity(EntityReference range, boolean checkDatabase) {
+
+	if (range instanceof Protein) {
+		Protein aProtein = (Protein)range;
     		// we only process proteins that are same species as pathway
-    		if (crossSpeciesCheck && this.taxID.length() > 0 && !sameSpecies(aProtein, this.taxID)) {
-    			return;
+    		if (this.speciescheck && this.species.length() > 0 && !sameSpecies(aProtein, this.species)) {
+			return null;
     		}
     		// if we are not checking database, just return rdf id
     		if (checkDatabase) {
 			    for (Xref aXref : aProtein.getXref())
 			    {
-    				if (aXref.getDb() != null && aXref.getDb().equalsIgnoreCase(this.database)) {
-    					this.rdfToGenes.put(aProtein.getUri(), aXref.getId());
-    					break;
+    				if (aXref.getDb() != null && StringUtils.containsIgnoreCase(aXref.getDb(),this.id)) {
+    					return range;
     				}
     			}
     		}
     		else {
-    			this.rdfToGenes.put(aProtein.getUri(), aProtein.getUri());
+    			return range;
     		}
     	}
-	}
 
-*/
+	else if (range instanceof ProteinReference) {
+            
+    		ProteinReference aProteinRef = (ProteinReference)range;
+    		boolean isSameSpecies = sameSpecies(aProteinRef, this.species);
+		// we only process protein refs that are same species as pathway
+		if (this.speciescheck && 
+				this.species.length() > 0 && !isSameSpecies) {
+    			return null;
+    		}
+    		if (checkDatabase) {
+				// short circuit if we are converting for pathway commons
+				// Also ensure we get back primary accession - which is built into the rdf id of the protein  ref
+				if (this.id.equalsIgnoreCase("uniprot") && aProteinRef.getUri().startsWith("urn:miriam:uniprot:")) {
+					return range;
+				}
+				else {
+					for (Xref aXref: aProteinRef.getXref()) {
+						if (aXref.getDb() != null && 
+							StringUtils.containsIgnoreCase(aXref.getDb(),this.id)) {
+							if(!aXref.getId().equalsIgnoreCase("--") && 
+								!aXref.getId().equalsIgnoreCase("---") && 
+								!aXref.getId().equalsIgnoreCase("null")){
+                                
+							    return range;
+                            }
+						}
+					}
+				}
+    		}
+    		else {
+    			return range;
+    		}
+    	}
+	return null;
+}
+
+
 	private boolean sameSpecies(Protein aProtein, String taxID) {
-
 		ProteinReference pRef = (ProteinReference)aProtein.getEntityReference();
 		if (pRef != null && pRef.getOrganism() != null) {
 			BioSource bs = pRef.getOrganism();
@@ -499,11 +531,26 @@ public class Biopax2GMT  {
 		return false;
 	}
 
+	private boolean sameSpecies(ProteinReference pRef, String taxID) {
+		
+		if (pRef != null && pRef.getOrganism() != null) {
+			BioSource bs = pRef.getOrganism();
+			if (bs.getXref() != null) {
+				return (getTaxID(bs.getXref()).equals(taxID));
+			}
+		}
+		return false;
+	}
+	
 	private String getTaxID(Set<Xref> xrefs) {
-
+		if(xrefs ==null) 
+			System.out.println("the xrefs are null");
 		for (Xref xref : xrefs) {
 			if (xref.getDb().equalsIgnoreCase("taxonomy")) {
-				//System.out.println("Tax id is - " + xref.getId());
+				return xref.getId();
+			}
+			//panther refers to the taxon as ncbitaxon instead of taxonomy.
+			if (xref.getDb().equalsIgnoreCase("ncbitaxon")) {
 				return xref.getId();
 			}
 		}

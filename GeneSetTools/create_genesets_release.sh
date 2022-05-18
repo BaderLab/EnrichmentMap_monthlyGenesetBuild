@@ -170,6 +170,7 @@ function download_drugbank_data {
 # argument 1 - biopax file name
 # argument 2 - identifier to extract from file
 # argument 3 - database source
+#argument 4 - taxid
 function process_biopax {
 	#validate the biopax file
 	#need to change to the validator directory in order to run the validator
@@ -188,7 +189,7 @@ function process_biopax {
 	#create gmt file from the given, autofixed biopax file
 	#make sure the the id searching for doesn't have any spaces for the file name
 	#long -D option turns off logging when using paxtool
-	java -Xmx2G -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.NoOpLog -jar ${TOOLDIR}/GenesetTools.jar toGSEA --biopax ${1}.modified.owl --outfile ${1}_${2//[[:space:]]}.gmt --id "$2" --speciescheck FALSE --source "$3" 2>> biopax_process.err 1>> biopax_output.txt
+	java -Xmx2G -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.NoOpLog -jar ${TOOLDIR}/GenesetTools.jar toGSEA --biopax ${1}.modified.owl --outfile ${1}_${2//[[:space:]]}.gmt --id "$2" --speciescheck --source "$3" --species "$4" 2>> biopax_process.err 1>> biopax_output.txt
 
 	#ticket #209
         #get rid of forward slashes in the resutls gmt file (occurs in NCI, Reactome, and Humancyc) and causes
@@ -201,12 +202,13 @@ function process_biopax {
 # argument 1 - biopax file name
 # argument 2 - identifier to extract from file
 # argument 3 - database source
+# argument 4 - taxid
 function process_biopax_novalidation {
 
 	#create gmt file from the given, autofixed biopax file
 	#make sure the the id searching for doesn't have any spaces for the file name
 	#long -D option turns off logging when using paxtool
-	java -Xmx2G -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.NoOpLog -jar ${TOOLDIR}/GenesetTools.jar toGSEA --biopax ${1} --outfile ${1}_${2//[[:space:]]}.gmt --id "$2" --speciescheck FALSE --source "$3" 2>> biopax_process.err 1>> biopax_output.txt
+	java -Xmx2G -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.NoOpLog -jar ${TOOLDIR}/GenesetTools.jar toGSEA --biopax ${1} --outfile ${1}_${2//[[:space:]]}.gmt --id "$2" --speciescheck --source "$3" --species "$4" 2>> biopax_process.err 1>> biopax_output.txt
 
 	#ticket #209
         #get rid of forward slashes in the resutls gmt file (occurs in NCI, Reactome, and Humancyc) and causes
@@ -634,7 +636,7 @@ tar --wildcards -xvzf human.tar.gz humancyc/*level3.owl
 # they change the data directory structure though.
 cd humancyc/
 for file in *.owl; do
-	process_biopax $file "UniProt" "HumanCyc"
+	process_biopax $file "UniProt" "HumanCyc" "9606"
 done
 for file in *.gmt; do
 	translate_gmt_UniProt $file "9606" "UniProt"
@@ -669,7 +671,7 @@ cp ${STATICDIR}/NCI/*.gz ./
 gunzip *.gz
 #modify gmt file so the gmt conforms to our standard with name and description
 for file in *.owl; do
-	process_biopax_novalidation $file "UniProt" "NCI_Nature"
+	process_biopax_novalidation $file "UniProt" "NCI_Nature" "9606"
 done
 for file in *.gmt; do
 	translate_gmt_UniProt $file "9606" "UniProt"
@@ -692,7 +694,7 @@ cd ${PANTHER}
 tar -xvzf BioPAX.tar.gz --strip=1 >/dev/null
 #Go through each pathway file and grab the UniProts
 for file in *.owl; do
-	process_biopax_novalidation $file "UniProt" "Panther"
+	process_biopax_novalidation $file "UniProt" "Panther" "9606"
 done
 for file in *.gmt; do
 	#because we are going through processes instead of pathways (because of biopax contents)
@@ -711,7 +713,7 @@ download_netpath_data
 cd ${NETPATH}
 #process each file in the NetPath directory.
 for file in *.owl; do
-	process_biopax_novalidation $file "Entrez gene" "NetPath"
+	process_biopax_novalidation $file "Entrez gene" "NetPath" "9606"
 done
 for file in *.gmt; do
 	translate_gmt_UniProt $file "9606" "entrezgene"
@@ -731,7 +733,7 @@ mv Homo\ sapiens.owl Homosapiens.owl
 
 #for some reason the validated and fixed Reactome file hangs.
 for file in *sapiens.owl; do
-	process_biopax_novalidation $file "UniProt" "Reactome"
+	process_biopax_novalidation $file "UniProt" "Reactome" "9606"
 done
 for file in *.gmt; do
 	translate_gmt_UniProt $file "9606" "UniProt"
@@ -821,7 +823,7 @@ for dir in `ls`; do
 		cp *.txt ${VERSIONS}
 		cd ${SOURCE}/$dir
 		for file in *.owl; do
-			process_biopax_novalidation $file "Entrez gene" "IOB"
+			process_biopax_novalidation $file "Entrez gene" "IOB" "9606"
 		done
 		for file in *.gmt; do
 			translate_gmt_UniProt $file "9606" "entrezgene"
