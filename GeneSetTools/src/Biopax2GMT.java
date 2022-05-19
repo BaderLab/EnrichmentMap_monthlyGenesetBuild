@@ -69,7 +69,7 @@ public class Biopax2GMT  {
 	//String taxID;
 
 	private final IdFetcher idFetcher;
-	private boolean skipSubPathways = true;
+	private boolean skipSubPathways = false;
 	private boolean skipOutsidePathways = true;
 	private int minNumIdsPerEntry;
 
@@ -546,11 +546,11 @@ private EntityReference checkEntity(EntityReference range, boolean checkDatabase
 		if(xrefs ==null) 
 			System.out.println("the xrefs are null");
 		for (Xref xref : xrefs) {
-			if (xref.getDb().equalsIgnoreCase("taxonomy")) {
-				return xref.getId();
-			}
 			//panther refers to the taxon as ncbitaxon instead of taxonomy.
-			if (xref.getDb().equalsIgnoreCase("ncbitaxon")) {
+			//rectome refers to the taxon as NCBI Taxonomy
+			if ((xref.getDb().equalsIgnoreCase("ncbitaxon")) ||
+				(xref.getDb().equalsIgnoreCase("NCBI Taxonomy")) || 
+				(xref.getDb().equalsIgnoreCase("taxonomy"))) {
 				return xref.getId();
 			}
 		}
