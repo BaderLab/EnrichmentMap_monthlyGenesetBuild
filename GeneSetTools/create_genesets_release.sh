@@ -25,6 +25,15 @@ function download_panther_data {
 	    get_webfile_version ${URL}/BioPAX.tar.gz "Panther"
 }
 
+function download_pathbank_data {
+	    echo "[Downloading current Path Bank data]"
+	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current PathBank data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	    URL="https://pathbank.org/downloads"
+	    curl ${URL}/pathbank_all_biopax.zip -o ${PATHBANK}/pathbank_all_biopax.zip -s
+	    #get_pc_version
+}
+
+
 #this function will get the date of the file if there is no other way to get a version from it
 # argument 1 - name of the file
 # argument 2 - datasource to add it to
@@ -219,6 +228,24 @@ function process_biopax_novalidation {
 }
 
 
+#this function create gmt files from biopax files without validation and auto-fix.
+# argument 1 - biopax file name
+# argument 2 - identifier to extract from file
+# argument 3 - database source
+function process_biopax_novalidation_nospeciescheck {
+
+	#create gmt file from the given, autofixed biopax file
+	#make sure the the id searching for doesn't have any spaces for the file name
+	#long -D option turns off logging when using paxtool
+	java -Xmx2G -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.NoOpLog -jar ${TOOLDIR}/GenesetTools.jar toGSEA --biopax ${1} --outfile ${1}_${2//[[:space:]]}.gmt --id "$2" --source "$3" 2>> biopax_process.err 1>> biopax_output.txt
+
+	#ticket #209
+        #get rid of forward slashes in the resutls gmt file (occurs in NCI, Reactome, and Humancyc) and causes
+	#GSEA to produce error when creating a details file.
+	sed 's/\// /g' ${1}_${2//[[:space:]]}.gmt > temp.txt
+	mv temp.txt ${1}_${2//[[:space:]]}.gmt
+
+}
 
 # argument 1 - gmt file name
 # argument 2 - Source Name
@@ -618,6 +645,33 @@ createDivisionDirs ${SYMBOL}
 #done 
 #copy2release PC_NCI_Nature Human ${PATHWAYS}
 
+#download pathbank biopax data
+PATHBANK=${SOURCE}/Pathbank
+mkdir ${PATHBANK}
+download_pathbank_data
+#unzip and untar human.tar.gz file
+cd ${PATHBANK}
+unzip pathbank_all_biopax.zip  >/dev/null
+
+#cd into the biopax file directory
+cd pathbank_all_biopax
+
+#Go through each pathway file and grab the UniProts
+#not all the files are human specific so check before processing them
+# the taxonomy is associated with the pathway and not the protein so we 
+# can't filter using the biopax parser that filters on the protein
+for file in *.owl; do
+	if [[ `grep 9606 $file | wc -l` > 0 ]] ; then
+		process_biopax_novalidation_nospeciescheck $file "UniProt" "Pathbank" 
+	fi
+done
+
+for file in *.gmt; do
+	translate_gmt_UniProt $file "9606" "UniProt"
+done
+
+copy2release Pathbank Human ${PATHWAYS}
+
 #download humancyc
 HUMANCYC=${SOURCE}/Humancyc
 mkdir ${HUMANCYC}
@@ -704,6 +758,7 @@ for file in *.gmt; do
 	translate_gmt_UniProt $file "9606" "UniProt"
 done
 copy2release Panther Human ${PATHWAYS}
+
 
 #download NetPath biopax data
 NETPATH=${SOURCE}/NetPath
@@ -1138,6 +1193,8 @@ cp ${HUMANGMTS}/${PATHWAYS}/*HumanCyc*.gmt ./
 #cp ${HUMANGMTS}/${PATHWAYS}/*KEGG*.gmt ./
 cp ${HUMANGMTS}/${PATHWAYS}/*Panther*.gmt ./
 cp ${HUMANGMTS}/${PATHWAYS}/*Reactome*.gmt ./
+cp ${HUMANGMTS}/${PATHWAYS}/*Pathbank*.gmt ./
+
 
 #copy the human drugs files
 cp ${HUMANGMTS}/${DRUGS}/*DrugBank*.gmt ./
@@ -1422,6 +1479,7 @@ cp ${HUMANGMTS}/${PATHWAYS}/*NCI*.gmt ./
 cp ${HUMANGMTS}/${PATHWAYS}/*HumanCyc*.gmt ./
 #cp ${HUMANGMTS}/${PATHWAYS}/*KEGG*.gmt ./
 cp ${HUMANGMTS}/${PATHWAYS}/*Panther*.gmt ./
+cp ${HUMANGMTS}/${PATHWAYS}/*Pathbank*.gmt ./
 
 #copy the human drugs files
 cp ${HUMANGMTS}/${DRUGS}/*DrugBank*.gmt ./
@@ -1569,6 +1627,7 @@ cp ${HUMANGMTS}/${PATHWAYS}/*Wiki*.gmt ./
 #cp ${HUMANGMTS}/${PATHWAYS}/*KEGG*.gmt ./
 cp ${HUMANGMTS}/${PATHWAYS}/*Panther*.gmt ./
 cp ${HUMANGMTS}/${PATHWAYS}/*Reactome*.gmt ./
+cp ${HUMANGMTS}/${PATHWAYS}/*Pathbank*.gmt ./
 
 #copy the human drugs files
 cp ${HUMANGMTS}/${DRUGS}/*DrugBank*.gmt ./
