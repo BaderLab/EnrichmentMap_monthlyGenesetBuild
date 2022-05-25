@@ -29,7 +29,7 @@ function download_pathbank_data {
 	    echo "[Downloading current Path Bank data]"
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current PathBank data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	    URL="https://pathbank.org/downloads"
-	    curl ${URL}/pathbank_all_biopax.zip -o ${PATHBANK}/pathbank_all_biopax.zip -s
+	    curl ${URL}/pathbank_primary_biopax.zip -o ${PATHBANK}/pathbank_primary_biopax.zip -s
 	    #get_pc_version
 }
 
@@ -651,10 +651,10 @@ mkdir ${PATHBANK}
 download_pathbank_data
 #unzip and untar human.tar.gz file
 cd ${PATHBANK}
-unzip pathbank_all_biopax.zip  >/dev/null
+unzip pathbank_primary_biopax.zip  >/dev/null
 
 #cd into the biopax file directory
-cd pathbank_all_biopax
+cd pathbank_primary_biopax
 
 #Go through each pathway file and grab the UniProts
 #not all the files are human specific so check before processing them

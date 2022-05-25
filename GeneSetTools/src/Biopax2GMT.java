@@ -126,7 +126,7 @@ public class Biopax2GMT  {
         this.id = id;
 	this.species = species;
 	idFetcher = new IdFetcher().seqDbStartsWithOrEquals(this.id);
-    }
+     }
 
 	/**
 	 * Constructor.
@@ -147,6 +147,7 @@ public class Biopax2GMT  {
 	}
 
     public void toGSEA() throws IOException{
+
         SimpleIOHandler io = new SimpleIOHandler();
         Model model = io.convertFromOWL(new FileInputStream(owl_filename));
 	if(!speciescheck)
@@ -310,6 +311,7 @@ public class Biopax2GMT  {
 							ers.add((EntityReference) bpe);
 					}
 					if(bpe instanceof Pathway) {
+						
 						if(skipSubPathways)
 						{	//do not traverse into the sub-pathway; log
 							System.out.println("Skipping sub-pathway: " + bpe.getUri());
@@ -321,33 +323,49 @@ public class Biopax2GMT  {
 					}
 				}
 			};
-			//run it - collect all PRs from the pathway
-			traverser.traverse(currentPathway, null);
 
-			if(!ers.isEmpty()) {
-				// create GMT entries
-				Collection<GMTEntry> entries = createGseaEntries(currentPathway.getUri(),
-						current.getName(), currentPathwayName, ers);
-				if(!entries.isEmpty())
-					toReturn.addAll(entries);
-				entityReferences.removeAll(ers);//keep not processed PRs (a PR can be processed multiple times)
+			String curname = "";
+          		for(String names:currentPathway.getName()){
+            			curname = curname + names + ";";
+         		 }		
+			//Pathbank files contain subpathways delineated as pathways, even if we turn off sub pathway
+			//parsing the pathway still gets parsed because it is defined as a pathway.
+			//maybe a result of multiple files and redefinition of the same subpathway.  If the pathways
+			//were defined in one files this might not be an issue
+			//If the pathway name contains subpathway and the pathway is from Pathbank - exclude it.
+			//System.out.println("Pathway - " + curname);
+			if(this.source.equalsIgnoreCase("Pathbank") && 
+					StringUtils.containsIgnoreCase(curname,"subpathway")){
+				System.out.println("Pathbank Pathway name contains subpathway - exclude it -->" + curname);	
 			}
-		
-			//if the datasource is Panther then iterate over the process instead of the pathways
-			//The assumption is that the Panther pathways are each in a separate file
-	            	//but their catalysis are not listed in the pathways and the easiest way to get
-			//at them to recurse through the processes instead
-			//IF THERE ARE MULTIPLE PATHWAYS IN THE FILE THIS WILL NOT WORK
-			// iterate over all pathways in the model
-			// Some of the panther pathways have the entities in the pathway.  Only iterate over the 
-			// processes if we haven't found anything in the pathways. 
-			if(this.source.equalsIgnoreCase("Panther") && toReturn.isEmpty()) {
-			//go through all the individual processes but add them to the same overall pathway
-				for (Process aProcess : l3Model.getObjects(Process.class)){
-					traverser.traverse(aProcess, null);
-					
-				}
+			else{
+				//run it - collect all PRs from the pathway
+				traverser.traverse(currentPathway, null);
+
 				if(!ers.isEmpty()) {
+					// create GMT entries
+					Collection<GMTEntry> entries = createGseaEntries(currentPathway.getUri(),
+						current.getName(), currentPathwayName, ers);
+					if(!entries.isEmpty())
+						toReturn.addAll(entries);
+					entityReferences.removeAll(ers);//keep not processed PRs (a PR can be processed multiple times)
+				}	
+		
+				//if the datasource is Panther then iterate over the process instead of the pathways
+				//The assumption is that the Panther pathways are each in a separate file
+	            		//but their catalysis are not listed in the pathways and the easiest way to get
+				//at them to recurse through the processes instead
+				//IF THERE ARE MULTIPLE PATHWAYS IN THE FILE THIS WILL NOT WORK
+				// iterate over all pathways in the model
+				// Some of the panther pathways have the entities in the pathway.  Only iterate over the 
+				// processes if we haven't found anything in the pathways. 
+				if(this.source.equalsIgnoreCase("Panther") && toReturn.isEmpty()) {
+				//go through all the individual processes but add them to the same overall pathway
+					for (Process aProcess : l3Model.getObjects(Process.class)){
+						traverser.traverse(aProcess, null);
+					
+					}
+					if(!ers.isEmpty()) {
 						// create GMT entries
 						Collection<GMTEntry> entries = createGseaEntries(currentPathway.getUri(),
 							current.getName(), currentPathwayName, ers);
@@ -357,16 +375,16 @@ public class Biopax2GMT  {
 					}
 
 				 
-				}
+					}
 			
+			}
+			//when there're no pathways, only empty pathays, pathways w/o PRs, then use all/rest of PRs -
+			//organize PRs by species (GSEA s/w can handle only same species identifiers in a data row)
+			if(!entityReferences.isEmpty() && !skipOutsidePathways) {
+				//System.out.println("Creating entries for the rest of PRs (outside any pathway)...");
+				toReturn.addAll(createGseaEntries("other","other", getDataSource(l3Model.getObjects(Provenance.class)),entityReferences));
+			}	
 		}
-		//when there're no pathways, only empty pathays, pathways w/o PRs, then use all/rest of PRs -
-		//organize PRs by species (GSEA s/w can handle only same species identifiers in a data row)
-		if(!entityReferences.isEmpty() && !skipOutsidePathways) {
-			//System.out.println("Creating entries for the rest of PRs (outside any pathway)...");
-			toReturn.addAll(createGseaEntries("other","other", getDataSource(l3Model.getObjects(Provenance.class)),entityReferences));
-		}
-
 		return toReturn;
 
     }
