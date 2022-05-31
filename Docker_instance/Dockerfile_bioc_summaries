@@ -1,0 +1,4 @@
+FROM bioconductor/bioconductor_docker
+
+# Install required Bioconductor package
+RUN R -e 'install.packages("rmarkdown")'
