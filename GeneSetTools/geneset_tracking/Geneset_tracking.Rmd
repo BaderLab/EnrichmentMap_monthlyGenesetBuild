@@ -4,17 +4,29 @@ output: html_document
 params:
   species: Human
   identifier: entrezgene
-  year: 2017
+  year: 2019
+  width: 600
+  height: 600
+  pointsz: 14
 ---
 
-```{r load libraries, echo=FALSE}
+# Changes/Growth of Genesets By Source over the years
+```{r load libraries, echo=FALSE,message=FALSE, warning=FALSE}
 
 ## Load in required libraries
+
+tryCatch(expr = { library("rmarkdown")}, 
+         error = function(e) {  install.packages("rmarkdown")}, 
+         finally = library("rmarkdown"))
 
 #install required R and bioconductor packages
 tryCatch(expr = { library("RCurl")}, 
          error = function(e) {  install.packages("RCurl")}, 
          finally = library("RCurl"))
+
+tryCatch(expr = { library("ggplot2")}, 
+         error = function(e) {  install.packages("ggplot2")}, 
+         finally = library("ggplot2"))
 
 ```
 
@@ -116,6 +128,188 @@ get_summary_file <- function(species = "Human", identifier="entrezgene", year=20
 }
 ```
 
+
+```{r message=FALSE, warning=FALSE,include=FALSE}
+get_identifier_conversion_file <- function(species = "Human", identifier="entrezgene", year=2014) {
+  
+  #filter the download directories by the specified year
+  
+  
+  ids_summary_table <- c()
+  ids_summary_ggplot <- c()
+  
+  #get the summary files for each directory 
+  for(i in 1:length(download_directories )){
+    #only go back as far as December 2014
+    #if(length(grep(download_directories[i], pattern=year )>0)){
+    if(unlist(strsplit(gsub(download_directories[i],pattern = "/",replacement = ""),split = "_"))[3] < year) {
+      next
+    }
+    current_directory = paste(download_url,download_directories[i], species,"/",sep="")
+    
+    #list all the files in this directory
+    current_filenames = getURL(current_directory)
+    tc = textConnection(current_filenames)
+    contents = readLines(tc)
+    close(tc)
+    
+    rx = gregexpr("(?<=<a href=\")(Build_summary.*.)(.log)(?=\">)",
+                  contents, perl = TRUE)
+    log_files = unlist(regmatches(contents, rx))
+    
+    current_log_file <- log_files[grep(log_files,pattern=identifier)]
+    
+    if(length(current_log_file) == 0 && length(log_files == 1)){
+      current_log_file = log_files
+    }
+    
+    dest_log_file <- file.path(getwd(),current_log_file )
+    
+    if(length(dest_log_file) == 0){
+      break
+    }
+    
+    download.file(
+      paste(current_directory,current_log_file,sep=""),
+      destfile=dest_log_file,quiet = TRUE
+    )
+    
+    current_log_contents <- read.table(dest_log_file,header=FALSE,sep="\t",stringsAsFactors = FALSE,strip.white = TRUE,fill = TRUE)
+    colnames(current_log_contents) <- c("empty","Filename",	"Original Identifier",	"ID translated",	"Total #genes",	 "#genes translated",	"#genes missing",	 "percent not translated",	 "Total Annotations",	 "Annotations not translated",	 "percent annot not translated","empty")
+    
+    #the first entry in every file is WikiPathways and it is missing the empty column at the front
+    current_log_contents[2,2:11] <- current_log_contents[2,1:10]
+    
+    current_log_contents <- current_log_contents[grep(current_log_contents[,2],pattern=".gmt"),]
+    current_log_contents[,2] <- tolower(current_log_contents[,2])
+    stats<- current_log_contents[,c(2:11)]
+    
+    
+    #get the date of this data
+    proper_date <- as.Date(download_directories [i],"%B_%d_%Y")
+    
+    #colnames(stats)[2] <- proper_date
+    
+    
+    if(i == 1){
+      
+      ids_summary_ggplot <- data.frame(stats, date = proper_date)
+      #colnames(stats)[2] <- download_directories [i]
+      #ids_summary_table <- stats
+    } else{
+      ids_summary_ggplot <- rbind(ids_summary_ggplot, 
+                                  data.frame(stats, date = proper_date))
+      #colnames(stats)[2] <- download_directories [i]
+      #merged_data <- merge(ids_summary_table, stats,by.x = 1, by.y=1,
+      #                     all = TRUE)
+      #ids_summary_table <- merged_data
+      
+    }
+  }
+  
+  return(ids_summary_ggplot)
+}
+```
+
+
+
+```{r message=FALSE, warning=FALSE,include=FALSE}
+
+get_identifier_conversion_file_by_type <- function(species = "Human", identifier="entrezgene", year=2014, type="Pathways") {
+  
+  #filter the download directories by the specified year
+  ids_summary_table <- c()
+  ids_summary_ggplot <- c()
+  
+  #get the summary files for each directory 
+  for(i in 1:length(download_directories )){
+    #only go back as far as December 2014
+    #if(length(grep(download_directories[i], pattern=year )>0)){
+    if(unlist(strsplit(gsub(download_directories[i],pattern = "/",replacement = ""),split = "_"))[3] < year) {
+      next
+    }
+    current_directory = paste(download_url,download_directories[i], species,"/",identifier,"/",type,"/",sep="")
+    
+    #list all the files in this directory
+    current_filenames = getURL(current_directory)
+    tc = textConnection(current_filenames)
+    contents = readLines(tc)
+    close(tc)
+    
+    rx = gregexpr("(?<=<a href=\")(.*.translation.*.)(.log)(?=\">)",
+                  contents, perl = TRUE)
+    log_files = unlist(regmatches(contents, rx))
+    
+    if(is.na(log_files) || length(log_files) ==0){
+      next
+    }
+    
+    #get the date of this data
+    proper_date <- as.Date(download_directories[i],"%B_%d_%Y")
+    
+    #for each of the log files
+    for(j in 1:length(log_files)){
+        db_name <- unlist(strsplit(log_files[j],split = "_"))[2]
+      dest_log_file <- file.path(getwd(),log_files[j] )
+      download.file(
+        paste(current_directory,log_files[j],sep=""),
+        destfile=dest_log_file,quiet = TRUE
+      )
+      current_log_contents <- read.table(dest_log_file,header=FALSE,sep="\t",
+                                         stringsAsFactors = FALSE,strip.white = TRUE,fill = TRUE)
+     
+      num <- 1
+      #if there is more than one stats record for this file
+      if((dim(current_log_contents)[1] >  12) && (proper_date > as.Date("2020-11-17"))){
+        stats <- t(current_log_contents[1:10,2])
+        while(num*11 < dim(current_log_contents)[1]){
+          stats <- rbind(stats, current_log_contents[(11*num+1):(11*num+10),2])
+          num <- num+1
+        }
+      } else if((dim(current_log_contents)[1] >  12) && (proper_date <= as.Date("2020-11-17"))){
+        stats <- cbind(t(current_log_contents[1:4,2]), "",t(current_log_contents[5:9,2]))
+        while(num*10 < dim(current_log_contents)[1]){
+          start <- (10*num+1)
+          end <- (10*num+9)
+          stats <- rbind(stats, cbind(t(current_log_contents[start:(start + 4),2]),"",
+                         t(current_log_contents[(start+5):end,2])))
+          num <- num+1
+        }
+      } else if(proper_date <= as.Date("2020-11-17")){
+        stats <- cbind(t(current_log_contents[1:4,2]), "",t(current_log_contents[5:9,2]))
+        } else{
+         stats <- t(current_log_contents[1:10,2])
+      }
+      
+      
+      
+      if(i == 1 && j == 1){
+        ids_summary_ggplot <- data.frame(source=db_name,stats, date = proper_date)
+      } else{
+        ids_summary_ggplot <- rbind(ids_summary_ggplot, 
+                                    data.frame(source=db_name, stats, date = proper_date))
+        
+      }
+      
+      
+    }
+    
+    
+  }
+  
+  colnames(ids_summary_ggplot) <- c("source","Filename",	"Original Identifier",	"ID translated",	"Total #genes",	 "#genes translated",	"#genes missing",	 "percent not translated",	 "Total Annotations",	 "Annotations not translated",	 "percent annot not translated","date")
+  
+  return(ids_summary_ggplot)
+}
+
+```
+
+
+
+
+
+
+
 ```{r  message=FALSE, warning=FALSE,include=FALSE}
 library(ggplot2)
 
@@ -134,7 +328,8 @@ if(!dir.exists(file.path(getwd(),figure_directory))){
 stats_summary_ggplot <- get_summary_file(species,identifier,year)
 
 overall_figure_filename <- "Overall_geneset_stats.png"
-png(file.path(getwd(), figure_directory, overall_figure_filename))
+png(file.path(getwd(), figure_directory, overall_figure_filename),
+    width = params$width, height = params$height,  pointsize = params$pointsz)
 
 ggplot(stats_summary_ggplot, aes(x=date, y=num_sets, group=gmt_file,color=gmt_file)) +
     geom_line() +  
@@ -145,7 +340,7 @@ ggplot(stats_summary_ggplot, aes(x=date, y=num_sets, group=gmt_file,color=gmt_fi
         legend.title = element_text(size=9), #change legend title font size
         legend.direction = "vertical",
          legend.spacing = unit(0.04, "cm"),
-        legend.text = element_text(size=7)) + #change legend text font size
+        legend.text = element_text(size=10)) + #change legend text font size
        ggtitle(paste("Number of genesets over time for", species,"from", year, "- Present", sep = " " )) +
   guides(colour = guide_legend(ncol = 1)) + 
     ylab("Number of genesets") + xlab("time")
@@ -156,12 +351,13 @@ dev.off()
 ![](`r file.path(".",figure_directory, overall_figure_filename)`)
 
 
-```{r include=FALSE}
+```{r  message=FALSE, warning=FALSE,include=FALSE}
 subset_go <- stats_summary_ggplot[grep(stats_summary_ggplot[,1],pattern = "go"),]
 
 GO_figure_filename <- "GO_geneset_stats.png"
 
-png(file.path(getwd(),figure_directory,GO_figure_filename))
+png(file.path(getwd(),figure_directory,GO_figure_filename),
+    width = params$width, height = params$height,  pointsize = params$pointsz)
 
 ggplot(subset_go, aes(x=date, y=num_sets, group=gmt_file,color=gmt_file)) +
     geom_line() + theme(legend.position = "right", 
@@ -171,7 +367,7 @@ ggplot(subset_go, aes(x=date, y=num_sets, group=gmt_file,color=gmt_file)) +
         legend.title = element_text(size=9), #change legend title font size
         legend.direction = "vertical",
          legend.spacing = unit(0.04, "cm"),
-        legend.text = element_text(size=7)) + #change legend text font size  
+        legend.text = element_text(size=10)) + #change legend text font size  
        ggtitle(paste("Number of GO genesets for", species,"from", year, "- Present", sep = " " )) +
   guides(colour = guide_legend(ncol = 1)) + 
     ylab("Number of genesets")  + xlab("time")
@@ -180,12 +376,13 @@ dev.off()
 
 ![](`r file.path(".",figure_directory, GO_figure_filename)`)
 
-```{r include=FALSE}
+```{r  message=FALSE, warning=FALSE,include=FALSE}
 subset_drugbank <- stats_summary_ggplot[grep(stats_summary_ggplot[,1],pattern = "drug|phenotype|mirs|transcription"),] 
 
 Other_figure_filename <- "Other_geneset_stats.png"
 
-png(file.path(getwd(),figure_directory, Other_figure_filename))
+png(file.path(getwd(),figure_directory, Other_figure_filename),
+    width = params$width, height = params$height,  pointsize = params$pointsz)
 
 
 ggplot(subset_drugbank, aes(x=date, y=num_sets, group=gmt_file,color=gmt_file)) +
@@ -196,7 +393,7 @@ ggplot(subset_drugbank, aes(x=date, y=num_sets, group=gmt_file,color=gmt_file)) 
         legend.title = element_text(size=9), #change legend title font size
         legend.direction = "vertical",
          legend.spacing = unit(0.04, "cm"),
-        legend.text = element_text(size=7)) + #change legend text font size   
+        legend.text = element_text(size=10)) + #change legend text font size   
         ggtitle(paste("Number of Phenotype genesets over time for", species,"from", year, "- Present", sep = " " )) +
   guides(colour = guide_legend(ncol = 1)) + 
     ylab("Number of genesets") + xlab("time")
@@ -206,13 +403,13 @@ dev.off()
 
 ![](`r file.path(".",figure_directory, Other_figure_filename)`)
 
-```{r include=FALSE}
+```{r  message=FALSE, warning=FALSE,include=FALSE}
 subset_pathways <- stats_summary_ggplot[grep(stats_summary_ggplot[,1],pattern = "drug|phenotype|mirs|go|transcription", invert = TRUE),] 
 
 Pathway_figure_filename <- "Pathway_geneset_stats.png"
 
-png(file.path(getwd(),figure_directory, Pathway_figure_filename))
-
+png(file.path(getwd(),figure_directory, Pathway_figure_filename),
+    width = params$width, height = params$height,  pointsize = params$pointsz)
 
 ggplot(subset_pathways, aes(x=date, y=num_sets, group=gmt_file,color=gmt_file)) +
     geom_line() + theme(legend.position = "right", 
@@ -222,7 +419,7 @@ ggplot(subset_pathways, aes(x=date, y=num_sets, group=gmt_file,color=gmt_file)) 
         legend.title = element_text(size=9), #change legend title font size
         legend.direction = "vertical",
          legend.spacing = unit(0.04, "cm"),
-        legend.text = element_text(size=7)) + #change legend text font size  
+        legend.text = element_text(size=10)) + #change legend text font size  
     ggtitle(paste("Number of Pathway genesets over time for", species,"from", year, "- Present", sep = " " )) +
   guides(colour = guide_legend(ncol = 1)) + 
     ylab("Number of genesets") + xlab("time")
@@ -230,4 +427,284 @@ dev.off()
 ```
 
 ![](`r file.path(".",figure_directory, Pathway_figure_filename)`)
+
+# Changes/Growth of Identifier mapping By Source over the years
+
+```{r message=FALSE, warning=FALSE,include=FALSE}
+
+species = params$species
+identifier = "symbol"
+year = "2019"
+
+#make a dir for the current figures
+figure_directory <- file.path( "figures",paste(species, identifier,year,
+"to",format(Sys.Date(),"%B_%Y"),sep="_"))
+
+if(!dir.exists(file.path(getwd(),figure_directory))){
+	dir.create(file.path(getwd(),figure_directory))
+}
+
+```
+
+
+```{r message=FALSE, warning=FALSE,include=FALSE}
+id_summary_ggplot_pathways <- get_identifier_conversion_file_by_type(species,identifier,"2019","Pathways")
+
+subset_id_summary <- data.frame(source = id_summary_ggplot_pathways$source, not_translated = as.numeric(id_summary_ggplot_pathways$`Annotations not translated`), total = as.numeric(id_summary_ggplot_pathways$`Total Annotations`), date= id_summary_ggplot_pathways$date, stringsAsFactors = FALSE)
+
+subset_id_summary_agg <- aggregate(subset_id_summary[,2:3],by = list(subset_id_summary$source,subset_id_summary$date),FUN = sum)
+colnames(subset_id_summary_agg) <- c("source","date","not_translated","total")
+
+Pathwayid_figure_filename <- "Pathway_identifier_stats.png"
+
+png(file.path(getwd(),figure_directory, Pathwayid_figure_filename),
+    width = params$width, height = params$height,  pointsize = params$pointsz)
+
+  ggplot(subset_id_summary_agg, aes(x=date, y=(not_translated/total)*100, group=source,color=source)) +
+    geom_line() + theme(legend.position = "right",
+    legend.key.size = unit(0.25, 'cm'), #change legend key size
+    legend.key.height = unit(0.25, 'cm'), #change legend key height
+    legend.key.width = unit(0.25, 'cm'), #change legend key width
+    legend.title = element_text(size=9), #change legend title font size
+    legend.direction = "vertical",
+    legend.spacing = unit(0.04, "cm"),
+    legend.text = element_text(size=10)) + #change legend text font size
+    ggtitle(paste("Percent missing Annotation translations  \n for Pathways", species,"from", year, "- Present", sep = " " )) +
+    guides(colour = guide_legend(ncol = 1)) +
+    ylab("Percent (1-100%) Annotations not translated") + xlab("time") 
+
+dev.off()
+
+```
+
+![](`r file.path(".",figure_directory, Pathwayid_figure_filename)`)
+
+There were issues with Panther data from 02-2019 until 11-2020.  To get a better view of the identifier mapping for the remaining pathway databases exclude panther data. 
+
+```{r message=FALSE, warning=FALSE,include=FALSE}
+id_summary_ggplot_pathways <- get_identifier_conversion_file_by_type(species,identifier,"2019","Pathways")
+
+subset_id_summary <- data.frame(source = id_summary_ggplot_pathways$source, not_translated = as.numeric(id_summary_ggplot_pathways$`Annotations not translated`), total = as.numeric(id_summary_ggplot_pathways$`Total Annotations`), date= id_summary_ggplot_pathways$date, stringsAsFactors = FALSE)
+
+subset_id_summary_agg <- aggregate(subset_id_summary[,2:3],by = list(subset_id_summary$source,subset_id_summary$date),FUN = sum)
+colnames(subset_id_summary_agg) <- c("source","date","not_translated","total")
+
+subset_id_summary_agg <- subset_id_summary_agg[which(subset_id_summary_agg$not_translated/subset_id_summary_agg$total < 0.25),]
+
+Pathwayid2_figure_filename <- "Pathway_nopanther_identifier_stats.png"
+
+png(file.path(getwd(),figure_directory, Pathwayid2_figure_filename),
+    width = params$width, height = params$height,  pointsize = params$pointsz)
+
+  ggplot(subset_id_summary_agg, aes(x=date, y=(not_translated/total)*100, group=source,color=source)) +
+    geom_line() + theme(legend.position = "right",
+    legend.key.size = unit(0.25, 'cm'), #change legend key size
+    legend.key.height = unit(0.25, 'cm'), #change legend key height
+    legend.key.width = unit(0.25, 'cm'), #change legend key width
+    legend.title = element_text(size=9), #change legend title font size
+    legend.direction = "vertical",
+    legend.spacing = unit(0.04, "cm"),
+    legend.text = element_text(size=10)) + #change legend text font size
+    ggtitle(paste("Percent missing Annotation translations  \n for Pathways", species,"from", year, "- Present", sep = " " )) +
+    guides(colour = guide_legend(ncol = 1)) +
+    ylab("Percent (1-100%) Annotations not translated") + xlab("time") 
+
+dev.off()
+
+```
+
+![](`r file.path(".",figure_directory, Pathwayid2_figure_filename)`)
+
+
+
+```{r message=FALSE, warning=FALSE,include=FALSE}
+id_summary_ggplot_DrugTargets <- get_identifier_conversion_file_by_type(species,identifier,"2021","DrugTargets")
+
+subset_id_summary <- data.frame(source = id_summary_ggplot_DrugTargets$Filename, not_translated = as.numeric(id_summary_ggplot_DrugTargets$`Annotations not translated`), total = as.numeric(id_summary_ggplot_DrugTargets$`Total Annotations`), date= id_summary_ggplot_DrugTargets$date, stringsAsFactors = FALSE)
+
+subset_id_summary_agg <- aggregate(subset_id_summary[,2:3],by = list(subset_id_summary$source,subset_id_summary$date),FUN = sum)
+colnames(subset_id_summary_agg) <- c("Filename","date","not_translated","total")
+
+Drugid_figure_filename <- "Drugbank_identifier_stats.png"
+
+png(file.path(getwd(),figure_directory, Drugid_figure_filename),
+    width = params$width, height = params$height,  pointsize = params$pointsz)
+
+ggplot(subset_id_summary_agg, aes(x=date, y=(not_translated/total)*100, group=Filename,color=Filename)) +
+  geom_line() + theme(legend.position = "right",
+  legend.key.size = unit(0.25, 'cm'), #change legend key size
+  legend.key.height = unit(0.25, 'cm'), #change legend key height
+  legend.key.width = unit(0.25, 'cm'), #change legend key width
+  legend.title = element_text(size=9), #change legend title font size
+  legend.direction = "vertical",
+  legend.spacing = unit(0.04, "cm"),
+  legend.text = element_text(size=10)) + #change legend text font size
+  ggtitle(paste("Percent missing Annotation translations  \n for DrugTargets", species,"from", year, "- Present", sep = " " )) +
+  guides(colour = guide_legend(ncol = 1)) +
+  ylab("Percent (1-100%) Annotations not translated") + xlab("time") 
+
+dev.off()
+
+```
+![](`r file.path(".",figure_directory, Drugid_figure_filename)`)
+
+
+
+```{r message=FALSE, warning=FALSE,include=FALSE}
+id_summary_ggplot_miRs <- get_identifier_conversion_file_by_type(species,identifier,"2019","miRs")
+
+subset_id_summary <- data.frame(source = id_summary_ggplot_miRs$source, not_translated = as.numeric(id_summary_ggplot_miRs$`Annotations not translated`), total = as.numeric(id_summary_ggplot_miRs$`Total Annotations`), date= id_summary_ggplot_miRs$date, stringsAsFactors = FALSE)
+
+subset_id_summary_agg <- aggregate(subset_id_summary[,2:3],by = list(subset_id_summary$source,subset_id_summary$date),FUN = sum)
+colnames(subset_id_summary_agg) <- c("source","date","not_translated","total")
+
+Mirid_figure_filename <- "Mir_identifier_stats.png"
+
+png(file.path(getwd(),figure_directory, Mirid_figure_filename),
+    width = params$width, height = params$height,  pointsize = params$pointsz)
+
+  ggplot(subset_id_summary_agg, aes(x=date, y=(not_translated/total)*100, group=source,color=source)) +
+    geom_line() + theme(legend.position = "right",
+    legend.key.size = unit(0.25, 'cm'), #change legend key size
+    legend.key.height = unit(0.25, 'cm'), #change legend key height
+    legend.key.width = unit(0.25, 'cm'), #change legend key width
+    legend.title = element_text(size=9), #change legend title font size
+    legend.direction = "vertical",
+    legend.spacing = unit(0.04, "cm"),
+    legend.text = element_text(size=10)) + #change legend text font size
+    ggtitle(paste("Percent missing Annotation translations  \n for miRs", species,"from", year, "- Present", sep = " " )) +
+    guides(colour = guide_legend(ncol = 1)) +
+    ylab("Percent Annotations not translated") + xlab("time") 
+
+dev.off()
+
+```
+![](`r file.path(".",figure_directory, Mirid_figure_filename)`)
+
+```{r message=FALSE, warning=FALSE,include=FALSE}
+id_summary_ggplot_DiseasePhenotypes <- get_identifier_conversion_file_by_type(species,identifier,"2021","DiseasePhenotypes")
+
+subset_id_summary <- data.frame(source = id_summary_ggplot_DiseasePhenotypes$source, not_translated = as.numeric(id_summary_ggplot_DiseasePhenotypes$`Annotations not translated`), total = as.numeric(id_summary_ggplot_DiseasePhenotypes$`Total Annotations`), date= id_summary_ggplot_DiseasePhenotypes$date, stringsAsFactors = FALSE)
+
+subset_id_summary_agg <- aggregate(subset_id_summary[,2:3],by = list(subset_id_summary$source,subset_id_summary$date),FUN = sum)
+colnames(subset_id_summary_agg) <- c("source","date","not_translated","total")
+
+Diseaseid_figure_filename <- "Disease_identifier_stats.png"
+
+png(file.path(getwd(),figure_directory, Diseaseid_figure_filename),
+    width = params$width, height = params$height,  pointsize = params$pointsz)
+
+  ggplot(subset_id_summary_agg, aes(x=date, y=(not_translated/total)*100, group=source,color=source)) +
+    geom_line() + theme(legend.position = "right",
+    legend.key.size = unit(0.25, 'cm'), #change legend key size
+    legend.key.height = unit(0.25, 'cm'), #change legend key height
+    legend.key.width = unit(0.25, 'cm'), #change legend key width
+    legend.title = element_text(size=9), #change legend title font size
+    legend.direction = "vertical",
+    legend.spacing = unit(0.04, "cm"),
+    legend.text = element_text(size=10)) + #change legend text font size
+    ggtitle(paste("Percent missing Annotation translations \n for DiseasePhenotypes", species,"from", year, "- Present", sep = " " )) +
+    guides(colour = guide_legend(ncol = 1)) +
+    ylab("Percent Annotations not translated") + xlab("time") 
+
+dev.off()
+```
+
+![](`r file.path(".",figure_directory, Diseaseid_figure_filename)`)
+
+```{r message=FALSE, warning=FALSE,include=FALSE}
+#go through each unique file and graph the percentage of ids that are not mapped
+id_summary_ggplot <- get_identifier_conversion_file(species,identifier,year)
+
+subset_pathways <- id_summary_ggplot[grep(id_summary_ggplot[,1],pattern = "drug|phenotype|mirs|go|transcription", invert = TRUE),] 
+
+#collapse all the pathbank files
+subset_id_summary <- id_summary_ggplot[,c("Filename","Annotations.not.translated","Total.Annotations","date")]
+
+#divide out any troublesome files that have more than 50% identifier loss
+files_with_issues <- subset_id_summary[which(as.numeric(subset_id_summary$Annotations.not.translated)/as.numeric(subset_id_summary$Total.Annotations) > 0.5),]
+
+#remove the files with issues
+subset_id_summary <- subset_id_summary[which(as.numeric(subset_id_summary$Annotations.not.translated)/as.numeric(subset_id_summary$Total.Annotations) <= 0.5),]
+
+#the pathbank files are all together - collapse them to just one file
+pw_subset <- subset_id_summary[grep(subset_id_summary$Filename,pattern="^pw"),]
+pw_subset[,2] <- as.numeric(pw_subset[,2])
+pw_subset[,3] <- as.numeric(pw_subset[,3])
+subset_id_summary <- subset_id_summary[grep(subset_id_summary$Filename,pattern="^pw",invert = TRUE),]
+pw_aggregated <- cbind("Pathbank",aggregate(pw_subset[,2:3],by = list(pw_subset$date),FUN = sum)[,c(2,3,1)])
+colnames(pw_aggregated) <- colnames(subset_id_summary)
+subset_id_summary <- rbind(subset_id_summary,pw_aggregated)
+
+#misc pathways - get all the owl files. 
+misc_subset <- subset_id_summary[grep(subset_id_summary$Filename,pattern=".owl"),]
+#remove them from the subset_id_summary
+subset_id_summary <- subset_id_summary[grep(subset_id_summary$Filename,pattern="owl",invert = TRUE),]
+#add back in reactome, nci-nature, and human cyc
+subset_id_summary <- rbind(subset_id_summary,misc_subset[grep(misc_subset$Filename,pattern="homo_sapiens"),])
+misc_subset <- misc_subset[grep(misc_subset$Filename,pattern="homo_sapiens",invert = TRUE),]
+subset_id_summary <- rbind(subset_id_summary,misc_subset[grep(misc_subset$Filename,pattern="nci-nature"),])
+misc_subset <- misc_subset[grep(misc_subset$Filename,pattern="nci-nature",invert = TRUE),]
+subset_id_summary <- rbind(subset_id_summary,misc_subset[grep(misc_subset$Filename,pattern="biopax-level"),])
+misc_subset <- misc_subset[grep(misc_subset$Filename,pattern="biopax-level",invert = TRUE),]
+
+#collapse the remaining owl files by date into Misc biopax pathways.
+misc_subset[,2] <- as.numeric(misc_subset[,2])
+misc_subset[,3] <- as.numeric(misc_subset[,3])
+misc_aggregated <- cbind("Panther",aggregate(misc_subset[,2:3],by = list(misc_subset$date),FUN = sum)[,c(2,3,1)])
+colnames(misc_aggregated) <- colnames(subset_id_summary)
+subset_id_summary <- rbind(subset_id_summary,misc_aggregated)
+
+
+#shorten the names
+subset_id_summary$Filename[grep(subset_id_summary$Filename,pattern="biopax-level")] <- "HumanCyc"
+subset_id_summary$Filename[grep(subset_id_summary$Filename,pattern="wikipathways")] <- "WikiPathways"
+subset_id_summary$Filename[grep(subset_id_summary$Filename,pattern="homo_sapiens")] <- "Reactome"
+subset_id_summary$Filename[grep(subset_id_summary$Filename,pattern="nci-nature")] <- "NCI-nature"
+subset_id_summary$Filename[grep(subset_id_summary$Filename,pattern="go_mf_with")] <- "GO_MF_withIEA"
+subset_id_summary$Filename[grep(subset_id_summary$Filename,pattern="go_mf_no")] <- "GO_MF_noIEA"
+subset_id_summary$Filename[grep(subset_id_summary$Filename,pattern="go_cc_with")] <- "GO_CC_withIEA"
+subset_id_summary$Filename[grep(subset_id_summary$Filename,pattern="go_cc_no")] <- "GO_CC_noIEA"
+subset_id_summary$Filename[grep(subset_id_summary$Filename,pattern="go_bp_with")] <- "GO_BP_withIEA"
+subset_id_summary$Filename[grep(subset_id_summary$Filename,pattern="go_bp_no")] <- "GO_BP_noIEA"
+subset_id_summary$Filename[grep(subset_id_summary$Filename,pattern="drugbank_all")] <- "drugbank_all"
+subset_id_summary$Filename[grep(subset_id_summary$Filename,pattern="drugbank_approved")] <- "drugbank_approved"
+subset_id_summary$Filename[grep(subset_id_summary$Filename,pattern="drugbank_exp")] <- "drugbank_exp"
+subset_id_summary$Filename[grep(subset_id_summary$Filename,pattern="drugbank_nut")] <- "drugbank_nut"
+subset_id_summary$Filename[grep(subset_id_summary$Filename,pattern="kegg")] <- "Kegg"
+
+subset_id_summary[,2] <- as.numeric(subset_id_summary[,2])
+subset_id_summary[,3] <- as.numeric(subset_id_summary[,3])
+
+#limit to just GO
+subset_id_summary <- subset_id_summary[grep(subset_id_summary$Filename,pattern="GO_"),]
+
+
+GOid_figure_filename <- "GO_identifier_stats.png"
+
+png(file.path(getwd(),figure_directory, GOid_figure_filename),
+    width = params$width, height = params$height,  pointsize = params$pointsz)
+
+ggplot(subset_id_summary, aes(x=date, y=(Annotations.not.translated/Total.Annotations)*100, group=Filename,color=Filename)) +
+    geom_line() + theme(legend.position = "right", 
+        legend.key.size = unit(0.25, 'cm'), #change legend key size
+        legend.key.height = unit(0.25, 'cm'), #change legend key height
+        legend.key.width = unit(0.25, 'cm'), #change legend key width
+        legend.title = element_text(size=9), #change legend title font size
+        legend.direction = "vertical",
+         legend.spacing = unit(0.04, "cm"),
+        legend.text = element_text(size=10)) + #change legend text font size  
+    ggtitle(paste("Percent missing Annotation translations for", species,"from", year, "- Present", sep = " " )) + 
+  guides(colour = guide_legend(ncol = 1)) + 
+    ylab("Percent Annotations not translated") + xlab("time")
+
+dev.off()
+
+
+```
+
+
+
+![](`r file.path(".",figure_directory, GOid_figure_filename)`)
+
 
