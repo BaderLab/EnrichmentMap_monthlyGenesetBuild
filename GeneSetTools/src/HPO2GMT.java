@@ -79,8 +79,10 @@ public class HPO2GMT {
 		// in the 4 position
 		// String[] phenotype = phenotypes.split(";");
                 //   for(int j=0;j<phenotype.length;j++){
-			String name = tokens[2];
-			String HPOid = tokens[3];
+			//June 1, 2022 --> genes to phenotype file format change.  Id is in the 3rd column
+			// and name is in the 4th column 
+		   	String name = tokens[3];
+			String HPOid = tokens[2];
                        //each phenotype consists of name(HPO ID)
                        //String name = phenotype[j].split("\\(HP:")[0];
                        //String HPOid = "HP:" + (phenotype[j].split("\\(HP:")[1]).split("\\)")[0];
