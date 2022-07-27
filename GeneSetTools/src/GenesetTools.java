@@ -102,7 +102,7 @@ public class GenesetTools {
      * @throws IOException
      */
     public static void translate(String args[]) throws IOException {
-         GeneSetTranslator_UniprotWebservice translator = new GeneSetTranslator_UniprotWebservice();
+         GeneSetTranslator_UniprotREST translator = new GeneSetTranslator_UniprotREST();
          CmdLineParser parser = new CmdLineParser(translator);
         try {
            parser.parseArgument(args);
