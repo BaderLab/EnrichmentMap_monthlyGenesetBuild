@@ -12,7 +12,7 @@ import java.util.Arrays;
 
 public class QueryUniprotWebservice
 {
-  private static final String UNIPROT_SERVER = "https://www.uniprot.org/";
+  private static final String UNIPROT_SERVER = "https://legacy.uniprot.org/";
   private static final Logger LOG = Logger.getAnonymousLogger();
 
 
