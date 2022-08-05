@@ -283,7 +283,7 @@ public boolean check_job_status(String jobId) throws IOException, InterruptedExc
 			System.out.println("Queried job:" + jobId + "more than 100 times and it is still not complete");
 			return false;
 		}else if(status.equalsIgnoreCase("RUNNING")){
-			attempt++;
+			attempt = attempt++;
       			Thread.sleep(5 * 1000);
 		
 		}else if(status.equalsIgnoreCase("FINISHED")){
