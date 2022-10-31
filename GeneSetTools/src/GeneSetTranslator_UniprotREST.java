@@ -559,7 +559,7 @@ public HashMap<String, Set<String>> convertUniprotWebservice(Set GeneQuerySet,St
 			QueryUniprotREST uniprot_query = new QueryUniprotREST(oldID,newID, queryset,taxonomyId);
 
 			String[] jobIds = uniprot_query.submitJob();
-			//System.out.println("current returned jobids:" + jobIds.toString());
+			//System.out.println("current returned jobids:" + Arrays.toString(jobIds));
 			new_genes = uniprot_query.getJobResults(jobIds);
 			
 			//check to see which ids we were still unable to translate
@@ -571,6 +571,8 @@ public HashMap<String, Set<String>> convertUniprotWebservice(Set GeneQuerySet,St
 
 		} catch (Exception e){
 			System.out.println("Something is wrong with the uniprot web service");
+			System.out.println(e.getMessage());
+			System.out.println(e.toString());
 		}
 
 	return new_genes;

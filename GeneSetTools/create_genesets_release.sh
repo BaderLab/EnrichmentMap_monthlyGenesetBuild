@@ -125,7 +125,8 @@ function download_GOmouse_data {
 	echo "[Downloading current Go Mouse MGI  data]"
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Go Mouse MGI data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	#URL="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.mgi.gz?rev=HEAD"
-	URL="http://www.informatics.jax.org/downloads/reports/gene_association.mgi.gz"
+	#URL="http://www.informatics.jax.org/downloads/reports/gene_association.mgi.gz"
+	URL="ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/MOUSE/goa_mouse.gaf.gz"
 	curl $URL -o ${GOSRC}/gene_association.mgi.gz -s 
 	get_webfile_version ${URL} "GO_Mouse"
 }
@@ -137,7 +138,9 @@ function download_HPO_data {
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Human Phenotypes data"'"}' `cat ${TOOLDIR}/slack_webhook`
         #URL="http://compbio.charite.de/hudson/job/hpo.annotations.monthly/lastStableBuild/artifact/annotation/ALL_SOURCES_ALL_FREQUENCIES_genes_to_phenotype.txt"
 	#URL="http://purl.obolibrary.org/obo/hp/hpoa/genes_to_phenotype.txt"
-	URL="https://ci.monarchinitiative.org/view/hpo/job/hpo.annotations/lastSuccessfulBuild/artifact/rare-diseases/util/annotation/genes_to_phenotype.txt"
+	#URL="https://ci.monarchinitiative.org/view/hpo/job/hpo.annotations/lastSuccessfulBuild/artifact/rare-diseases/util/annotation/genes_to_phenotype.txt"
+	#URL="http://purl.obolibrary.org/obo/hp/hpoa/genes_to_phenotype.txt"
+	URL="https://github.com/obophenotype/human-phenotype-ontology/releases/latest/download/genes_to_phenotype.txt"
 	curl ${URL} -o ${DISEASESRC}/genes_to_phenotype.txt -s
 	get_webfile_version ${URL} "Human_Phenotype"
 
@@ -148,8 +151,9 @@ function download_HPO_data {
 	#curl ${URL}/human-phenotype-ontology.obo -o ${DISEASESRC}/human-phenotype-ontology.obo -s  -w "HPO (obo) : HTTP code - %{http_code};time:%{time_total} millisec; size:%{size_download} Bytes\n"
         #URL="http://compbio.charite.de/jenkins/job/hpo/lastStableBuild/artifact/hp"
 
+	#URL="https://raw.githubusercontent.com/obophenotype/human-phenotype-ontology/master/hp.obo"
+	#URL="http://purl.obolibrary.org/obo/hp.obo"
 	URL="https://raw.githubusercontent.com/obophenotype/human-phenotype-ontology/master/hp.obo"
-
 	curl ${URL} -o ${DISEASESRC}/human-phenotype-ontology.obo -s 
 	get_webfile_version ${URL} "Human_phenotype_OBO_FILE"
 
@@ -1152,8 +1156,14 @@ for file in *.mgi*; do
 	process_gaf_noiea  $file "10090" "cc" ${GOOBO}
 done
 
-for file in *_symbol.gmt; do
-	translate_gmt_UniProt $file "10090" "symbol"
+#GO with create two files _UniProt.gmt and _Uniprot_symbol.gmt
+#before going on move all the _symbol.gmt to .gmt_symbol
+for file in *UniProt_symbol.gmt; do
+	mv $file ${file}_symbol
+done
+
+for file in *_UniProt.gmt; do
+	translate_gmt_UniProt $file "10090" "UniProt"
 done
 
 #create  the compilation of all branches
@@ -1171,12 +1181,12 @@ cat *gene_summary.log > ${EG}/${GO}/Mouse_GO_entrezgene_translation_summary.log
 
 cp *UniProt.gmt ${UNIPROT}/${GO}
 #create report of translations
-cat *UniProt_summary.log > ${UNIPROT}/${GO}/Mouse_GO_UniProt_translation_summary.log
+#there are no translation logs for mouse.
+#cat *UniProt_summary.log > ${UNIPROT}/${GO}/Mouse_GO_UniProt_translation_summary.log
 
 cp *symbol.gmt ${SYMBOL}/${GO}
 #create report of translations
-#there are no translation logs for mouse.
-#cat *symbol_summary.log > ${SYMBOL}/${GO}/Mouse_GO_symbol_translation_summary.log
+cat *symbol_summary.log > ${SYMBOL}/${GO}/Mouse_GO_symbol_translation_summary.log
 
 
 #create a directory will all the gmt from human we want to convert to mouse
@@ -1259,20 +1269,20 @@ cp Mouse*_symbol.gmt ${SYMBOL}/${DRUGS}/
 #concatenate all the translation summaries	
 files=$(ls *10090_conversion.log 2> /dev/null | wc -l)
 if [ $files != 0 ] ; then
-	cat *10090_conversion.log > Mouse_translatedDrugs_entrezgene_translation_summary.log
-	cp Mouse_translatedDrugs_entrezgene_translation_summary.log ${EG}/${DRUGS}/Mouse_translatedDrugs_Entrezgene_translation_summary.log
+	cat *10090_conversion.log > Mouse_Drugbank_Entrezgene_translation_summary.log
+	cp Mouse_Drugbank_Entrezgene_translation_summary.log ${EG}/${DRUGS}/Mouse_Drugbank_Entrezgene_translation_summary.log
 fi
 	
 files=$(ls *UniProt_summary.log 2> /dev/null | wc -l)
 if [ $files != 0 ] ; then
-	cat *UniProt_summary.log > Mouse_translatedDrugs_UniProt_translation_summary.log
-	cp Mouse_translatedDrugs_UniProt_translation_summary.log ${UNIPROT}/${DRUGS}/Mouse_translatedDrugs_UniProt_translation_summary.log
+	cat *UniProt_summary.log > Mouse_Drugbank_UniProt_translation_summary.log
+	cp Mouse_Drugbank_UniProt_translation_summary.log ${UNIPROT}/${DRUGS}/Mouse_Drugbank_UniProt_translation_summary.log
 fi
 		
 files=$(ls *symbol_summary.log 2> /dev/null | wc -l)
 if [ $files != 0 ] ; then
-	cat *symbol_summary.log > Mouse_translatedDrugs_symbol_translation_summary.log
-	cp Mouse_translatedDrugs_symbol_translation_summary.log ${SYMBOL}/${DRUGS}/Mouse_translatedDrugs_symbol_translation_summary.log
+	cat *symbol_summary.log > Mouse_Drugbank_symbol_translation_summary.log
+	cp Mouse_Drugbank_symbol_translation_summary.log ${SYMBOL}/${DRUGS}/Mouse_Drugbank_symbol_translation_summary.log
 fi
 
 
@@ -1334,7 +1344,8 @@ function download_GORat_data {
 	echo "[Downloading current Go Rat  data]"
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Go Rat data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	#URL="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.rgd.gz?rev=HEAD"
-	URL="http://current.geneontology.org/annotations/rgd.gaf.gz"
+	#URL="http://current.geneontology.org/annotations/rgd.gaf.gz"
+	URL="ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/RAT/goa_mouse.rat.gz"
 	curl $URL -o ${GOSRC}/gene_association.rgd.gz -s 
 	get_webfile_version ${URL} "GO_Rat"
 
@@ -1440,8 +1451,15 @@ for file in *.rgd*; do
 	process_gaf $file "10116" "cc" ${GOOBO}
 	process_gaf_noiea  $file "10116" "cc" ${GOOBO}
 done
-for file in *.gmt; do
-	translate_gmt_UniProt $file "10116" "symbol"
+
+#GO with create two files _UniProt.gmt and _Uniprot_symbol.gmt
+#before going on move all the _symbol.gmt to .gmt_symbol
+for file in *UniProt_symbol.gmt; do
+	mv $file ${file}_symbol
+done
+
+for file in *UniProt.gmt; do
+	translate_gmt_UniProt $file "10116" "UniProt"
 done
 
 #create  the compilation of all branches
@@ -1459,11 +1477,11 @@ cat *gene_summary.log > ${EG}/${GO}/Rat_GO_entrezgene_translation_summary.log
 
 cp *UniProt.gmt ${UNIPROT}/${GO}
 #create report of translations
-cat *UniProt_summary.log > ${UNIPROT}/${GO}/Rat_GO_UniProt_translation_summary.log
+#cat *UniProt_summary.log > ${UNIPROT}/${GO}/Rat_GO_UniProt_translation_summary.log
 
 cp *symbol.gmt ${SYMBOL}/${GO}
 #create report of translations
-cat *UniProt_summary.log > ${UNIPROT}/${GO}/Rat_GO_UniProt_translation_summary.log
+cat *symbol_summary.log > ${UNIPROT}/${GO}/Rat_GO_symbol_translation_summary.log
 
 
 #create a directory will all the gmt from human we want to convert to Rat
@@ -1703,20 +1721,20 @@ cp Woodchuck*_symbol.gmt ${SYMBOL}/${DRUGS}/
 #concatenate all the translation summaries	
 files=$(ls *9995_conversion.log 2> /dev/null | wc -l)
 if [ $files != 0 ] ; then
-	cat *9995_conversion.log > Woodchuck_translatedDrugs_entrezgene_translation_summary.log
-	cp Woodchuck_translatedDrugs_entrezgene_translation_summary.log ${EG}/${DRUGS}/Woodchuck_translatedDrugs_Entrezgene_translation_summary.log
+	cat *9995_conversion.log > Woodchuck_Drugbank_entrezgene_translation_summary.log
+	cp Woodchuck_Drugbank_entrezgene_translation_summary.log ${EG}/${DRUGS}/Woodchuck_Drugbank_Entrezgene_translation_summary.log
 fi
 	
 #files=$(ls *UniProt_summary.log 2> /dev/null | wc -l)
 #if [ $files != 0 ] ; then
-#	cat *UniProt_summary.log > Woodchuck_translatedDrugs_UniProt_translation_summary.log
-#	cp Woodchuck_translatedDrugs_UniProt_translation_summary.log ${UNIPROT}/${DRUGS}/Woodchuck_translatedDrugs_UniProt_translation_summary.log
+#	cat *UniProt_summary.log > Woodchuck_Drugbank_UniProt_translation_summary.log
+#	cp Woodchuck_Drugbank_UniProt_translation_summary.log ${UNIPROT}/${DRUGS}/Woodchuck_Drugbank_UniProt_translation_summary.log
 #fi
 		
 files=$(ls *symbol_summary.log 2> /dev/null | wc -l)
 if [ $files != 0 ] ; then
-	cat *symbol_summary.log > Woodchuck_translatedDrugs_symbol_translation_summary.log
-	cp Woodchuck_translatedDrugs_symbol_translation_summary.log ${SYMBOL}/${DRUGS}/Woodchuck_translatedDrugs_symbol_translation_summary.log
+	cat *symbol_summary.log > Woodchuck_Drugbank_symbol_translation_summary.log
+	cp Woodchuck_Drugbank_symbol_translation_summary.log ${SYMBOL}/${DRUGS}/Woodchuck_Drugbank_symbol_translation_summary.log
 fi
 
 

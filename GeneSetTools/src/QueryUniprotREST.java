@@ -169,34 +169,37 @@ public class QueryUniprotREST
 	
 	//how many jobs is it going to be divided into
 	
-	String[] jobIds = new String[((int)Math.ceil(ids.size()/10000)+1)];
+	String[] jobIds = new String[((int)Math.ceil(ids.size()/1000)+1)];
 	int i = 0;
 
 	//Uniprot server will max out but can't find max query.  - batch by 10,000s
 	//convert Hashset into an array
 	String[] ids_batch = new String[ids.size()];
 	ids.toArray(ids_batch);
-
+	System.out.println("converting " + ids_batch.length + " ids in total");
 	int start = 0;
-	int end = 10000;
-	if(ids_batch.length < 10000)
+	int end = 1000;
+	if(ids_batch.length < 1000)
 		end = ids_batch.length;
 	while(start<ids_batch.length){
 
 		String[] current_ids = Arrays.copyOfRange(ids_batch,start,end);
-	//	System.out.println("Converting:" + String.join(" ", current_ids));
+		//System.out.println("Converting:" + String.join(" ", current_ids));
 		//update numbers for next round
 		start = end + 1;
-		if(start > ids_batch.length)
+		end = end + 1000;
+		if(end > ids_batch.length)
 			end = ids_batch.length -1;
 		else
-			end = end + 10000;
+			end = end;
 
 		// form parameters
         	Map<Object, Object> data = new HashMap<>();
 		data.put("from",this.oldID_index);
 		data.put("to",this.newID_index);
-		data.put("ids",String.join(",",current_ids));
+/*		if(oldID_index.equalsIgnoreCase("Gene_Name") || oldID_index.equalsIgnoreCase("GeneID"))
+			data.put("taxId",Integer.toString(this.organism));
+*/		data.put("ids",String.join(",",current_ids));
 		
 		//System.out.println(String.join(",",current_ids));	
 
@@ -217,10 +220,10 @@ public class QueryUniprotREST
        		//headers.map().forEach((k, v) -> System.out.println(k + ":" + v));
 
         	// print status code
-       		//System.out.println(response.statusCode());
+       		System.out.println(response.statusCode());
 
         	// print response body
-        	//System.out.println(response.body());
+        	System.out.println(response.body());
 
 		// parsing file "JSONExample.json"
         	Object obj = new JSONParser().parse(response.body());
@@ -231,13 +234,13 @@ public class QueryUniprotREST
 
 		// getting firstName and lastName
         	String jobid = (String) jo.get("jobId");
-        	//System.out.println(jobid);
+        	System.out.println(jobid);
 		
 		jobIds[i] = jobid;
 		i++;
 
 	}
-	//System.out.println("the array of jobids" + jobIds.toString());
+	//System.out.println("the array of jobids" + Arrays.toString(jobIds));
 	return jobIds;
 }
 
@@ -285,9 +288,11 @@ public boolean check_job_status(String jobId) throws IOException, InterruptedExc
 		}else if(status.equalsIgnoreCase("RUNNING")){
 			attempt = attempt++;
       			Thread.sleep(5 * 1000);
-		
+		}else if(status.equalsIgnoreCase("ERROR")){
+			System.out.println("Returned errors -" + jo.get("errors"));
+		       return false;	
 		}else if(status.equalsIgnoreCase("FINISHED")){
-			return true;
+			return true; 
 		}
 	}
 	//return false;
@@ -325,14 +330,21 @@ public boolean check_job_status(String jobId) throws IOException, InterruptedExc
 		else
 			end = end + 500;
 
-    		this.params =  new ParameterNameValue[] {
-      			new ParameterNameValue("from", this.oldID_index),
-      			new ParameterNameValue("to", this.newID_index),
-			new ParameterNameValue("format", "tab"),
-			new ParameterNameValue("Organism", Integer.toString(this.organism)),
-			new ParameterNameValue("query", String.join(" ", current_ids)),
-    		};
-	
+		if(oldID_index.equalsIgnoreCase("Gene_Name") || oldID_index.equalsIgnoreCase("GeneID"))
+    			this.params =  new ParameterNameValue[] {
+      				new ParameterNameValue("from", this.oldID_index),
+      				new ParameterNameValue("to", this.newID_index),
+				new ParameterNameValue("format", "tab"),
+				//new ParameterNameValue("taxId", Integer.toString(this.organism)),
+				new ParameterNameValue("query", String.join(" ", current_ids)),
+    			};
+		else
+    			this.params =  new ParameterNameValue[] {
+      				new ParameterNameValue("from", this.oldID_index),
+      				new ParameterNameValue("to", this.newID_index),
+				new ParameterNameValue("format", "tab"),
+				new ParameterNameValue("query", String.join(" ", current_ids)),
+    			};
    	
 	  	StringBuilder locationBuilder = new StringBuilder(UNIPROT_SERVER + tool + "/?");
     		for (int i = 0; i < this.params.length; i++){
