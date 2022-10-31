@@ -2,7 +2,7 @@
 title: "Geneset Growth Stats"
 output: html_document
 params:
-  species: Human
+  species: Mouse
   identifier: entrezgene
   year: 2019
   width: 600
@@ -297,8 +297,9 @@ get_identifier_conversion_file_by_type <- function(species = "Human", identifier
     
   }
   
-  colnames(ids_summary_ggplot) <- c("source","Filename",	"Original Identifier",	"ID translated",	"Total #genes",	 "#genes translated",	"#genes missing",	 "percent not translated",	 "Total Annotations",	 "Annotations not translated",	 "percent annot not translated","date")
-  
+  if(!is.null(ids_summary_ggplot) && (length(ids_summary_ggplot)>0)){
+    colnames(ids_summary_ggplot) <- c("source","Filename",	"Original Identifier",	"ID translated",	"Total #genes",	 "#genes translated",	"#genes missing",	 "percent not translated",	 "Total Annotations",	 "Annotations not translated",	 "percent annot not translated","date")
+  }
   return(ids_summary_ggplot)
 }
 
@@ -553,64 +554,79 @@ dev.off()
 ```{r message=FALSE, warning=FALSE,include=FALSE}
 id_summary_ggplot_miRs <- get_identifier_conversion_file_by_type(species,identifier,"2019","miRs")
 
-subset_id_summary <- data.frame(source = id_summary_ggplot_miRs$source, not_translated = as.numeric(id_summary_ggplot_miRs$`Annotations not translated`), total = as.numeric(id_summary_ggplot_miRs$`Total Annotations`), date= id_summary_ggplot_miRs$date, stringsAsFactors = FALSE)
+if(is.null(id_summary_ggplot_miRs) && length(id_summary_ggplot_miRs) > 0){
 
-subset_id_summary_agg <- aggregate(subset_id_summary[,2:3],by = list(subset_id_summary$source,subset_id_summary$date),FUN = sum)
+	subset_id_summary <- data.frame(source = id_summary_ggplot_miRs$source, not_translated = as.numeric(id_summary_ggplot_miRs$`Annotations not translated`), total = as.numeric(id_summary_ggplot_miRs$`Total Annotations`), date= id_summary_ggplot_miRs$date, stringsAsFactors = FALSE)
+
+	subset_id_summary_agg <- aggregate(subset_id_summary[,2:3],by = list(subset_id_summary$source,subset_id_summary$date),FUN = sum)
 colnames(subset_id_summary_agg) <- c("source","date","not_translated","total")
 
-Mirid_figure_filename <- "Mir_identifier_stats.png"
+	Mirid_figure_filename <- "Mir_identifier_stats.png"
 
-png(file.path(getwd(),figure_directory, Mirid_figure_filename),
+	png(file.path(getwd(),figure_directory, Mirid_figure_filename),
     width = params$width, height = params$height,  pointsize = params$pointsz)
 
-  ggplot(subset_id_summary_agg, aes(x=date, y=(not_translated/total)*100, group=source,color=source)) +
-    geom_line() + theme(legend.position = "right",
-    legend.key.size = unit(0.25, 'cm'), #change legend key size
-    legend.key.height = unit(0.25, 'cm'), #change legend key height
-    legend.key.width = unit(0.25, 'cm'), #change legend key width
-    legend.title = element_text(size=9), #change legend title font size
-    legend.direction = "vertical",
-    legend.spacing = unit(0.04, "cm"),
-    legend.text = element_text(size=10)) + #change legend text font size
-    ggtitle(paste("Percent missing Annotation translations  \n for miRs", species,"from", year, "- Present", sep = " " )) +
-    guides(colour = guide_legend(ncol = 1)) +
-    ylab("Percent Annotations not translated") + xlab("time") 
+  	ggplot(subset_id_summary_agg, aes(x=date, y=(not_translated/total)*100, group=source,color=source)) +
+    	geom_line() + theme(legend.position = "right",
+    	legend.key.size = unit(0.25, 'cm'), #change legend key size
+    	legend.key.height = unit(0.25, 'cm'), #change legend key height
+    	legend.key.width = unit(0.25, 'cm'), #change legend key width
+    	legend.title = element_text(size=9), #change legend title font size
+    	legend.direction = "vertical",
+    	legend.spacing = unit(0.04, "cm"),
+    	legend.text = element_text(size=10)) + #change legend text font size
+    	ggtitle(paste("Percent missing Annotation translations  \n for miRs", species,"from", year, "- Present", sep = " " )) +
+    	guides(colour = guide_legend(ncol = 1)) +
+    	ylab("Percent Annotations not translated") + xlab("time") 
 
-dev.off()
-
+	dev.off()
+}
 ```
-![](`r file.path(".",figure_directory, Mirid_figure_filename)`)
+
+```{r message=FALSE, warning=FALSE,include=FALSE}
+if(exists( "Mirid_figure_filename")){
+  knitr::include_graphics( file.path(".",figure_directory, Mirid_figure_filename))
+}
+```
+
 
 ```{r message=FALSE, warning=FALSE,include=FALSE}
 id_summary_ggplot_DiseasePhenotypes <- get_identifier_conversion_file_by_type(species,identifier,"2021","DiseasePhenotypes")
 
-subset_id_summary <- data.frame(source = id_summary_ggplot_DiseasePhenotypes$source, not_translated = as.numeric(id_summary_ggplot_DiseasePhenotypes$`Annotations not translated`), total = as.numeric(id_summary_ggplot_DiseasePhenotypes$`Total Annotations`), date= id_summary_ggplot_DiseasePhenotypes$date, stringsAsFactors = FALSE)
+if(is.null(id_summary_ggplot_DiseasePhenotypes) && length(id_summary_ggplot_DiseasePhenotypes) > 0){
+	subset_id_summary <- data.frame(source = id_summary_ggplot_DiseasePhenotypes$source, not_translated = as.numeric(id_summary_ggplot_DiseasePhenotypes$`Annotations not translated`), total = as.numeric(id_summary_ggplot_DiseasePhenotypes$`Total Annotations`), date= id_summary_ggplot_DiseasePhenotypes$date, stringsAsFactors = FALSE)
 
-subset_id_summary_agg <- aggregate(subset_id_summary[,2:3],by = list(subset_id_summary$source,subset_id_summary$date),FUN = sum)
+	subset_id_summary_agg <- aggregate(subset_id_summary[,2:3],by = list(subset_id_summary$source,subset_id_summary$date),FUN = sum)
 colnames(subset_id_summary_agg) <- c("source","date","not_translated","total")
 
-Diseaseid_figure_filename <- "Disease_identifier_stats.png"
+	Diseaseid_figure_filename <- "Disease_identifier_stats.png"
 
-png(file.path(getwd(),figure_directory, Diseaseid_figure_filename),
-    width = params$width, height = params$height,  pointsize = params$pointsz)
+	png(file.path(getwd(),figure_directory, Diseaseid_figure_filename),
+    	width = params$width, height = params$height,  pointsize = params$pointsz)
 
-  ggplot(subset_id_summary_agg, aes(x=date, y=(not_translated/total)*100, group=source,color=source)) +
-    geom_line() + theme(legend.position = "right",
-    legend.key.size = unit(0.25, 'cm'), #change legend key size
-    legend.key.height = unit(0.25, 'cm'), #change legend key height
-    legend.key.width = unit(0.25, 'cm'), #change legend key width
-    legend.title = element_text(size=9), #change legend title font size
-    legend.direction = "vertical",
-    legend.spacing = unit(0.04, "cm"),
-    legend.text = element_text(size=10)) + #change legend text font size
-    ggtitle(paste("Percent missing Annotation translations \n for DiseasePhenotypes", species,"from", year, "- Present", sep = " " )) +
-    guides(colour = guide_legend(ncol = 1)) +
-    ylab("Percent Annotations not translated") + xlab("time") 
+  	ggplot(subset_id_summary_agg, aes(x=date, y=(not_translated/total)*100, group=source,color=source)) +
+    	geom_line() + theme(legend.position = "right",
+    	legend.key.size = unit(0.25, 'cm'), #change legend key size
+    	legend.key.height = unit(0.25, 'cm'), #change legend key height
+    	legend.key.width = unit(0.25, 'cm'), #change legend key width
+    	legend.title = element_text(size=9), #change legend title font size
+    	legend.direction = "vertical",
+    	legend.spacing = unit(0.04, "cm"),
+    	legend.text = element_text(size=10)) + #change legend text font size
+    	ggtitle(paste("Percent missing Annotation translations \n for DiseasePhenotypes", species,"from", year, "- Present", sep = " " )) +
+    	guides(colour = guide_legend(ncol = 1)) +
+    	ylab("Percent Annotations not translated") + xlab("time") 
 
-dev.off()
+	dev.off()
+}
 ```
 
-![](`r file.path(".",figure_directory, Diseaseid_figure_filename)`)
+```{r message=FALSE, warning=FALSE,include=FALSE}
+if(exists( "Diseaseid_figure_filename")){
+  knitr::include_graphics( file.path(".",figure_directory, Diseaseid_figure_filename))
+}
+```
+
 
 ```{r message=FALSE, warning=FALSE,include=FALSE}
 #go through each unique file and graph the percentage of ids that are not mapped
@@ -629,12 +645,14 @@ subset_id_summary <- subset_id_summary[which(as.numeric(subset_id_summary$Annota
 
 #the pathbank files are all together - collapse them to just one file
 pw_subset <- subset_id_summary[grep(subset_id_summary$Filename,pattern="^pw"),]
-pw_subset[,2] <- as.numeric(pw_subset[,2])
-pw_subset[,3] <- as.numeric(pw_subset[,3])
-subset_id_summary <- subset_id_summary[grep(subset_id_summary$Filename,pattern="^pw",invert = TRUE),]
-pw_aggregated <- cbind("Pathbank",aggregate(pw_subset[,2:3],by = list(pw_subset$date),FUN = sum)[,c(2,3,1)])
-colnames(pw_aggregated) <- colnames(subset_id_summary)
-subset_id_summary <- rbind(subset_id_summary,pw_aggregated)
+if(!is.null(pw_subset) && dim(pw_subset)[1] >0){
+  pw_subset[,2] <- as.numeric(pw_subset[,2])
+  pw_subset[,3] <- as.numeric(pw_subset[,3])
+  subset_id_summary <- subset_id_summary[grep(subset_id_summary$Filename,pattern="^pw",invert = TRUE),]
+  pw_aggregated <- cbind("Pathbank",aggregate(pw_subset[,2:3],by = list(pw_subset$date),FUN = sum)[,c(2,3,1)])
+  colnames(pw_aggregated) <- colnames(subset_id_summary)
+  subset_id_summary <- rbind(subset_id_summary,pw_aggregated)
+}
 
 #misc pathways - get all the owl files. 
 misc_subset <- subset_id_summary[grep(subset_id_summary$Filename,pattern=".owl"),]
@@ -648,13 +666,15 @@ misc_subset <- misc_subset[grep(misc_subset$Filename,pattern="nci-nature",invert
 subset_id_summary <- rbind(subset_id_summary,misc_subset[grep(misc_subset$Filename,pattern="biopax-level"),])
 misc_subset <- misc_subset[grep(misc_subset$Filename,pattern="biopax-level",invert = TRUE),]
 
-#collapse the remaining owl files by date into Misc biopax pathways.
-misc_subset[,2] <- as.numeric(misc_subset[,2])
-misc_subset[,3] <- as.numeric(misc_subset[,3])
-misc_aggregated <- cbind("Panther",aggregate(misc_subset[,2:3],by = list(misc_subset$date),FUN = sum)[,c(2,3,1)])
-colnames(misc_aggregated) <- colnames(subset_id_summary)
-subset_id_summary <- rbind(subset_id_summary,misc_aggregated)
-
+if(!is.null(misc_subset) && dim(misc_subset)[1] >0){
+ 
+  #collapse the remaining owl files by date into Misc biopax pathways.
+  misc_subset[,2] <- as.numeric(misc_subset[,2])
+  misc_subset[,3] <- as.numeric(misc_subset[,3])
+  misc_aggregated <- cbind("Panther",aggregate(misc_subset[,2:3],by = list(misc_subset$date),FUN = sum)[,c(2,3,1)])
+  colnames(misc_aggregated) <- colnames(subset_id_summary)
+  subset_id_summary <- rbind(subset_id_summary,misc_aggregated)
+}
 
 #shorten the names
 subset_id_summary$Filename[grep(subset_id_summary$Filename,pattern="biopax-level")] <- "HumanCyc"
