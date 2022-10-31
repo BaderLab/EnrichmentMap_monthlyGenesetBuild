@@ -390,11 +390,11 @@ public class GOGeneSetFileMaker {
         }
 		else if(fTaxonomyId == 10090){
 			fQueryFilename = "MOUSE_GO";
-            id = "MGI";
+            id = "UniProt";
         }
 		else if(fTaxonomyId == 10116){
 			fQueryFilename = "RAT_GO";
-            id = "RGD";
+            id = "UniProt";
         }
 		else
 			fQueryFilename = fTaxonomyId + "_GO";
