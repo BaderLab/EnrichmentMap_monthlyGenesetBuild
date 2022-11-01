@@ -1345,7 +1345,7 @@ function download_GORat_data {
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Go Rat data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	#URL="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.rgd.gz?rev=HEAD"
 	#URL="http://current.geneontology.org/annotations/rgd.gaf.gz"
-	URL="ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/RAT/goa_mouse.rat.gz"
+	URL="ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/RAT/goa_rat.gaf.gz"
 	curl $URL -o ${GOSRC}/gene_association.rgd.gz -s 
 	get_webfile_version ${URL} "GO_Rat"
 
