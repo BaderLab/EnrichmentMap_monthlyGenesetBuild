@@ -141,7 +141,7 @@ function download_HPO_data {
 	#URL="https://ci.monarchinitiative.org/view/hpo/job/hpo.annotations/lastSuccessfulBuild/artifact/rare-diseases/util/annotation/genes_to_phenotype.txt"
 	#URL="http://purl.obolibrary.org/obo/hp/hpoa/genes_to_phenotype.txt"
 	URL="https://github.com/obophenotype/human-phenotype-ontology/releases/latest/download/genes_to_phenotype.txt"
-	curl ${URL} -o ${DISEASESRC}/genes_to_phenotype.txt -s
+	curl -L ${URL} -o ${DISEASESRC}/genes_to_phenotype.txt -s
 	get_webfile_version ${URL} "Human_Phenotype"
 
 	#get the obo file
