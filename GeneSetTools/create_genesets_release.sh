@@ -918,6 +918,19 @@ for dir in `ls`; do
 		copy2release MSigdb Human ${PATHWAYS}
 		cd ${STATICDIR}
 	fi
+	if [[ $dir == "msigdb_hall" ]] ; then
+		cd $dir
+		mkdir ${SOURCE}/$dir
+		cp *.gmt ${SOURCE}/$dir
+		cp *.txt ${VERSIONS}
+		cd ${SOURCE}/$dir
+		for file in *.gmt; do
+			process_gmt $file "MSigdbHallmark" 1
+			translate_gmt_UniProt $file "9606" "entrezgene"
+		done
+		copy2release Hallmark_MSigdb Human ${PATHWAYS}
+		cd ${STATICDIR}
+	fi
 #	if [[ $dir == "DiseasePhenotypes" ]] ; then
 #		cd $dir
 #		mkdir ${SOURCE}/$dir
