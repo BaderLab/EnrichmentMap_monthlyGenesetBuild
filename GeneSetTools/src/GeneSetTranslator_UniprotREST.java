@@ -323,7 +323,7 @@ public class GeneSetTranslator_UniprotREST {
 
         String OutFilename = baseFilename_nooldid  + id  + ".gmt";
 
-        params.printGenesets(translated_genesets,OutFilename);
+	params.printGenesets(translated_genesets,OutFilename);
 
         //only create a log file if the logs object it isn't empty.
         if(!logs.isEmpty()){
