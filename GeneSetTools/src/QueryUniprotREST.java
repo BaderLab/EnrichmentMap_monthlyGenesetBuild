@@ -144,7 +144,7 @@ public class QueryUniprotREST
 					String[] mapping = to.split("\\s+");
 					//if the length is not 1 then there are more than 1 ids. 
 					if(mapping.length != 1){
-						System.out.println("There are multiple ids in line:" + to);
+						System.out.println("There are multiple ids in line:" + to +  "(we were trying to convert " + from + ")");
 					} else{
 						convertedIds.put(from, new HashSet<>(Arrays.asList(to)));
 						//System.out.println("Adding:" + from + " maps to " + to); 

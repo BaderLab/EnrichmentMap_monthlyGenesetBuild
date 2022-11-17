@@ -143,7 +143,7 @@ public class QueryUniprotWebservice
 					//if the length is not 2 then there are more than 2 ids. 
 					if(mapping.length != 2){
 						System.out.println("There are multiple ids in line:" + conversions[i]);
-					} else{
+					} else {
 						convertedIds.put(mapping[0], new HashSet<>(Arrays.asList(mapping[1])));
 						//System.out.println("Adding:" + mapping[0] + " maps to " + mapping[1]); 
 					}
