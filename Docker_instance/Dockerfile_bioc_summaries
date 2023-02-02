@@ -1,4 +1,11 @@
-FROM bioconductor/bioconductor_docker
+FROM risserlin/bcb420-base-image:winter2022
+#FROM bioconductor/bioconductor_docker:RELEASE_3_16 
+
+#RUN install2.r \
+#   -d TRUE \
+#   -r "https://cran.rstudio.com" \
+#   ggplot2 \
+#   RCurl 
 
 # Install required Bioconductor package
-RUN R -e 'install.packages("rmarkdown")'
+#RUN R -e 'install.packages("rmarkdown")'
