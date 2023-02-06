@@ -93,8 +93,9 @@ function download_biocyc_data {
 	echo "[Downloading current BioCyc data - for species $1]"
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current BioCyc data - for species $1"'"}' `cat ${TOOLDIR}/slack_webhook`
 	#URL="http://bioinformatics.ai.sri.com/ecocyc/dist/flatfiles-52983746/"
-	URL="https://bioinformatics.ai.sri.com/ecocyc/dist/flatfiles-52983746/"
-	#URL="http://brg-files.ai.sri.com/public/dist/"
+	#URL="https://bioinformatics.ai.sri.com/ecocyc/dist/flatfiles-52983746/"
+	#Feb 2023 - changed the url back to this one! (been down for 3 months.)
+	URL="https://brg-files.ai.sri.com/public/dist/"
 	echo "${URL}/tier1-tier2-biopax.tar.gz" >> ${VERSIONS}/${1}cyc.txt
 	curl ${URL}/tier1-tier2-biopax.tar.gz -u biocyc-flatfiles:data-20541 -I | grep "Last-Modified" >> ${VERSIONS}/${1}cyc.txt
 	curl ${URL}/tier1-tier2-biopax.tar.gz -o ${2}/${1}.tar.gz -u biocyc-flatfiles:data-20541 -s 
@@ -658,7 +659,7 @@ cd ${PATHBANK}
 unzip pathbank_primary_biopax.zip  >/dev/null
 
 #cd into the biopax file directory
-cd pathbank_primary_biopax
+#cd pathbank_primary_biopax
 
 #Go through each pathway file and grab the UniProts
 #not all the files are human specific so check before processing them
