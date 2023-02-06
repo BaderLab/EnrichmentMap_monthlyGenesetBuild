@@ -1,2 +1,3 @@
-MSigdb c2 version 7.5.1 - canonical pathway set (cp) from pid and biocarta
+MSigdb c2 version v2022.1 - canonical pathway set (cp) from pid and biocarta
+Human MSigDB v2022.1.Hs updated August 2022
 ==============
