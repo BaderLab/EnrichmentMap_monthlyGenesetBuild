@@ -95,10 +95,11 @@ function download_biocyc_data {
 	#URL="http://bioinformatics.ai.sri.com/ecocyc/dist/flatfiles-52983746/"
 	#URL="https://bioinformatics.ai.sri.com/ecocyc/dist/flatfiles-52983746/"
 	#Feb 2023 - changed the url back to this one! (been down for 3 months.)
-	URL="https://brg-files.ai.sri.com/public/dist/"
+	URL="https://brg-files.ai.sri.com/public/dist"
 	echo "${URL}/tier1-tier2-biopax.tar.gz" >> ${VERSIONS}/${1}cyc.txt
 	curl ${URL}/tier1-tier2-biopax.tar.gz -u biocyc-flatfiles:data-20541 -I | grep "Last-Modified" >> ${VERSIONS}/${1}cyc.txt
-	curl ${URL}/tier1-tier2-biopax.tar.gz -o ${2}/${1}.tar.gz -u biocyc-flatfiles:data-20541 -s 
+	echo "curl ${URL}/tier1-tier2-biopax.tar.gz -o ${2}/${1}.tar.gz -u biocyc-flatfiles:data-20541"  
+	curl ${URL}/tier1-tier2-biopax.tar.gz -o ${2}/${1}.tar.gz -u biocyc-flatfiles:data-20541  
 }
 
 # Go human data comes directly from ebi as they are the primary curators of human GO annotations
@@ -197,7 +198,7 @@ function process_biopax {
 	#./validate.sh "file:${CURRENTDIR}/$1" --output=${CURRENTDIR}/${1}_updated_v1.owl --auto-fix --return-biopax 2>> biopax_process.err
 
 	#move the auto-corrected owl file back to original directory
-	cp ${1}.modified.owl ${CURRENTDIR} 
+	mv ${1}.modified.owl ${CURRENTDIR} 
 
 	cd ${CURRENTDIR}
 	#create gmt file from the given, autofixed biopax file
@@ -650,6 +651,32 @@ createDivisionDirs ${SYMBOL}
 #done 
 #copy2release PC_NCI_Nature Human ${PATHWAYS}
 
+#download humancyc data
+HUMANCYC=${SOURCE}/Humancyc
+mkdir ${HUMANCYC}
+
+#issue - novemeber 20,2018 -can't download new data without new subscription
+#retrying download after U of T sponsored subscriptions.
+download_biocyc_data "human" ${HUMANCYC}
+cd ${HUMANCYC}
+
+#cp ${STATICDIR}/biocyc/human*.gz ./
+
+#unzip and untar human.tar.gz file
+tar --wildcards -xvzf human.tar.gz humancyc/*level3.owl
+#the release number keeps changing - need a way to change into the right directory without knowing what the new number is
+# instead of specifying the name of the directory put *.  This will break if
+# they change the data directory structure though.
+cd humancyc/
+for file in *.owl; do
+	process_biopax $file "UniProt" "HumanCyc" "9606"
+done
+for file in *.gmt; do
+	translate_gmt_UniProt $file "9606" "UniProt"
+done
+copy2release HumanCyc Human ${PATHWAYS}
+
+
 #download pathbank biopax data
 PATHBANK=${SOURCE}/Pathbank
 mkdir ${PATHBANK}
@@ -676,33 +703,6 @@ for file in *.gmt; do
 done
 
 copy2release Pathbank Human ${PATHWAYS}
-
-#download humancyc
-HUMANCYC=${SOURCE}/Humancyc
-mkdir ${HUMANCYC}
-
-#issue - novemeber 20,2018 -can't download new data without new subscription
-#retrying download after U of T sponsored subscriptions.
-download_biocyc_data "human" ${HUMANCYC}
-cd ${HUMANCYC}
-
-#cp ${STATICDIR}/biocyc/human*.gz ./
-
-#unzip and untar human.tar.gz file
-tar --wildcards -xvzf human.tar.gz humancyc/*level3.owl
-#the release number keeps changing - need a way to change into the right directory without knowing what the new number is
-# instead of specifying the name of the directory put *.  This will break if
-# they change the data directory structure though.
-cd humancyc/
-for file in *.owl; do
-	process_biopax $file "UniProt" "HumanCyc" "9606"
-done
-for file in *.gmt; do
-	translate_gmt_UniProt $file "9606" "UniProt"
-done
-copy2release HumanCyc Human ${PATHWAYS}
-
-
 
 #download the WikiPathways gmt files
 WIKIPATHWAYS=${SOURCE}/WikiPathways
