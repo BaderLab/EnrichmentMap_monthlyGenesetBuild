@@ -773,7 +773,7 @@ download_netpath_data
 cd ${NETPATH}
 #process each file in the NetPath directory.
 for file in *.owl; do
-	process_biopax $file "Entrez gene" "NetPath" "9606"
+	process_biopax $file "ncbi gene" "NetPath" "9606"
 done
 for file in *.gmt; do
 	translate_gmt_UniProt $file "9606" "entrezgene"
