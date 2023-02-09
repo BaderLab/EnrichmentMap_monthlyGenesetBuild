@@ -774,6 +774,8 @@ cd ${NETPATH}
 #process each file in the NetPath directory.
 for file in *.owl; do
 	process_biopax $file "ncbi gene" "NetPath" "9606"
+	#move the processed file to have an entrezgene name instead
+	mv ${file}_ncbigene.gmt ${file}_entrezgene.gmt
 done
 for file in *.gmt; do
 	translate_gmt_UniProt $file "9606" "entrezgene"
