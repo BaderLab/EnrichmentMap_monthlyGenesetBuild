@@ -2,7 +2,7 @@
 title: "Geneset Growth Stats"
 output: html_document
 params:
-  species: Mouse
+  species: Rat
   identifier: entrezgene
   year: 2019
   width: 600
@@ -521,35 +521,40 @@ dev.off()
 ```{r message=FALSE, warning=FALSE,include=FALSE}
 id_summary_ggplot_DrugTargets <- get_identifier_conversion_file_by_type(species,identifier,"2021","DrugTargets")
 
-subset_id_summary <- data.frame(source = id_summary_ggplot_DrugTargets$Filename, not_translated = as.numeric(id_summary_ggplot_DrugTargets$`Annotations not translated`), total = as.numeric(id_summary_ggplot_DrugTargets$`Total Annotations`), date= id_summary_ggplot_DrugTargets$date, stringsAsFactors = FALSE)
-
-subset_id_summary_agg <- aggregate(subset_id_summary[,2:3],by = list(subset_id_summary$source,subset_id_summary$date),FUN = sum)
-colnames(subset_id_summary_agg) <- c("Filename","date","not_translated","total")
-
-Drugid_figure_filename <- "Drugbank_identifier_stats.png"
-
-png(file.path(getwd(),figure_directory, Drugid_figure_filename),
-    width = params$width, height = params$height,  pointsize = params$pointsz)
-
-ggplot(subset_id_summary_agg, aes(x=date, y=(not_translated/total)*100, group=Filename,color=Filename)) +
-  geom_line() + theme(legend.position = "right",
-  legend.key.size = unit(0.25, 'cm'), #change legend key size
-  legend.key.height = unit(0.25, 'cm'), #change legend key height
-  legend.key.width = unit(0.25, 'cm'), #change legend key width
-  legend.title = element_text(size=9), #change legend title font size
-  legend.direction = "vertical",
-  legend.spacing = unit(0.04, "cm"),
-  legend.text = element_text(size=10)) + #change legend text font size
-  ggtitle(paste("Percent missing Annotation translations  \n for DrugTargets", species,"from", year, "- Present", sep = " " )) +
-  guides(colour = guide_legend(ncol = 1)) +
-  ylab("Percent (1-100%) Annotations not translated") + xlab("time") 
-
-dev.off()
+if(!is.null(id_summary_ggplot_DrugTargets)){
+  subset_id_summary <- data.frame(source = id_summary_ggplot_DrugTargets$Filename, not_translated = as.numeric(id_summary_ggplot_DrugTargets$`Annotations not translated`), total = as.numeric(id_summary_ggplot_DrugTargets$`Total Annotations`), date= id_summary_ggplot_DrugTargets$date, stringsAsFactors = FALSE)
+  
+  subset_id_summary_agg <- aggregate(subset_id_summary[,2:3],by = list(subset_id_summary$source,subset_id_summary$date),FUN = sum)
+  colnames(subset_id_summary_agg) <- c("Filename","date","not_translated","total")
+  
+  Drugid_figure_filename <- "Drugbank_identifier_stats.png"
+  
+  png(file.path(getwd(),figure_directory, Drugid_figure_filename),
+      width = params$width, height = params$height,  pointsize = params$pointsz)
+  
+  ggplot(subset_id_summary_agg, aes(x=date, y=(not_translated/total)*100, group=Filename,color=Filename)) +
+    geom_line() + theme(legend.position = "right",
+    legend.key.size = unit(0.25, 'cm'), #change legend key size
+    legend.key.height = unit(0.25, 'cm'), #change legend key height
+    legend.key.width = unit(0.25, 'cm'), #change legend key width
+    legend.title = element_text(size=9), #change legend title font size
+    legend.direction = "vertical",
+    legend.spacing = unit(0.04, "cm"),
+    legend.text = element_text(size=10)) + #change legend text font size
+    ggtitle(paste("Percent missing Annotation translations  \n for DrugTargets", species,"from", year, "- Present", sep = " " )) +
+    guides(colour = guide_legend(ncol = 1)) +
+    ylab("Percent (1-100%) Annotations not translated") + xlab("time") 
+  
+  dev.off()
+}
 
 ```
-![](`r file.path(".",figure_directory, Drugid_figure_filename)`)
 
-
+```{r message=FALSE, warning=FALSE,include=FALSE}
+if(exists( "Drugid_figure_filename")){
+  knitr::include_graphics( file.path(".",figure_directory, Drugid_figure_filename))
+}
+```
 
 ```{r message=FALSE, warning=FALSE,include=FALSE}
 id_summary_ggplot_miRs <- get_identifier_conversion_file_by_type(species,identifier,"2019","miRs")
