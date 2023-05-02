@@ -551,8 +551,10 @@ if(!is.null(id_summary_ggplot_DrugTargets)){
 ```
 
 ```{r message=FALSE, warning=FALSE,include=FALSE}
-if(exists( "Drugid_figure_filename")){
-  knitr::include_graphics( file.path(".",figure_directory, Drugid_figure_filename))
+if(exists("Drugid_figure_filename")){
+  if(exists( file.path(".",figure_directory, Drugid_figure_filename))){
+    knitr::include_graphics( file.path(".",figure_directory, Drugid_figure_filename))
+  }
 }
 ```
 
@@ -590,7 +592,9 @@ colnames(subset_id_summary_agg) <- c("source","date","not_translated","total")
 
 ```{r message=FALSE, warning=FALSE,include=FALSE}
 if(exists( "Mirid_figure_filename")){
-  knitr::include_graphics( file.path(".",figure_directory, Mirid_figure_filename))
+  if(exists( file.path(".",figure_directory, Mirid_figure_filename))){
+    knitr::include_graphics( file.path(".",figure_directory, Mirid_figure_filename))
+  }
 }
 ```
 
@@ -628,7 +632,9 @@ colnames(subset_id_summary_agg) <- c("source","date","not_translated","total")
 
 ```{r message=FALSE, warning=FALSE,include=FALSE}
 if(exists( "Diseaseid_figure_filename")){
-  knitr::include_graphics( file.path(".",figure_directory, Diseaseid_figure_filename))
+  if(exists( file.path(".",figure_directory, Diseaseid_figure_filename))){
+    knitr::include_graphics( file.path(".",figure_directory, Diseaseid_figure_filename))
+  }
 }
 ```
 
