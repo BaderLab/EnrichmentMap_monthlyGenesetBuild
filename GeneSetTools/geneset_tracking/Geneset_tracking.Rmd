@@ -8,10 +8,14 @@ params:
   width: 600
   height: 600
   pointsz: 14
+  home_dir: /home/rstudio/projects
+  
 ---
 
 # Changes/Growth of Genesets By Source over the years
 ```{r load libraries, echo=FALSE,message=FALSE, warning=FALSE}
+
+home_dir <- params$home_dir
 
 ## Load in required libraries
 
@@ -80,12 +84,9 @@ get_summary_file <- function(species = "Human", identifier="entrezgene", year=20
               current_log_file = log_files
             }
             
-            dest_log_file <- file.path(getwd(),current_log_file )
+            dest_log_file <- file.path(home_dir,current_log_file )
             
-            download.file(
-                paste(current_directory,current_log_file,sep=""),
-                destfile=dest_log_file,quiet = TRUE
-            )
+            download.file(paste(current_directory,current_log_file,sep=""),destfile = dest_log_file,quiet = FALSE)
             
             current_log_contents <- read.table(dest_log_file,header=FALSE,sep="\t",stringsAsFactors = FALSE,strip.white = TRUE)
             current_log_contents <- current_log_contents[grep(current_log_contents[,1],pattern=".gmt"),]
@@ -163,7 +164,7 @@ get_identifier_conversion_file <- function(species = "Human", identifier="entrez
       current_log_file = log_files
     }
     
-    dest_log_file <- file.path(getwd(),current_log_file )
+    dest_log_file <- file.path(home_dir,current_log_file )
     
     if(length(dest_log_file) == 0){
       break
@@ -171,7 +172,7 @@ get_identifier_conversion_file <- function(species = "Human", identifier="entrez
     
     download.file(
       paste(current_directory,current_log_file,sep=""),
-      destfile=dest_log_file,quiet = TRUE
+      destfile = dest_log_file,quiet = TRUE
     )
     
     current_log_contents <- read.table(dest_log_file,header=FALSE,sep="\t",stringsAsFactors = FALSE,strip.white = TRUE,fill = TRUE)
@@ -250,10 +251,9 @@ get_identifier_conversion_file_by_type <- function(species = "Human", identifier
     #for each of the log files
     for(j in 1:length(log_files)){
         db_name <- unlist(strsplit(log_files[j],split = "_"))[2]
-      dest_log_file <- file.path(getwd(),log_files[j] )
+      dest_log_file <- file.path(home_dir,log_files[j] )
       download.file(
-        paste(current_directory,log_files[j],sep=""),
-        destfile=dest_log_file,quiet = TRUE
+        paste(current_directory,log_files[j],sep=""),destfile = dest_log_file,quiet = TRUE
       )
       current_log_contents <- read.table(dest_log_file,header=FALSE,sep="\t",
                                          stringsAsFactors = FALSE,strip.white = TRUE,fill = TRUE)
@@ -306,12 +306,8 @@ get_identifier_conversion_file_by_type <- function(species = "Human", identifier
 ```
 
 
-
-
-
-
-
 ```{r  message=FALSE, warning=FALSE,include=FALSE}
+
 library(ggplot2)
 
 species = params$species
@@ -319,17 +315,16 @@ identifier = params$identifier
 year = params$year
 
 #make a dir for the current figures
-figure_directory <- file.path( "figures",paste(species, identifier,year,
-"to",format(Sys.Date(),"%B_%Y"),sep="_"))
+figure_directory <- file.path( "figures",paste(species, identifier,year,"to",format(Sys.Date(),"%B_%Y"),sep="_"))
 
-if(!dir.exists(file.path(getwd(),figure_directory))){
-	dir.create(file.path(getwd(),figure_directory))
+if(!dir.exists(file.path(home_dir,figure_directory))){
+	dir.create(file.path(home_dir,figure_directory))
 }
 
 stats_summary_ggplot <- get_summary_file(species,identifier,year)
 
 overall_figure_filename <- "Overall_geneset_stats.png"
-png(file.path(getwd(), figure_directory, overall_figure_filename),
+png(file.path(home_dir, figure_directory, overall_figure_filename),
     width = params$width, height = params$height,  pointsize = params$pointsz)
 
 ggplot(stats_summary_ggplot, aes(x=date, y=num_sets, group=gmt_file,color=gmt_file)) +
@@ -357,7 +352,7 @@ subset_go <- stats_summary_ggplot[grep(stats_summary_ggplot[,1],pattern = "go"),
 
 GO_figure_filename <- "GO_geneset_stats.png"
 
-png(file.path(getwd(),figure_directory,GO_figure_filename),
+png(file.path(home_dir,figure_directory,GO_figure_filename),
     width = params$width, height = params$height,  pointsize = params$pointsz)
 
 ggplot(subset_go, aes(x=date, y=num_sets, group=gmt_file,color=gmt_file)) +
@@ -382,7 +377,7 @@ subset_drugbank <- stats_summary_ggplot[grep(stats_summary_ggplot[,1],pattern = 
 
 Other_figure_filename <- "Other_geneset_stats.png"
 
-png(file.path(getwd(),figure_directory, Other_figure_filename),
+png(file.path(home_dir,figure_directory, Other_figure_filename),
     width = params$width, height = params$height,  pointsize = params$pointsz)
 
 
@@ -409,7 +404,7 @@ subset_pathways <- stats_summary_ggplot[grep(stats_summary_ggplot[,1],pattern = 
 
 Pathway_figure_filename <- "Pathway_geneset_stats.png"
 
-png(file.path(getwd(),figure_directory, Pathway_figure_filename),
+png(file.path(home_dir,figure_directory, Pathway_figure_filename),
     width = params$width, height = params$height,  pointsize = params$pointsz)
 
 ggplot(subset_pathways, aes(x=date, y=num_sets, group=gmt_file,color=gmt_file)) +
@@ -441,8 +436,8 @@ year = "2019"
 figure_directory <- file.path( "figures",paste(species, identifier,year,
 "to",format(Sys.Date(),"%B_%Y"),sep="_"))
 
-if(!dir.exists(file.path(getwd(),figure_directory))){
-	dir.create(file.path(getwd(),figure_directory))
+if(!dir.exists(file.path(home_dir,figure_directory))){
+	dir.create(file.path(home_dir,figure_directory))
 }
 
 ```
@@ -458,7 +453,7 @@ colnames(subset_id_summary_agg) <- c("source","date","not_translated","total")
 
 Pathwayid_figure_filename <- "Pathway_identifier_stats.png"
 
-png(file.path(getwd(),figure_directory, Pathwayid_figure_filename),
+png(file.path(home_dir,figure_directory, Pathwayid_figure_filename),
     width = params$width, height = params$height,  pointsize = params$pointsz)
 
   ggplot(subset_id_summary_agg, aes(x=date, y=(not_translated/total)*100, group=source,color=source)) +
@@ -494,7 +489,7 @@ subset_id_summary_agg <- subset_id_summary_agg[which(subset_id_summary_agg$not_t
 
 Pathwayid2_figure_filename <- "Pathway_nopanther_identifier_stats.png"
 
-png(file.path(getwd(),figure_directory, Pathwayid2_figure_filename),
+png(file.path(home_dir,figure_directory, Pathwayid2_figure_filename),
     width = params$width, height = params$height,  pointsize = params$pointsz)
 
   ggplot(subset_id_summary_agg, aes(x=date, y=(not_translated/total)*100, group=source,color=source)) +
@@ -529,7 +524,7 @@ if(!is.null(id_summary_ggplot_DrugTargets)){
   
   Drugid_figure_filename <- "Drugbank_identifier_stats.png"
   
-  png(file.path(getwd(),figure_directory, Drugid_figure_filename),
+  png(file.path(home_dir,figure_directory, Drugid_figure_filename),
       width = params$width, height = params$height,  pointsize = params$pointsz)
   
   ggplot(subset_id_summary_agg, aes(x=date, y=(not_translated/total)*100, group=Filename,color=Filename)) +
@@ -570,7 +565,7 @@ colnames(subset_id_summary_agg) <- c("source","date","not_translated","total")
 
 	Mirid_figure_filename <- "Mir_identifier_stats.png"
 
-	png(file.path(getwd(),figure_directory, Mirid_figure_filename),
+	png(file.path(home_dir,figure_directory, Mirid_figure_filename),
     width = params$width, height = params$height,  pointsize = params$pointsz)
 
   	ggplot(subset_id_summary_agg, aes(x=date, y=(not_translated/total)*100, group=source,color=source)) +
@@ -610,7 +605,7 @@ colnames(subset_id_summary_agg) <- c("source","date","not_translated","total")
 
 	Diseaseid_figure_filename <- "Disease_identifier_stats.png"
 
-	png(file.path(getwd(),figure_directory, Diseaseid_figure_filename),
+	png(file.path(home_dir,figure_directory, Diseaseid_figure_filename),
     	width = params$width, height = params$height,  pointsize = params$pointsz)
 
   	ggplot(subset_id_summary_agg, aes(x=date, y=(not_translated/total)*100, group=source,color=source)) +
@@ -713,7 +708,7 @@ subset_id_summary <- subset_id_summary[grep(subset_id_summary$Filename,pattern="
 
 GOid_figure_filename <- "GO_identifier_stats.png"
 
-png(file.path(getwd(),figure_directory, GOid_figure_filename),
+png(file.path(home_dir,figure_directory, GOid_figure_filename),
     width = params$width, height = params$height,  pointsize = params$pointsz)
 
 ggplot(subset_id_summary, aes(x=date, y=(Annotations.not.translated/Total.Annotations)*100, group=Filename,color=Filename)) +
