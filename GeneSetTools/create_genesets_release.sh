@@ -80,7 +80,10 @@ function download_wikipathways_data {
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current WikiPathways data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	#URL="http://data.wikipathways.org/current/gmt/"
 	#FILE=`echo "cat //html/body/div/table/tbody/tr/td/a" |  xmllint --html --shell ${URL} | grep -o -E ">(.*$1.gmt)<" | sed -E 's/(<|>)//g'`
-	URL="https://wikipathways-data.toolforge.org/current/gmt/"
+	#URL="https://wikipathways-data.toolforge.org/current/gmt/"
+	#change to wikipathways download url - June 2023
+	URL="https://wikipathways-data.wmcloud.org/current/gmt/"
+	
 	#not elegant but the only way to pull out the file name is pull out the name between '> and < tokens.  Might brake in the future. (xmllint does not work with https 
 	FILE=`curl -s ${URL} |  grep -o -E ">(.*$1.gmt)<" | grep -o -P "(?<='>).*(?=<)"`
 	curl ${URL}/${FILE} -o ${WIKIPATHWAYS}/WikiPathways_${1}_entrezgene.gmt -s -L 
