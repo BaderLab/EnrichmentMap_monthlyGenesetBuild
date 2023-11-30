@@ -60,6 +60,7 @@ function download_netpath_data {
 	echo "[Downloading current NetPath data]"
 
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current NetPath data"'"}' `cat ${TOOLDIR}/slack_webhook`
+
 	URL="http://www.netpath.org/data/biopax/"
 	for Num in {1..25}; do
 		get_webfile_version ${URL}/NetPath_${Num}.owl "NetPath"
@@ -78,18 +79,33 @@ function download_reactome_data {
 function download_wikipathways_data {
 	echo "[Downloading current WikiPathways data]"
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current WikiPathways data"'"}' `cat ${TOOLDIR}/slack_webhook`
-	#URL="http://data.wikipathways.org/current/gmt/"
+	#updated Nov. 2023 - checked with Wikipathways to find out if this is the url going forward - https://github.com/wikipathways/wikipathways-help/discussions/79
+	URL="https://data.wikipathways.org/current/gmt/"
 	#FILE=`echo "cat //html/body/div/table/tbody/tr/td/a" |  xmllint --html --shell ${URL} | grep -o -E ">(.*$1.gmt)<" | sed -E 's/(<|>)//g'`
 	#URL="https://wikipathways-data.toolforge.org/current/gmt/"
 	#change to wikipathways download url - June 2023
-	URL="https://wikipathways-data.wmcloud.org/current/gmt/"
+	#URL="https://wikipathways-data.wmcloud.org/current/gmt/"
 	
 	#not elegant but the only way to pull out the file name is pull out the name between '> and < tokens.  Might brake in the future. (xmllint does not work with https 
-	FILE=`curl -s ${URL} |  grep -o -E ">(.*$1.gmt)<" | grep -o -P "(?<='>).*(?=<)"`
+	FILE=`curl -s ${URL} |  grep -o -E ">(.*$1.gmt)<" | grep -o -P "(?<=\">).*(?=<)"`
 	curl ${URL}/${FILE} -o ${WIKIPATHWAYS}/WikiPathways_${1}_entrezgene.gmt -s -L 
 	get_webfile_version ${URL}/${FILE} "WikiPathways"
 }
 
+
+function download_pfocr_data {
+	echo "[Downloading current Pathways Figures DB data]"
+	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Pathways figures DB data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	
+	URL="https://data.wikipathways.org/pfocr/current/"
+	#FILE=`echo "cat //html/body/div/table/tbody/tr/td/a" |  xmllint --html --shell ${URL} | grep -o -E ">(.*$1.gmt)<" | sed -E 's/(<|>)//g'`
+	
+	#not elegant but the only way to pull out the file name is pull out the name between '> and < tokens.  Might brake in the future. (xmllint does not work with https 
+	FILE=`curl -s ${URL} |  grep -o -E ">(.*$1.gmt)<" | grep -o -P "(?<=\">).*(?=<)"`
+	curl ${URL}/${FILE} -o ${PFOCR}/PFOCR_${1}_entrezgene.gmt -s -L 
+	get_webfile_version ${URL}/${FILE} "PFOCR"
+}
+	
 #argument 1 - species, either human or mouse
 #argument 2 - directory to put the file
 function download_biocyc_data {
@@ -99,10 +115,25 @@ function download_biocyc_data {
 	#URL="https://bioinformatics.ai.sri.com/ecocyc/dist/flatfiles-52983746/"
 	#Feb 2023 - changed the url back to this one! (been down for 3 months.)
 	URL="https://brg-files.ai.sri.com/public/dist"
+
 	echo "${URL}/tier1-tier2-biopax.tar.gz" >> ${VERSIONS}/${1}cyc.txt
 	curl ${URL}/tier1-tier2-biopax.tar.gz -u biocyc-flatfiles:data-20541 -I | grep "Last-Modified" >> ${VERSIONS}/${1}cyc.txt
-	echo "curl ${URL}/tier1-tier2-biopax.tar.gz -o ${2}/${1}.tar.gz -u biocyc-flatfiles:data-20541"  
-	curl ${URL}/tier1-tier2-biopax.tar.gz -o ${2}/${1}.tar.gz -u biocyc-flatfiles:data-20541  
+	echo "curl ${URL}/tier1-tier2-biopax.tar.gz -o ${2}/${1}.tar.gz "  
+	curl ${URL}/tier1-tier2-biopax.tar.gz -o ${2}/${1}.tar.gz -u biocyc-flatfiles:data-20541
+
+	# unfortunately the latest biopax file seems to be missing all the genes
+	# associated with the pathways.  - wait on hearing back from them before
+	# implementing.
+	#November 2023
+        #the above url is the public distribution that is two years old.  We want the latest one.  U of T has an institutional license and the below link should work.  Unfortunately the flatfile directory name changes with each realease.  Get the directory name
+	#get the index page of the subscription and find the line that starts with flatfiles
+	#FLATFILE_DIR=`curl -s https://brg-files.ai.sri.com/subscription/dist/ | grep flatfiles | awk -F"[><]" ' {for(i=1;i<NF+1;i++) {tmp=match($i, /^flatfiles/); if(tmp){ print $i}}}'`
+	#URL="https://brg-files.ai.sri.com/subscription/dist/${FLATFILE_DIR}"
+	#echo "${URL}"
+	#echo "${URL}tier1-tier2-biopax.tar.gz" >> ${VERSIONS}/${1}cyc.txt
+	#curl ${URL}tier1-tier2-biopax.tar.gz  -I | grep "Last-Modified" >> ${VERSIONS}/${1}cyc.txt
+	#echo "curl ${URL}tier1-tier2-biopax.tar.gz -o ${2}/${1}.tar.gz "  
+	#curl ${URL}tier1-tier2-biopax.tar.gz -o ${2}/${1}.tar.gz   
 }
 
 # Go human data comes directly from ebi as they are the primary curators of human GO annotations
@@ -722,6 +753,18 @@ done
 copy2release WikiPathways Human ${PATHWAYS}
 
 
+#download the PFOCR gmt files
+PFOCR=${SOURCE}/PFOCR
+mkdir ${PFOCR}
+download_pfocr_data Homo_sapiens
+
+#modify the gmt file so the name is the first thing seen in the description column
+cd ${PFOCR}
+for file in *.gmt; do
+	translate_gmt_UniProt $file "9606" "entrezgene"
+done
+copy2release PFOCR Human ${PATHWAYS}
+
 
 #download NCI from NCI database.
 NCI=${SOURCE}/NCI
@@ -794,7 +837,7 @@ mkdir ${REACTOME}
 download_reactome_data
 cd ${REACTOME}
 unzip biopax.zip *sapiens.owl
-mv Homo\ sapiens.owl Homosapiens.owl
+mv Homo*sapiens.owl Homosapiens.owl
 
 #for some reason the validated and fixed Reactome file hangs.
 for file in *sapiens.owl; do
@@ -1159,6 +1202,18 @@ done
 copy2release WikiPathways Mouse ${PATHWAYS}
 
 
+#download the WikiPathways gmt files
+PFOCR=${MOUSESOURCE}/PFOCR
+mkdir ${PFOCR}
+download_pfocr_data Mus_musculus
+cd ${PFOCR}
+for file in *.gmt; do
+	translate_gmt_UniProt $file "10090" "entrezgene"
+done
+copy2release PFOCR Mouse ${PATHWAYS}
+
+
+
 
 #process GO
 GOSRC=${MOUSESOURCE}/GO
@@ -1452,6 +1507,18 @@ for file in *.gmt; do
 	translate_gmt_UniProt $file "10116" "entrezgene"
 done
 copy2release WikiPathways Rat ${PATHWAYS}
+
+
+#download the PFOCR gmt files
+PFOCR=${RATSOURCE}/PFOCR
+mkdir ${PFOCR}
+download_pfocr_data Rattus_norvegicus
+cd ${PFOCR}
+for file in *.gmt; do
+	translate_gmt_UniProt $file "10116" "entrezgene"
+done
+copy2release PFOCR Rat ${PATHWAYS}
+
 
 
 
