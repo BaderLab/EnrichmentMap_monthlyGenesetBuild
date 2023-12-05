@@ -400,7 +400,7 @@ dev.off()
 ![](`r file.path(".",figure_directory, Other_figure_filename)`)
 
 ```{r  message=FALSE, warning=FALSE,include=FALSE}
-subset_pathways <- stats_summary_ggplot[grep(stats_summary_ggplot[,1],pattern = "drug|phenotype|mirs|go|transcription", invert = TRUE),] 
+subset_pathways <- stats_summary_ggplot[grep(stats_summary_ggplot[,1],pattern = "drug|phenotype|mirs|go|transcription|pfocr", invert = TRUE),] 
 
 Pathway_figure_filename <- "Pathway_geneset_stats.png"
 
@@ -423,6 +423,8 @@ dev.off()
 ```
 
 ![](`r file.path(".",figure_directory, Pathway_figure_filename)`)
+
+**excluded the pathway ocr numbers as there are drastically more pathways found in this pathway resource compared to all the others and it makes it impossible to see the changes in the remaining pathway resources
 
 # Changes/Growth of Identifier mapping By Source over the years
 
