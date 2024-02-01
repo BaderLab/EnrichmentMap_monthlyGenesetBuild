@@ -113,8 +113,13 @@ function download_biocyc_data {
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current BioCyc data - for species $1"'"}' `cat ${TOOLDIR}/slack_webhook`
 	#URL="http://bioinformatics.ai.sri.com/ecocyc/dist/flatfiles-52983746/"
 	#URL="https://bioinformatics.ai.sri.com/ecocyc/dist/flatfiles-52983746/"
+
+	#We are using old data - from May 2021.  Try the new version - not the public data
+	#January 2024
+	URL="https://brg-files.ai.sri.com/subscription/dist/flatfiles-52983746"
+
 	#Feb 2023 - changed the url back to this one! (been down for 3 months.)
-	URL="https://brg-files.ai.sri.com/public/dist"
+	#URL="https://brg-files.ai.sri.com/public/dist"
 
 	echo "${URL}/tier1-tier2-biopax.tar.gz" >> ${VERSIONS}/${1}cyc.txt
 	curl ${URL}/tier1-tier2-biopax.tar.gz -u biocyc-flatfiles:data-20541 -I | grep "Last-Modified" >> ${VERSIONS}/${1}cyc.txt
@@ -814,9 +819,14 @@ copy2release Panther Human ${PATHWAYS}
 #download NetPath biopax data
 NETPATH=${SOURCE}/NetPath
 mkdir ${NETPATH}
-download_netpath_data
+
+#netpath website is down.  grab it from static resource - Feb. 2024
+#download_netpath_data
 
 cd ${NETPATH}
+
+cp ${STATICDIR}/NetPath/*.owl ./
+
 #process each file in the NetPath directory.
 for file in *.owl; do
 	process_biopax $file "ncbi gene" "NetPath" "9606"
