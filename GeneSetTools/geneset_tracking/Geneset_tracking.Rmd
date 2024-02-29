@@ -2,7 +2,7 @@
 title: "Geneset Growth Stats"
 output: html_document
 params:
-  species: Rat
+  species: Mouse
   identifier: entrezgene
   year: 2019
   width: 600
@@ -322,6 +322,14 @@ if(!dir.exists(file.path(home_dir,figure_directory))){
 }
 
 stats_summary_ggplot <- get_summary_file(species,identifier,year)
+
+# issue with a few mouse files
+#There are some bad files in previous version of the Mouse data. If this mouse
+# make sure that we only use the ones that start Mouse_go
+if(params$species == "Mouse"){
+  stats_summary_ggplot <- stats_summary_ggplot[grep(stats_summary_ggplot[,1],pattern = "^mouse"),]
+
+}
 
 overall_figure_filename <- "Overall_geneset_stats.png"
 png(file.path(home_dir, figure_directory, overall_figure_filename),
