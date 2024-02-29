@@ -1052,6 +1052,10 @@ for file in *UniProt_symbol.gmt; do
 	mv $file ${file}_symbol
 done
 
+#the redundant file generated from the go annotation file makes things messing in the directory.
+# remove the extra files
+rm *.gmt_symbol
+
 for file in *UniProt.gmt; do
 	translate_gmt_UniProt $file "9606" "UniProt"
 done
@@ -1084,42 +1088,80 @@ cat *.txt > ${OUTPUTDIR}/${dir_name}_versions.txt
 
 #create all the different distributions
 cd ${EG}/${PATHWAYS}
-cat *.gmt > ../Human_AllPathways_${dir_name}_entrezgene.gmt
+#create two different Pathway summary files - one with PFOCR and one without
+for f in `ls --ignore=*PFOCR* | grep "\.gmt$" `; do   
+	cat "$f" >> ../Human_AllPathways_noPFOCR_${dir_name}_entrezgene.gmt; 
+done
+
+cat *.gmt > ../Human_AllPathways_withPFOCR_${dir_name}_entrezgene.gmt
+
 cd ${EG}/${GO}
-cat ../Human_AllPathways_${dir_name}_entrezgene.gmt Human_GOALL_${WITHIEA}_${dir_name}_entrezgene.gmt > ../Human_GO_AllPathways_${WITHIEA}_${dir_name}_entrezgene.gmt
-cat ../Human_AllPathways_${dir_name}_entrezgene.gmt Human_GOALL_${NOIEA}_${dir_name}_entrezgene.gmt > ../Human_GO_AllPathways_${NOIEA}_${dir_name}_entrezgene.gmt
+cat ../Human_AllPathways_withPFOCR_${dir_name}_entrezgene.gmt Human_GOALL_${WITHIEA}_${dir_name}_entrezgene.gmt > ../Human_GO_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_entrezgene.gmt
+cat ../Human_AllPathways_withPFOCR_${dir_name}_entrezgene.gmt Human_GOALL_${NOIEA}_${dir_name}_entrezgene.gmt > ../Human_GO_AllPathways_withPFOCR_${NOIEA}_${dir_name}_entrezgene.gmt
+
+#create summaries with noPFOCR
+cat ../Human_AllPathways_noPFOCR_${dir_name}_entrezgene.gmt Human_GOALL_${WITHIEA}_${dir_name}_entrezgene.gmt > ../Human_GO_AllPathways_noPFOCR_${WITHIEA}_${dir_name}_entrezgene.gmt
+cat ../Human_AllPathways_noPFOCR_${dir_name}_entrezgene.gmt Human_GOALL_${NOIEA}_${dir_name}_entrezgene.gmt > ../Human_GO_AllPathways_noPFOCR_${NOIEA}_${dir_name}_entrezgene.gmt
 
 #create two new all pathways files with GOBP included
-cat ../Human_AllPathways_${dir_name}_entrezgene.gmt Human_GO_bp_${WITHIEA}_entrezgene.gmt > ../Human_GOBP_AllPathways_${WITHIEA}_${dir_name}_entrezgene.gmt
-cat ../Human_AllPathways_${dir_name}_entrezgene.gmt Human_GO_bp_${NOIEA}_entrezgene.gmt > ../Human_GOBP_AllPathways_${NOIEA}_${dir_name}_entrezgene.gmt
+cat ../Human_AllPathways_withPFOCR_${dir_name}_entrezgene.gmt Human_GO_bp_${WITHIEA}_entrezgene.gmt > ../Human_GOBP_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_entrezgene.gmt
+cat ../Human_AllPathways_withPFOCR_${dir_name}_entrezgene.gmt Human_GO_bp_${NOIEA}_entrezgene.gmt > ../Human_GOBP_AllPathways_withPFOCR_${NOIEA}_${dir_name}_entrezgene.gmt
+
+#create summaries with noPFOCR
+cat ../Human_AllPathways_noPFOCR_${dir_name}_entrezgene.gmt Human_GO_bp_${WITHIEA}_entrezgene.gmt > ../Human_GOBP_AllPathways_noPFOCR_${WITHIEA}_${dir_name}_entrezgene.gmt
+cat ../Human_AllPathways_noPFOCR_${dir_name}_entrezgene.gmt Human_GO_bp_${NOIEA}_entrezgene.gmt > ../Human_GOBP_AllPathways_noPFOCR_${NOIEA}_${dir_name}_entrezgene.gmt
 
 #merge all the summaries
 mergesummaries ${EG} entrezgene
 
 cd ${SYMBOL}/${PATHWAYS}
-cat *.gmt > ../Human_AllPathways_${dir_name}_symbol.gmt
+#create two different Pathway summary files - one with PFOCR and one without
+for f in `ls --ignore=*PFOCR* | grep "\.gmt$" `; do   
+	cat "$f" >> ../Human_AllPathways_noPFOCR_${dir_name}_symbol.gmt; 
+done
+
+cat *.gmt > ../Human_AllPathways_withPFOCR_${dir_name}_symbol.gmt
+
 cd ${SYMBOL}/${GO}
-cat ../Human_AllPathways_${dir_name}_symbol.gmt Human_GOALL_${WITHIEA}_${dir_name}_symbol.gmt > ../Human_GO_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
-cat ../Human_AllPathways_${dir_name}_symbol.gmt Human_GOALL_${NOIEA}_${dir_name}_symbol.gmt > ../Human_GO_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
+cat ../Human_AllPathways_withPFOCR_${dir_name}_symbol.gmt Human_GOALL_${WITHIEA}_${dir_name}_symbol.gmt > ../Human_GO_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_symbol.gmt
+cat ../Human_AllPathways_withPFOCR_${dir_name}_symbol.gmt Human_GOALL_${NOIEA}_${dir_name}_symbol.gmt > ../Human_GO_AllPathways_withPFOCR_${NOIEA}_${dir_name}_symbol.gmt
+
+#create summaries with noPFOCR
+cat ../Human_AllPathways_noPFOCR_${dir_name}_symbol.gmt Human_GOALL_${WITHIEA}_${dir_name}_symbol.gmt > ../Human_GO_AllPathways_noPFOCR_${WITHIEA}_${dir_name}_symbol.gmt
+cat ../Human_AllPathways_noPFOCR_${dir_name}_symbol.gmt Human_GOALL_${NOIEA}_${dir_name}_symbol.gmt > ../Human_GO_AllPathways_noPFOCR_${NOIEA}_${dir_name}_symbol.gmt
 
 #create two new all pathways files with GOBP included
-cat ../Human_AllPathways_${dir_name}_symbol.gmt Human_GO_bp_${WITHIEA}_symbol.gmt > ../Human_GOBP_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
-cat ../Human_AllPathways_${dir_name}_symbol.gmt Human_GO_bp_${NOIEA}_symbol.gmt > ../Human_GOBP_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
+cat ../Human_AllPathways_withPFOCR_${dir_name}_symbol.gmt Human_GO_bp_${WITHIEA}_symbol.gmt > ../Human_GOBP_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_symbol.gmt
+cat ../Human_AllPathways_withPFOCR_${dir_name}_symbol.gmt Human_GO_bp_${NOIEA}_symbol.gmt > ../Human_GOBP_AllPathways_withPFOCR_${NOIEA}_${dir_name}_symbol.gmt
+
+#create two new all pathways files with GOBP included no PFOCR
+cat ../Human_AllPathways_noPFOCR_${dir_name}_symbol.gmt Human_GO_bp_${WITHIEA}_symbol.gmt > ../Human_GOBP_AllPathways_noPFOCR_${WITHIEA}_${dir_name}_symbol.gmt
+cat ../Human_AllPathways_noPFOCR_${dir_name}_symbol.gmt Human_GO_bp_${NOIEA}_symbol.gmt > ../Human_GOBP_AllPathways_noPFOCR_${NOIEA}_${dir_name}_symbol.gmt
 
 
 #merge all the summaries
 mergesummaries ${SYMBOL} symbol
 
 cd ${UNIPROT}/${PATHWAYS}
-cat *.gmt > ../Human_AllPathways_${dir_name}_UniProt.gmt
+#create two different Pathway summary files - one with PFOCR and one without
+for f in `ls --ignore=*PFOCR* | grep "\.gmt$" `; do   
+	cat "$f" >> ../Human_AllPathways_noPFOCR_${dir_name}_UniProt.gmt; 
+done
+
+cat *.gmt > ../Human_AllPathways_withPFOCR_${dir_name}_UniProt.gmt
 cd ${UNIPROT}/${GO}
-cat ../Human_AllPathways_${dir_name}_UniProt.gmt Human_GOALL_${WITHIEA}_${dir_name}_UniProt.gmt > ../Human_GO_AllPathways_${WITHIEA}_${dir_name}_UniProt.gmt
-cat ../Human_AllPathways_${dir_name}_UniProt.gmt Human_GOALL_${NOIEA}_${dir_name}_UniProt.gmt > ../Human_GO_AllPathways_${NOIEA}_${dir_name}_UniProt.gmt
+cat ../Human_AllPathways_withPFOCR_${dir_name}_UniProt.gmt Human_GOALL_${WITHIEA}_${dir_name}_UniProt.gmt > ../Human_GO_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_UniProt.gmt
+cat ../Human_AllPathways_withPFOCR_${dir_name}_UniProt.gmt Human_GOALL_${NOIEA}_${dir_name}_UniProt.gmt > ../Human_GO_AllPathways_withPFOCR_${NOIEA}_${dir_name}_UniProt.gmt
+
+cat ../Human_AllPathways_noPFOCR_${dir_name}_UniProt.gmt Human_GOALL_${WITHIEA}_${dir_name}_UniProt.gmt > ../Human_GO_AllPathways_noPFOCR_${WITHIEA}_${dir_name}_UniProt.gmt
+cat ../Human_AllPathways_noPFOCR_${dir_name}_UniProt.gmt Human_GOALL_${NOIEA}_${dir_name}_UniProt.gmt > ../Human_GO_AllPathways_noPFOCR_${NOIEA}_${dir_name}_UniProt.gmt
 
 #create two new all pathways files with GOBP included
-cat ../Human_AllPathways_${dir_name}_UniProt.gmt Human_GO_bp_${WITHIEA}_UniProt.gmt > ../Human_GOBP_AllPathways_${WITHIEA}_${dir_name}_UniProt.gmt
-cat ../Human_AllPathways_${dir_name}_UniProt.gmt Human_GO_bp_${NOIEA}_UniProt.gmt > ../Human_GOBP_AllPathways_${NOIEA}_${dir_name}_UniProt.gmt
+cat ../Human_AllPathways_withPFOCR_${dir_name}_UniProt.gmt Human_GO_bp_${WITHIEA}_UniProt.gmt > ../Human_GOBP_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_UniProt.gmt
+cat ../Human_AllPathways_withPFOCR_${dir_name}_UniProt.gmt Human_GO_bp_${NOIEA}_UniProt.gmt > ../Human_GOBP_AllPathways_withPFOCR_${NOIEA}_${dir_name}_UniProt.gmt
 
+cat ../Human_AllPathways_noPFOCR_${dir_name}_UniProt.gmt Human_GO_bp_${WITHIEA}_UniProt.gmt > ../Human_GOBP_AllPathways_noPFOCR_${WITHIEA}_${dir_name}_UniProt.gmt
+cat ../Human_AllPathways_noPFOCR_${dir_name}_UniProt.gmt Human_GO_bp_${NOIEA}_UniProt.gmt > ../Human_GOBP_AllPathways_noPFOCR_${NOIEA}_${dir_name}_UniProt.gmt
 
 #merge all the summaries
 mergesummaries ${UNIPROT} UniProt
@@ -1245,6 +1287,10 @@ done
 for file in *UniProt_symbol.gmt; do
 	mv $file ${file}_symbol
 done
+
+#the redundant file generated from the go annotation file makes things messing in the directory.
+# remove the extra files
+rm *.gmt_symbol
 
 for file in *_UniProt.gmt; do
 	translate_gmt_UniProt $file "10090" "UniProt"
@@ -1376,42 +1422,75 @@ cat *.txt > ${OUTPUTDIR}/${dir_name}_versions.txt
 
 #create all the different distributions
 cd ${EG}/${PATHWAYS}
-cat *.gmt > ../Mouse_AllPathways_${dir_name}_entrezgene.gmt
+#create two different Pathway summary files - one with PFOCR and one without
+for f in `ls --ignore=*PFOCR* | grep "\.gmt$" `; do   
+	cat "$f" >> ../Mouse_AllPathways_noPFOCR_${dir_name}_entrezgene.gmt; 
+done
+
+cat *.gmt > ../Mouse_AllPathways_withPFOCR_${dir_name}_entrezgene.gmt
 cd ${EG}/${GO}
-cat ../Mouse_AllPathways_${dir_name}_entrezgene.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_entrezgene.gmt > ../Mouse_GO_AllPathways_${WITHIEA}_${dir_name}_entrezgene.gmt
-cat ../Mouse_AllPathways_${dir_name}_entrezgene.gmt Mouse_GOALL_${NOIEA}_${dir_name}_entrezgene.gmt > ../Mouse_GO_AllPathways_${NOIEA}_${dir_name}_entrezgene.gmt
+cat ../Mouse_AllPathways_withPFOCR_${dir_name}_entrezgene.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_entrezgene.gmt > ../Mouse_GO_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_entrezgene.gmt
+cat ../Mouse_AllPathways_withPFOCR_${dir_name}_entrezgene.gmt Mouse_GOALL_${NOIEA}_${dir_name}_entrezgene.gmt > ../Mouse_GO_AllPathways_withPFOCR_${NOIEA}_${dir_name}_entrezgene.gmt
+
+cat ../Mouse_AllPathways_noPFOCR_${dir_name}_entrezgene.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_entrezgene.gmt > ../Mouse_GO_AllPathways_noPFOCR_${WITHIEA}_${dir_name}_entrezgene.gmt
+cat ../Mouse_AllPathways_noPFOCR_${dir_name}_entrezgene.gmt Mouse_GOALL_${NOIEA}_${dir_name}_entrezgene.gmt > ../Mouse_GO_AllPathways_noPFOCR_${NOIEA}_${dir_name}_entrezgene.gmt
+
 
 #create two new all pathways files with GOBP included
-cat ../Mouse_AllPathways_${dir_name}_entrezgene.gmt MOUSE_GO_bp_${WITHIEA}*_entrezgene.gmt > ../Mouse_GOBP_AllPathways_${WITHIEA}_${dir_name}_entrezgene.gmt
-cat ../Mouse_AllPathways_${dir_name}_entrezgene.gmt MOUSE_GO_bp_${NOIEA}*_entrezgene.gmt > ../Mouse_GOBP_AllPathways_${NOIEA}_${dir_name}_entrezgene.gmt
+cat ../Mouse_AllPathways_withPFOCR_${dir_name}_entrezgene.gmt MOUSE_GO_bp_${WITHIEA}*_entrezgene.gmt > ../Mouse_GOBP_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_entrezgene.gmt
+cat ../Mouse_AllPathways_withPFOCR_${dir_name}_entrezgene.gmt MOUSE_GO_bp_${NOIEA}*_entrezgene.gmt > ../Mouse_GOBP_AllPathways_withPFOCR_${NOIEA}_${dir_name}_entrezgene.gmt
 
+cat ../Mouse_AllPathways_noPFOCR_${dir_name}_entrezgene.gmt MOUSE_GO_bp_${WITHIEA}*_entrezgene.gmt > ../Mouse_GOBP_AllPathways_noPFOCR_${WITHIEA}_${dir_name}_entrezgene.gmt
+cat ../Mouse_AllPathways_noPFOCR_${dir_name}_entrezgene.gmt MOUSE_GO_bp_${NOIEA}*_entrezgene.gmt > ../Mouse_GOBP_AllPathways_noPFOCR_${NOIEA}_${dir_name}_entrezgene.gmt
 
 #merge all the summaries
 mergesummaries ${EG} entrezgene
 
 cd ${SYMBOL}/${PATHWAYS}
-cat *.gmt > ../Mouse_AllPathways_${dir_name}_symbol.gmt
+#create two different Pathway summary files - one with PFOCR and one without
+for f in `ls --ignore=*PFOCR* | grep "\.gmt$" `; do   
+	cat "$f" >> ../Mouse_AllPathways_noPFOCR_${dir_name}_symbol.gmt; 
+done
+
+cat *.gmt > ../Mouse_AllPathways_withPFOCR_${dir_name}_symbol.gmt
 cd ${SYMBOL}/${GO}
-cat ../Mouse_AllPathways_${dir_name}_symbol.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
-cat ../Mouse_AllPathways_${dir_name}_symbol.gmt Mouse_GOALL_${NOIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
+cat ../Mouse_AllPathways_withPFOCR${dir_name}_symbol.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_symbol.gmt
+cat ../Mouse_AllPathways_withPFOCR_${dir_name}_symbol.gmt Mouse_GOALL_${NOIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_withPFOCR${NOIEA}_${dir_name}_symbol.gmt
+
+cat ../Mouse_AllPathways_noPFOCR${dir_name}_symbol.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_noPFOCR_${WITHIEA}_${dir_name}_symbol.gmt
+cat ../Mouse_AllPathways_noPFOCR_${dir_name}_symbol.gmt Mouse_GOALL_${NOIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_noPFOCR${NOIEA}_${dir_name}_symbol.gmt
 
 #create two new all pathways files with GOBP included
-cat ../Mouse_AllPathways_${dir_name}_symbol.gmt MOUSE_GO_bp_${WITHIEA}*_symbol.gmt > ../Mouse_GOBP_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
-cat ../Mouse_AllPathways_${dir_name}_symbol.gmt MOUSE_GO_bp_${NOIEA}*_symbol.gmt > ../Mouse_GOBP_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
+cat ../Mouse_AllPathways_withPFOCR_${dir_name}_symbol.gmt MOUSE_GO_bp_${WITHIEA}*_symbol.gmt > ../Mouse_GOBP_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_symbol.gmt
+cat ../Mouse_AllPathways_withPFOCR_${dir_name}_symbol.gmt MOUSE_GO_bp_${NOIEA}*_symbol.gmt > ../Mouse_GOBP_AllPathways_withPFOCR_${NOIEA}_${dir_name}_symbol.gmt
+
+cat ../Mouse_AllPathways_noPFOCR_${dir_name}_symbol.gmt MOUSE_GO_bp_${WITHIEA}*_symbol.gmt > ../Mouse_GOBP_AllPathways_noPFOCR_${WITHIEA}_${dir_name}_symbol.gmt
+cat ../Mouse_AllPathways_noPFOCR_${dir_name}_symbol.gmt MOUSE_GO_bp_${NOIEA}*_symbol.gmt > ../Mouse_GOBP_AllPathways_noPFOCR_${NOIEA}_${dir_name}_symbol.gmt
 
 
 #merge all the summaries
 mergesummaries ${SYMBOL} symbol
 
 cd ${UNIPROT}/${PATHWAYS}
-cat *.gmt > ../Mouse_AllPathways_${dir_name}_UniProt.gmt
+#create two different Pathway summary files - one with PFOCR and one without
+for f in `ls --ignore=*PFOCR* | grep "\.gmt$" `; do   
+	cat "$f" >> ../Mouse_AllPathways_noPFOCR_${dir_name}_UniProt.gmt; 
+done
+
+cat *.gmt > ../Mouse_AllPathways_withPFOCR_${dir_name}_UniProt.gmt
 cd ${UNIPROT}/${GO}
-cat ../Mouse_AllPathways_${dir_name}_UniProt.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_UniProt.gmt > ../Mouse_GO_AllPathways_${WITHIEA}_${dir_name}_UniProt.gmt
-cat ../Mouse_AllPathways_${dir_name}_UniProt.gmt Mouse_GOALL_${NOIEA}_${dir_name}_UniProt.gmt > ../Mouse_GO_AllPathways_${NOIEA}_${dir_name}_UniProt.gmt
+cat ../Mouse_AllPathways_withPFOCR_${dir_name}_UniProt.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_UniProt.gmt > ../Mouse_GO_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_UniProt.gmt
+cat ../Mouse_AllPathways_withPFOCR_${dir_name}_UniProt.gmt Mouse_GOALL_${NOIEA}_${dir_name}_UniProt.gmt > ../Mouse_GO_AllPathways_withPFOCR_${NOIEA}_${dir_name}_UniProt.gmt
+
+cat ../Mouse_AllPathways_noPFOCR_${dir_name}_UniProt.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_UniProt.gmt > ../Mouse_GO_AllPathways_noPFOCR_${WITHIEA}_${dir_name}_UniProt.gmt
+cat ../Mouse_AllPathways_noPFOCR_${dir_name}_UniProt.gmt Mouse_GOALL_${NOIEA}_${dir_name}_UniProt.gmt > ../Mouse_GO_AllPathways_noPFOCR_${NOIEA}_${dir_name}_UniProt.gmt
 
 #create two new all pathways files with GOBP included
-cat ../Mouse_AllPathways_${dir_name}_UniProt.gmt MOUSE_GO_bp_${WITHIEA}*_UniProt.gmt > ../Mouse_GOBP_AllPathways_${WITHIEA}_${dir_name}_UniProt.gmt
-cat ../Mouse_AllPathways_${dir_name}_UniProt.gmt MOUSE_GO_bp_${NOIEA}*_UniProt.gmt > ../Mouse_GOBP_AllPathways_${NOIEA}_${dir_name}_UniProt.gmt
+cat ../Mouse_AllPathways_withPFOCR_${dir_name}_UniProt.gmt MOUSE_GO_bp_${WITHIEA}*_UniProt.gmt > ../Mouse_GOBP_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_UniProt.gmt
+cat ../Mouse_AllPathways_withPFOCR_${dir_name}_UniProt.gmt MOUSE_GO_bp_${NOIEA}*_UniProt.gmt > ../Mouse_GOBP_AllPathways_withPFOCR_${NOIEA}_${dir_name}_UniProt.gmt
+
+cat ../Mouse_AllPathways_noPFOCR_${dir_name}_UniProt.gmt MOUSE_GO_bp_${WITHIEA}*_UniProt.gmt > ../Mouse_GOBP_AllPathways_noPFOCR_${WITHIEA}_${dir_name}_UniProt.gmt
+cat ../Mouse_AllPathways_noPFOCR_${dir_name}_UniProt.gmt MOUSE_GO_bp_${NOIEA}*_UniProt.gmt > ../Mouse_GOBP_AllPathways_noPFOCR_${NOIEA}_${dir_name}_UniProt.gmt
 
 
 #merge all the summaries
@@ -1519,15 +1598,15 @@ done
 copy2release WikiPathways Rat ${PATHWAYS}
 
 
-#download the PFOCR gmt files
-PFOCR=${RATSOURCE}/PFOCR
-mkdir ${PFOCR}
-download_pfocr_data Rattus_norvegicus
-cd ${PFOCR}
-for file in *.gmt; do
-	translate_gmt_UniProt $file "10116" "entrezgene"
-done
-copy2release PFOCR Rat ${PATHWAYS}
+#download the PFOCR gmt files - there is no release for rat yet
+#PFOCR=${RATSOURCE}/PFOCR
+#mkdir ${PFOCR}
+#download_pfocr_data Rattus_norvegicus
+#cd ${PFOCR}
+#for file in *.gmt; do
+#	translate_gmt_UniProt $file "10116" "entrezgene"
+#done
+#copy2release PFOCR Rat ${PATHWAYS}
 
 
 
@@ -1553,6 +1632,10 @@ done
 for file in *UniProt_symbol.gmt; do
 	mv $file ${file}_symbol
 done
+
+#the redundant file generated from the go annotation file makes things messing in the directory.
+# remove the extra files
+rm *.gmt_symbol
 
 for file in *UniProt.gmt; do
 	translate_gmt_UniProt $file "10116" "UniProt"
