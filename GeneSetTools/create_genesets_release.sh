@@ -919,8 +919,8 @@ perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_il
 perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_experimental_UniProt.gmt -d "experimental" -i uniprot  2>>drugbankparse.err
 #process the drugbank file - nutraceutical drugs
 perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_nutraceutical_UniProt.gmt -d "nutraceutical" -i uniprot  2>>drugbankparse.err
-#process the drugbank file - small molecule drugs
-perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_smallmolecule_UniProt.gmt -d "small molecule" -i uniprot  2>>drugbankparse.err
+#process the drugbank file - withdrawn drugs
+perl ${TOOLDIR}/scripts/parseDrugBankXml.pl -f drugbank.xml -o Human_DrugBank_withdrawn_UniProt.gmt -d "withdrawn" -i uniprot  2>>drugbankparse.err
 
 for file in *UniProt.gmt; do
 	translate_gmt_UniProt $file "9606" "UniProt"
