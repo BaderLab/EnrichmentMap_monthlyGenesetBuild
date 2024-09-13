@@ -303,6 +303,12 @@ public class GOGeneSetFileMaker {
                    String dbid = tokens[1];
                    //third token is a symbol
                    String symbol = tokens[2];
+		   
+		   //fourth token is the qualifier
+		   //iff the qualifier contains NOT
+		   //then skip this record
+		   if(tokens[3].contains("NOT"))
+			   continue;
 
                    //fifth token is the GOID
                    String goid = tokens[4];
