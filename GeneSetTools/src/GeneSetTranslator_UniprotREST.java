@@ -102,6 +102,9 @@ public class GeneSetTranslator_UniprotREST {
        }else if(oldID.equalsIgnoreCase("entrezgene")){
 		ensembl_oldID = "Entrez Gene ID";
 		oldID_print = "entrezgene";
+       }else if(oldID.equalsIgnoreCase("ensembl")){
+	       ensembl_oldID = "Ensembl";
+	       oldID_print = "ensembl";
        }else{
 	       System.out.println("Unrecognized old identifier");
 	}
@@ -115,6 +118,9 @@ public class GeneSetTranslator_UniprotREST {
        }else if(newID.equalsIgnoreCase("entrezgene")){
 		ensembl_newID = "Entrez Gene ID";
 		newID_print = "entrezgene";
+       }else if(newID.equalsIgnoreCase("ensembl")){
+	       ensembl_newID = "Ensembl";
+	       newID_print = "ensembl";
        }else{
 	       System.out.println("Unrecognized new identifier");
 	}
@@ -207,7 +213,7 @@ public class GeneSetTranslator_UniprotREST {
 		if(oldID.equalsIgnoreCase("Uniprot"))
 			translations_id = convertUniprotWebservice(GeneQuerySet,oldID, newID, unfoundIds.get(oldID),logs.get(oldID),taxonomyId); 
 		else{
-			if(oldID.equalsIgnoreCase("entrezgene") || oldID.equalsIgnoreCase("symbol")){
+			if(oldID.equalsIgnoreCase("entrezgene") || oldID.equalsIgnoreCase("symbol") || oldID.equalsIgnoreCase("ensembl")){
 					
 				translations_id = twoStepConversions(GeneQuerySet,oldID, newID, unfoundIds.get(oldID),logs.get(oldID),taxonomyId); 
 
