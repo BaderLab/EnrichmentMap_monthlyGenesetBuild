@@ -2132,16 +2132,16 @@ echo "[Finished Woodchuck  data]"
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Finished woodchuck data"'"}' `cat ${TOOLDIR}/slack_webhook`
 
 #copy the files over the webserver
-#mkdir /mnt/build/EM_Genesets/$dir_name
-#cp -R ${CUR_RELEASE}/Human /mnt/build/EM_Genesets/$dir_name/
-#cp -R ${CUR_RELEASE}/Mouse /mnt/build/EM_Genesets/$dir_name/
-#cp -R ${CUR_RELEASE}/Rat /mnt/build/EM_Genesets/$dir_name/
-#cp -R ${CUR_RELEASE}/Woodchuck /mnt/build/EM_Genesets/$dir_name/
+mkdir /mnt/build/EM_Genesets/$dir_name
+cp -R ${CUR_RELEASE}/Human /mnt/build/EM_Genesets/$dir_name/
+cp -R ${CUR_RELEASE}/Mouse /mnt/build/EM_Genesets/$dir_name/
+cp -R ${CUR_RELEASE}/Rat /mnt/build/EM_Genesets/$dir_name/
+cp -R ${CUR_RELEASE}/Woodchuck /mnt/build/EM_Genesets/$dir_name/
 
 #create a symbolic link to the latest download indicating it as current_release
-#rm /mnt/build/EM_Genesets/current_release
-#cd /mnt/build/EM_Genesets
-#ln -sf $dir_name/ current_release
+rm /mnt/build/EM_Genesets/current_release
+cd /mnt/build/EM_Genesets
+ln -sf $dir_name/ current_release
 
 #rm -rf ${CUR_RELEASE}
 
