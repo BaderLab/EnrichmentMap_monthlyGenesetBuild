@@ -55,6 +55,8 @@ public class QueryUniprotREST
 		this.oldID_index = "GeneID";
 	else if(oldID.equalsIgnoreCase("symbol"))
 		this.oldID_index = "Gene_Name";
+	else if(oldID.equalsIgnoreCase("ensembl"))
+		this.oldID_index = "Ensembl";
 	else
 		System.out.println("No match for old id");
 	
@@ -64,6 +66,8 @@ public class QueryUniprotREST
 		this.newID_index = "GeneID";
 	else if(newID.equalsIgnoreCase("symbol"))
 		this.newID_index = "Gene_Name";
+	else if(newID.equalsIgnoreCase("ensembl"))
+		this.newID_index = "Ensembl";
 	else
 		System.out.println("No match for new id");
 	
@@ -146,7 +150,13 @@ public class QueryUniprotREST
 					if(mapping.length != 1){
 						System.out.println("There are multiple ids in line:" + to +  "(we were trying to convert " + from + ")");
 					} else{
-						convertedIds.put(from, new HashSet<>(Arrays.asList(to)));
+						//check for ensembl because they are returned with version numbers - remove the version number
+						if(this.newID_index.equals("Ensembl")){
+							String[] ensembl_id_version = to.split("\\.");
+							//System.out.println("we are trying to get rid of versions - " + ensembl_id_version);
+							convertedIds.put(from, new HashSet<>(Arrays.asList(ensembl_id_version[0])));
+						} else
+							convertedIds.put(from, new HashSet<>(Arrays.asList(to)));
 						//System.out.println("Adding:" + from + " maps to " + to); 
 					}	
 				
@@ -399,7 +409,17 @@ public boolean check_job_status(String jobId) throws IOException, InterruptedExc
 					if(mapping.length != 2){
 						System.out.println("There are multiple ids in line:" + conversions[i]);
 					} else{
-						convertedIds.put(mapping[0], new HashSet<>(Arrays.asList(mapping[1])));
+
+						//Ensembl idsd come with version numbers
+						//get rid of the .# and only use the base 
+						//Ensembl id
+						if(this.newID_index.equals("Ensembl")){
+							String[] ensembl_id_version = mapping[1].split("\\.");
+							System.out.println("we are trying to get rid of versions - " + ensembl_id_version);
+							convertedIds.put(mapping[0], new HashSet<>(Arrays.asList(ensembl_id_version[0])));
+						}
+						else
+							convertedIds.put(mapping[0], new HashSet<>(Arrays.asList(mapping[1])));
 						//System.out.println("Adding:" + mapping[0] + " maps to " + mapping[1]); 
 					}
 				}

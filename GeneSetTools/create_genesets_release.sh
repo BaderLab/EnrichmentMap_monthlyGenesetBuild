@@ -347,6 +347,7 @@ function translate_gmt_UniProt {
 		
 		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "symbol" 2>> translate_process.err 1>> translate_output.txt 
 		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "entrezgene" 2>> translate_process.err 1>> translate_output.txt 
+		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "ensembl" 2>> translate_process.err 1>> translate_output.txt 
 	fi
 
 	if [[ $3 == "entrezgene" ]] ; then
@@ -354,6 +355,7 @@ function translate_gmt_UniProt {
 		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "symbol" 2>> translate_process.err 1>> translate_output.txt 
 		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "UniProt" 2>> translate_process.err 1>> translate_output.txt 
 	
+		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "ensembl" 2>> translate_process.err 1>> translate_output.txt 
 	fi
 
 
@@ -361,6 +363,7 @@ function translate_gmt_UniProt {
 	
 		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "UniProt" 2>> translate_process.err 1>> translate_output.txt 
 		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "entrezgene" 2>> translate_process.err 1>> translate_output.txt 
+		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "ensembl" 2>> translate_process.err 1>> translate_output.txt 
 	fi
 
 	if [[ $3 == "MGI" ]] ; then
@@ -434,6 +437,21 @@ function copy2release {
 		cat *gene_summary.log > ${2}_${1}_entrezgene_translation_summary.log
 		cp ${2}_${1}_entrezgene_translation_summary.log ${EG}/${3}/${2}_${1}_Entrezgene_translation_summary.log
 	fi
+	
+	#copy over ensembl files and summaries
+	files=$(ls *ensembl.gmt 2> /dev/null | wc -l)
+	if [ $files != 0 ] ; then
+		cat *ensembl.gmt > ${2}_${1}_ensembl.gmt
+		cp ${2}_${1}_ensembl.gmt ${ENSEMBL}/${3}/${2}_${1}_${dir_name}_ensembl.gmt
+	fi
+	#concatenate all the translation summaries
+	
+	files=$(ls *ensembl_summary.log 2> /dev/null | wc -l)
+	if [ $files != 0 ] ; then
+	#if [ -e *gene_summary.log ] ; then
+		cat *ensembl_summary.log > ${2}_${1}_ensembl_translation_summary.log
+		cp ${2}_${1}_ensembl_translation_summary.log ${ENSEMBL}/${3}/${2}_${1}_ensembl_translation_summary.log
+	fi
 
 	
 	files=$(ls *UniProt.gmt 2> /dev/null | wc -l)
@@ -478,6 +496,17 @@ function copy2release_nomerge {
 	#if [ -e *gene_summary.log ] ; then
 		cat *gene_summary.log > ${2}_${1}_entrezgene_translation_summary.log
 		cp ${2}_${1}_entrezgene_translation_summary.log ${EG}/${3}/${2}_${1}_Entrezgene_translation_summary.log
+	fi
+
+	#copy ensembl over
+	cp *ensembl.gmt ${ENSEMBL}/${3}/
+	#concatenate all the translation summaries
+	
+	files=$(ls *ensembl_summary.log 2> /dev/null | wc -l)
+	if [ $files != 0 ] ; then
+	#if [ -e *ensembl_summary.log ] ; then
+		cat *ensembl_summary.log > ${2}_${1}_ensembl_translation_summary.log
+		cp ${2}_${1}_ensembl_translation_summary.log ${EG}/${3}/${2}_${1}_ensembl_translation_summary.log
 	fi
 
 	cp *UniProt.gmt ${UNIPROT}/${3}/
@@ -526,16 +555,20 @@ function mergesummaries {
 		cat ${1}/${GO}/*summary.log > temp.log   
 	fi
 	if [ $path_files != 0 ] ; then
-		cat temp.log ${1}/${PATHWAYS}/*summary.log > temp.log   
+		cat temp.log ${1}/${PATHWAYS}/*summary.log >> temp1.log
+	     mv temp1.log temp.log	
 	fi
         if [ $mir_files != 0 ] ; then
-		cat temp.log ${1}/${MIR}/*summary.log > temp.log   
+		cat temp.log ${1}/${MIR}/*summary.log >> temp1.log   
+	     mv temp1.log temp.log	
 	fi
 	if [ $tf_files != 0 ] ; then
-		cat temp.log ${1}/${TF}/*summary.log > temp.log   
+		cat temp.log ${1}/${TF}/*summary.log >> temp1.log   
+	     mv temp1.log temp.log	
 	fi
 	if [ $dis_files != 0 ] ; then
-		cat temp.log ${1}/${DISEASE}/*summary.log > temp.log   
+		cat temp.log ${1}/${DISEASE}/*summary.log >> temp1.log   
+	     mv temp1.log temp.log	
 	fi
 
 	mv temp.log ${1}/${2}_translation_summary.log 
@@ -645,6 +678,7 @@ OUTPUTDIR=${CUR_RELEASE}/Human
 UNIPROT=${OUTPUTDIR}/UniProt
 EG=${OUTPUTDIR}/entrezgene
 SYMBOL=${OUTPUTDIR}/symbol
+ENSEMBL=${OUTPUTDIR}/ensembl
 SOURCE=${CUR_RELEASE}/SRC
 VERSIONS=${CUR_RELEASE}/version
 
@@ -665,11 +699,13 @@ mkdir ${SOURCE}
 mkdir ${VERSIONS}
 mkdir -p ${UNIPROT}
 mkdir -p ${EG}
+mkdir -p ${ENSEMBL}
 mkdir -p ${SYMBOL}
 
 createDivisionDirs ${UNIPROT}
 createDivisionDirs ${EG}
 createDivisionDirs ${SYMBOL}
+createDivisionDirs ${ENSEMBL}
 
 #There are three different types of files that we have to deal with during the download process:
 # 1. biopax - need to validated, autofixed, converted to gmt files, convert identifiers to other desirable identifiers
@@ -825,7 +861,7 @@ mkdir ${NETPATH}
 
 cd ${NETPATH}
 
-cp ${STATICDIR}/NetPath/*.owl ./
+cp ${STATICDIR}/NetPath/NetPath_modified/*.owl ./
 
 #process each file in the NetPath directory.
 for file in *.owl; do
@@ -1064,14 +1100,20 @@ done
 cat *_${WITHIEA}*entrezgene.gmt > Human_GOALL_${WITHIEA}_${dir_name}_entrezgene.gmt
 cat *_${WITHIEA}*UniProt.gmt > Human_GOALL_${WITHIEA}_${dir_name}_UniProt.gmt
 cat *_${WITHIEA}*symbol.gmt > Human_GOALL_${WITHIEA}_${dir_name}_symbol.gmt
+cat *_${WITHIEA}*ensembl.gmt > Human_GOALL_${WITHIEA}_${dir_name}_ensembl.gmt
 
 cat *_${NOIEA}*entrezgene.gmt > Human_GOALL_${NOIEA}_${dir_name}_entrezgene.gmt
 cat *_${NOIEA}*UniProt.gmt > Human_GOALL_${NOIEA}_${dir_name}_UniProt.gmt
 cat *_${NOIEA}*symbol.gmt > Human_GOALL_${NOIEA}_${dir_name}_symbol.gmt
+cat *_${NOIEA}*ensembl.gmt > Human_GOALL_${NOIEA}_${dir_name}_ensembl.gmt
 
 cp *entrezgene.gmt ${EG}/${GO}
 #create report of translations
 cat *gene_summary.log > ${EG}/${GO}/Human_GO_entrezgene_translation_summary.log
+
+cp *ensembl.gmt ${ENSEMBL}/${GO}
+#create report of translations
+cat *ensembl_summary.log > ${ENSEMBL}/${GO}/Human_GO_ensembl_translation_summary.log
 
 cp *UniProt.gmt ${UNIPROT}/${GO}
 #create report of translations
@@ -1079,11 +1121,12 @@ cat *UniProt_summary.log > ${UNIPROT}/${GO}/Human_GO_UniProt_translation_summary
 
 cp *symbol.gmt ${SYMBOL}/${GO}
 #create report of translations
-cat *UniProt_summary.log > ${UNIPROT}/${GO}/Human_GO_UniProt_translation_summary.log
+cat *symbol_summary.log > ${SYMBOL}/${GO}/Human_GO_symbol_translation_summary.log
 
 #compile all the different versions
 cd ${VERSIONS}
 cat *.txt > ${OUTPUTDIR}/${dir_name}_versions.txt
+
 
 
 #create all the different distributions
@@ -1113,6 +1156,34 @@ cat ../Human_AllPathways_noPFOCR_${dir_name}_entrezgene.gmt Human_GO_bp_${NOIEA}
 
 #merge all the summaries
 mergesummaries ${EG} entrezgene
+
+#create all the different distributions
+cd ${ENSEMBL}/${PATHWAYS}
+#create two different Pathway summary files - one with PFOCR and one without
+for f in `ls --ignore=*PFOCR* | grep "\.gmt$" `; do   
+	cat "$f" >> ../Human_AllPathways_noPFOCR_${dir_name}_ensembl.gmt; 
+done
+
+cat *.gmt > ../Human_AllPathways_withPFOCR_${dir_name}_ensembl.gmt
+
+cd ${ENSEMBL}/${GO}
+cat ../Human_AllPathways_withPFOCR_${dir_name}_ensembl.gmt Human_GOALL_${WITHIEA}_${dir_name}_ensembl.gmt > ../Human_GO_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_ensembl.gmt
+cat ../Human_AllPathways_withPFOCR_${dir_name}_ensembl.gmt Human_GOALL_${NOIEA}_${dir_name}_ensembl.gmt > ../Human_GO_AllPathways_withPFOCR_${NOIEA}_${dir_name}_ensembl.gmt
+
+#create summaries with noPFOCR
+cat ../Human_AllPathways_noPFOCR_${dir_name}_ensembl.gmt Human_GOALL_${WITHIEA}_${dir_name}_ensembl.gmt > ../Human_GO_AllPathways_noPFOCR_${WITHIEA}_${dir_name}_ensembl.gmt
+cat ../Human_AllPathways_noPFOCR_${dir_name}_ensembl.gmt Human_GOALL_${NOIEA}_${dir_name}_ensembl.gmt > ../Human_GO_AllPathways_noPFOCR_${NOIEA}_${dir_name}_ensembl.gmt
+
+#create two new all pathways files with GOBP included
+cat ../Human_AllPathways_withPFOCR_${dir_name}_ensembl.gmt Human_GO_bp_${WITHIEA}_ensembl.gmt > ../Human_GOBP_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_ensembl.gmt
+cat ../Human_AllPathways_withPFOCR_${dir_name}_ensembl.gmt Human_GO_bp_${NOIEA}_ensembl.gmt > ../Human_GOBP_AllPathways_withPFOCR_${NOIEA}_${dir_name}_ensembl.gmt
+
+#create summaries with noPFOCR
+cat ../Human_AllPathways_noPFOCR_${dir_name}_ensembl.gmt Human_GO_bp_${WITHIEA}_ensembl.gmt > ../Human_GOBP_AllPathways_noPFOCR_${WITHIEA}_${dir_name}_ensembl.gmt
+cat ../Human_AllPathways_noPFOCR_${dir_name}_ensembl.gmt Human_GO_bp_${NOIEA}_ensembl.gmt > ../Human_GOBP_AllPathways_noPFOCR_${NOIEA}_${dir_name}_ensembl.gmt
+
+#merge all the summaries
+mergesummaries ${ENSEMBL} ensembl
 
 cd ${SYMBOL}/${PATHWAYS}
 #create two different Pathway summary files - one with PFOCR and one without
@@ -1170,6 +1241,7 @@ mergesummaries ${UNIPROT} UniProt
 getstats ${EG} "entrezgene" ${SOURCE}
 getstats ${UNIPROT} "UniProt" ${SOURCE}
 getstats ${SYMBOL} "symbol" ${SOURCE}
+getstats ${ENSEMBL} "ensembl" ${SOURCE}
 
 #################################################################
 # Create Mouse Genesets.
@@ -1182,6 +1254,7 @@ OUTPUTDIR=${CUR_RELEASE}/Mouse
 UNIPROT=${OUTPUTDIR}/UniProt
 EG=${OUTPUTDIR}/entrezgene
 SYMBOL=${OUTPUTDIR}/symbol
+ENSEMBL=${OUTPUTDIR}/ensembl
 MOUSESOURCE=${CUR_RELEASE}/SRC_Mouse
 VERSIONS=${CUR_RELEASE}/version_mouse
 
@@ -1189,10 +1262,12 @@ mkdir ${MOUSESOURCE}
 mkdir ${VERSIONS}
 mkdir -p ${UNIPROT}
 mkdir -p ${EG}
+mkdir -p ${ENSEMBL}
 mkdir -p ${SYMBOL}
 
 createDivisionDirs ${UNIPROT}
 createDivisionDirs ${EG}
+createDivisionDirs ${ENSEMBL}
 createDivisionDirs ${SYMBOL}
 
 
@@ -1300,10 +1375,12 @@ done
 cat *_${WITHIEA}*entrezgene.gmt > Mouse_GOALL_${WITHIEA}_${dir_name}_entrezgene.gmt
 cat *_${WITHIEA}*UniProt.gmt > Mouse_GOALL_${WITHIEA}_${dir_name}_UniProt.gmt
 cat *_${WITHIEA}*symbol.gmt > Mouse_GOALL_${WITHIEA}_${dir_name}_symbol.gmt
+cat *_${WITHIEA}*ensembl.gmt > Mouse_GOALL_${WITHIEA}_${dir_name}_ensembl.gmt
 
 cat *_${NOIEA}*entrezgene.gmt > Mouse_GOALL_${NOIEA}_${dir_name}_entrezgene.gmt
 cat *_${NOIEA}*UniProt.gmt > Mouse_GOALL_${NOIEA}_${dir_name}_UniProt.gmt
 cat *_${NOIEA}*symbol.gmt > Mouse_GOALL_${NOIEA}_${dir_name}_symbol.gmt
+cat *_${NOIEA}*ensembl.gmt > Mouse_GOALL_${NOIEA}_${dir_name}_ensembl.gmt
 
 cp *entrezgene.gmt ${EG}/${GO}
 #create report of translations
@@ -1317,6 +1394,10 @@ cp *UniProt.gmt ${UNIPROT}/${GO}
 cp *symbol.gmt ${SYMBOL}/${GO}
 #create report of translations
 cat *symbol_summary.log > ${SYMBOL}/${GO}/Mouse_GO_symbol_translation_summary.log
+
+cp *ensembl.gmt ${ENSEMBL}/${GO}
+#create report of translations
+cat *ensembl_summary.log > ${ENSEMBL}/${GO}/Mouse_GO_ensembl_translation_summary.log
 
 
 #create a directory will all the gmt from human we want to convert to mouse
@@ -1369,6 +1450,7 @@ mv *DrugBank* ${DRUGS}
 cp Mouse*_Entrezgene.gmt ${EG}/${PATHWAYS}/
 cp Mouse*_UniProt.gmt ${UNIPROT}/${PATHWAYS}/
 cp Mouse*_symbol.gmt ${SYMBOL}/${PATHWAYS}/
+cp Mouse*_ensembl.gmt ${ENSEMBL}/${PATHWAYS}/
 
 #concatenate all the translation summaries	
 files=$(ls *10090_conversion.log 2> /dev/null | wc -l)
@@ -1389,12 +1471,19 @@ if [ $files != 0 ] ; then
 	cp Mouse_translatedPathways_symbol_translation_summary.log ${SYMBOL}/${PATHWAYS}/Mouse_translatedPathways_symbol_translation_summary.log
 fi
 
+files=$(ls *ensembl_summary.log 2> /dev/null | wc -l)
+if [ $files != 0 ] ; then
+	cat *ensembl_summary.log > Mouse_translatedPathways_ensembl_translation_summary.log
+	cp Mouse_translatedPathways_ensembl_translation_summary.log ${ENSEMBL}/${PATHWAYS}/Mouse_translatedPathways_ensembl_translation_summary.log
+fi
+
 #copy the drugbank converted files
 cd ${DRUGS}
 #copy all the pathway file - can't use the copy function because there are multiple pathway datasets in this set. 
 cp Mouse*_entrezgene.gmt ${EG}/${DRUGS}/
 cp Mouse*_UniProt.gmt ${UNIPROT}/${DRUGS}/
 cp Mouse*_symbol.gmt ${SYMBOL}/${DRUGS}/
+cp Mouse*_ensembl.gmt ${ENSEMBL}/${DRUGS}/
 
 #concatenate all the translation summaries	
 files=$(ls *10090_conversion.log 2> /dev/null | wc -l)
@@ -1415,6 +1504,12 @@ if [ $files != 0 ] ; then
 	cp Mouse_Drugbank_symbol_translation_summary.log ${SYMBOL}/${DRUGS}/Mouse_Drugbank_symbol_translation_summary.log
 fi
 
+		
+files=$(ls *ensembl_summary.log 2> /dev/null | wc -l)
+if [ $files != 0 ] ; then
+	cat *ensembl_summary.log > Mouse_Drugbank_ensembl_translation_summary.log
+	cp Mouse_Drugbank_ensembl_translation_summary.log ${ENSEMBL}/${DRUGS}/Mouse_Drugbank_ensembl_translation_summary.log
+fi
 
 #compile all the different versions
 cd ${VERSIONS}
@@ -1446,6 +1541,7 @@ cat ../Mouse_AllPathways_noPFOCR_${dir_name}_entrezgene.gmt MOUSE_GO_bp_${NOIEA}
 #merge all the summaries
 mergesummaries ${EG} entrezgene
 
+
 cd ${SYMBOL}/${PATHWAYS}
 #create two different Pathway summary files - one with PFOCR and one without
 for f in `ls --ignore=*PFOCR* | grep "\.gmt$" `; do   
@@ -1470,6 +1566,31 @@ cat ../Mouse_AllPathways_noPFOCR_${dir_name}_symbol.gmt MOUSE_GO_bp_${NOIEA}*_sy
 
 #merge all the summaries
 mergesummaries ${SYMBOL} symbol
+
+cd ${ENSEMBL}/${PATHWAYS}
+#create two different Pathway summary files - one with PFOCR and one without
+for f in `ls --ignore=*PFOCR* | grep "\.gmt$" `; do   
+	cat "$f" >> ../Mouse_AllPathways_noPFOCR_${dir_name}_ensembl.gmt; 
+done
+
+cat *.gmt > ../Mouse_AllPathways_withPFOCR_${dir_name}_ensembl.gmt
+cd ${ENSEMBL}/${GO}
+cat ../Mouse_AllPathways_withPFOCR${dir_name}_ensembl.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_ensembl.gmt > ../Mouse_GO_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_ensembl.gmt
+cat ../Mouse_AllPathways_withPFOCR_${dir_name}_ensembl.gmt Mouse_GOALL_${NOIEA}_${dir_name}_ensembl.gmt > ../Mouse_GO_AllPathways_withPFOCR${NOIEA}_${dir_name}_ensembl.gmt
+
+cat ../Mouse_AllPathways_noPFOCR${dir_name}_ensembl.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_ensembl.gmt > ../Mouse_GO_AllPathways_noPFOCR_${WITHIEA}_${dir_name}_ensembl.gmt
+cat ../Mouse_AllPathways_noPFOCR_${dir_name}_ensembl.gmt Mouse_GOALL_${NOIEA}_${dir_name}_ensembl.gmt > ../Mouse_GO_AllPathways_noPFOCR${NOIEA}_${dir_name}_ensembl.gmt
+
+#create two new all pathways files with GOBP included
+cat ../Mouse_AllPathways_withPFOCR_${dir_name}_ensembl.gmt MOUSE_GO_bp_${WITHIEA}*_ensembl.gmt > ../Mouse_GOBP_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_ensembl.gmt
+cat ../Mouse_AllPathways_withPFOCR_${dir_name}_ensembl.gmt MOUSE_GO_bp_${NOIEA}*_ensembl.gmt > ../Mouse_GOBP_AllPathways_withPFOCR_${NOIEA}_${dir_name}_ensembl.gmt
+
+cat ../Mouse_AllPathways_noPFOCR_${dir_name}_ensembl.gmt MOUSE_GO_bp_${WITHIEA}*_ensembl.gmt > ../Mouse_GOBP_AllPathways_noPFOCR_${WITHIEA}_${dir_name}_ensembl.gmt
+cat ../Mouse_AllPathways_noPFOCR_${dir_name}_ensembl.gmt MOUSE_GO_bp_${NOIEA}*_ensembl.gmt > ../Mouse_GOBP_AllPathways_noPFOCR_${NOIEA}_${dir_name}_ensembl.gmt
+
+
+#merge all the summaries
+mergesummaries ${ENSEMBL} ensembl
 
 cd ${UNIPROT}/${PATHWAYS}
 #create two different Pathway summary files - one with PFOCR and one without
@@ -1500,6 +1621,7 @@ mergesummaries ${UNIPROT} UniProt
 getstats ${EG} "entrezgene" ${MOUSESOURCE}
 getstats ${UNIPROT} "UniProt" ${MOUSESOURCE}
 getstats ${SYMBOL} "symbol" ${MOUSESOURCE}
+getstats ${ENSMBL} "ensembl" ${MOUSESOURCE}
 
 
 #Rat data is downloaded from the Gene ontology website and comes from RGD
@@ -1532,6 +1654,7 @@ OUTPUTDIR=${CUR_RELEASE}/Rat
 UNIPROT=${OUTPUTDIR}/UniProt
 EG=${OUTPUTDIR}/entrezgene
 SYMBOL=${OUTPUTDIR}/symbol
+ENSEMBL=${OUTPUTDIR}/ensembl
 RatSOURCE=${CUR_RELEASE}/SRC_Rat
 VERSIONS=${CUR_RELEASE}/version_Rat
 
@@ -1540,10 +1663,12 @@ mkdir ${VERSIONS}
 mkdir -p ${UNIPROT}
 mkdir -p ${EG}
 mkdir -p ${SYMBOL}
+mkdir -p ${ENSEMBL}
 
 createDivisionDirs ${UNIPROT}
 createDivisionDirs ${EG}
 createDivisionDirs ${SYMBOL}
+createDivisionDirs ${ENSEMBL}
 
 
 #Direct source for Rat come from GO, Ratcyc, Reactome, Kegg
@@ -1645,10 +1770,12 @@ done
 cat *_${WITHIEA}*entrezgene.gmt > Rat_GOALL_${WITHIEA}_${dir_name}_entrezgene.gmt
 cat *_${WITHIEA}*UniProt.gmt > Rat_GOALL_${WITHIEA}_${dir_name}_UniProt.gmt
 cat *_${WITHIEA}*symbol.gmt > Rat_GOALL_${WITHIEA}_${dir_name}_symbol.gmt
+cat *_${WITHIEA}*ensembl.gmt > Rat_GOALL_${WITHIEA}_${dir_name}_ensembl.gmt
 
 cat *_${NOIEA}*entrezgene.gmt > Rat_GOALL_${NOIEA}_${dir_name}_entrezgene.gmt
 cat *_${NOIEA}*UniProt.gmt > Rat_GOALL_${NOIEA}_${dir_name}_UniProt.gmt
 cat *_${NOIEA}*symbol.gmt > Rat_GOALL_${NOIEA}_${dir_name}_symbol.gmt
+cat *_${NOIEA}*ensembl.gmt > Rat_GOALL_${NOIEA}_${dir_name}_ensembl.gmt
 
 cp *entrezgene.gmt ${EG}/${GO}
 #create report of translations
@@ -1660,8 +1787,11 @@ cp *UniProt.gmt ${UNIPROT}/${GO}
 
 cp *symbol.gmt ${SYMBOL}/${GO}
 #create report of translations
-cat *symbol_summary.log > ${UNIPROT}/${GO}/Rat_GO_symbol_translation_summary.log
+cat *symbol_summary.log > ${SYMBOL}/${GO}/Rat_GO_symbol_translation_summary.log
 
+cp *ensembl.gmt ${ENSEMBL}/${GO}
+#create report of translations
+cat *ensembl_summary.log > ${ENSEMBL}/${GO}/Rat_GO_ensembl_translation_summary.log
 
 #create a directory will all the gmt from human we want to convert to Rat
 CONV=${RatSOURCE}/ToBeConverted
@@ -1708,6 +1838,7 @@ mv *DrugBank* ${DRUGS}
 cp Rat*_Entrezgene.gmt ${EG}/${PATHWAYS}/
 cp Rat*_UniProt.gmt ${UNIPROT}/${PATHWAYS}/
 cp Rat*_symbol.gmt ${SYMBOL}/${PATHWAYS}/
+cp Rat*_ensembl.gmt ${ENSEMBL}/${PATHWAYS}/
 
 #concatenate all the translation summaries	
 files=$(ls *10116_conversion.log 2> /dev/null | wc -l)
@@ -1725,7 +1856,19 @@ fi
 files=$(ls *symbol_summary.log 2> /dev/null | wc -l)
 if [ $files != 0 ] ; then
 	cat *symbol_summary.log > Rat_translatedPathways_symbol_translation_summary.log
-	cp $Rat_translatedPathways_symbol_translation_summary.log ${SYMBOL}/${PATHWAYS}/Rat_translatedPathways_symbol_translation_summary.log
+	cp Rat_translatedPathways_symbol_translation_summary.log ${SYMBOL}/${PATHWAYS}/Rat_translatedPathways_symbol_translation_summary.log
+fi
+		
+files=$(ls *entrezgene_summary.log 2> /dev/null | wc -l)
+if [ $files != 0 ] ; then
+	cat *entrezgene_summary.log > Rat_translatedPathways_entrezgene_translation_summary.log
+	cp Rat_translatedPathways_entrezgene_translation_summary.log ${EG}/${PATHWAYS}/Rat_translatedPathways_entrezgene_translation_summary.log
+fi
+		
+files=$(ls *ensembl_summary.log 2> /dev/null | wc -l)
+if [ $files != 0 ] ; then
+	cat *ensembl_summary.log > Rat_translatedPathways_ensembl_translation_summary.log
+	cp Rat_translatedPathways_ensembl_translation_summary.log ${ENSEMBL}/${PATHWAYS}/Rat_translatedPathways_ensembl_translation_summary.log
 fi
 
 #compile all the different versions
@@ -1747,6 +1890,7 @@ cat ../Rat_AllPathways_${dir_name}_entrezgene.gmt RAT_GO_bp_${NOIEA}*_entrezgene
 #merge all the summaries
 mergesummaries ${EG} entrezgene
 
+
 cd ${SYMBOL}/${PATHWAYS}
 cat *.gmt > ../Rat_AllPathways_${dir_name}_symbol.gmt
 cd ${SYMBOL}/${GO}
@@ -1760,6 +1904,20 @@ cat ../Rat_AllPathways_${dir_name}_symbol.gmt RAT_GO_bp_${NOIEA}*_symbol.gmt > .
 
 #merge all the summaries
 mergesummaries ${SYMBOL} symbol
+
+cd ${ENSEMBL}/${PATHWAYS}
+cat *.gmt > ../Rat_AllPathways_${dir_name}_ensembl.gmt
+cd ${ENSEMBL}/${GO}
+cat ../Rat_AllPathways_${dir_name}_ensembl.gmt Rat_GOALL_${WITHIEA}_${dir_name}_ensembl.gmt > ../Rat_GO_AllPathways_${WITHIEA}_${dir_name}_ensembl.gmt
+cat ../Rat_AllPathways_${dir_name}_ensembl.gmt Rat_GOALL_${NOIEA}_${dir_name}_ensembl.gmt > ../Rat_GO_AllPathways_${NOIEA}_${dir_name}_ensembl.gmt
+
+#create two new all pathways files with GOBP included
+cat ../Rat_AllPathways_${dir_name}_ensembl.gmt RAT_GO_bp_${WITHIEA}*_ensembl.gmt > ../Rat_GOBP_AllPathways_${WITHIEA}_${dir_name}_ensembl.gmt
+cat ../Rat_AllPathways_${dir_name}_ensembl.gmt RAT_GO_bp_${NOIEA}*_ensembl.gmt > ../Rat_GOBP_AllPathways_${NOIEA}_${dir_name}_ensembl.gmt
+
+
+#merge all the summaries
+mergesummaries ${ENSEMBL} ensembl
 
 cd ${UNIPROT}/${PATHWAYS}
 cat *.gmt > ../Rat_AllPathways_${dir_name}_UniProt.gmt
@@ -1777,6 +1935,7 @@ mergesummaries ${UNIPROT} UniProt
 getstats ${EG} "entrezgene" ${RatSOURCE}
 getstats ${UNIPROT} "UniProt" ${RatSOURCE}
 getstats ${SYMBOL} "symbol" ${RatSOURCE}
+getstats ${ENSEMBL} "ensembl" ${RatSOURCE}
 
 #########################################################
 # Create Woodchuck Genesets.
@@ -1973,16 +2132,16 @@ echo "[Finished Woodchuck  data]"
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Finished woodchuck data"'"}' `cat ${TOOLDIR}/slack_webhook`
 
 #copy the files over the webserver
-mkdir /mnt/build/EM_Genesets/$dir_name
-cp -R ${CUR_RELEASE}/Human /mnt/build/EM_Genesets/$dir_name/
-cp -R ${CUR_RELEASE}/Mouse /mnt/build/EM_Genesets/$dir_name/
-cp -R ${CUR_RELEASE}/Rat /mnt/build/EM_Genesets/$dir_name/
-cp -R ${CUR_RELEASE}/Woodchuck /mnt/build/EM_Genesets/$dir_name/
+#mkdir /mnt/build/EM_Genesets/$dir_name
+#cp -R ${CUR_RELEASE}/Human /mnt/build/EM_Genesets/$dir_name/
+#cp -R ${CUR_RELEASE}/Mouse /mnt/build/EM_Genesets/$dir_name/
+#cp -R ${CUR_RELEASE}/Rat /mnt/build/EM_Genesets/$dir_name/
+#cp -R ${CUR_RELEASE}/Woodchuck /mnt/build/EM_Genesets/$dir_name/
 
 #create a symbolic link to the latest download indicating it as current_release
-rm /mnt/build/EM_Genesets/current_release
-cd /mnt/build/EM_Genesets
-ln -sf $dir_name/ current_release
+#rm /mnt/build/EM_Genesets/current_release
+#cd /mnt/build/EM_Genesets
+#ln -sf $dir_name/ current_release
 
 #rm -rf ${CUR_RELEASE}
 
