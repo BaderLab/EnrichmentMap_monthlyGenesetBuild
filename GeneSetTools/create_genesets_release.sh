@@ -101,7 +101,9 @@ function download_pfocr_data {
 	#FILE=`echo "cat //html/body/div/table/tbody/tr/td/a" |  xmllint --html --shell ${URL} | grep -o -E ">(.*$1.gmt)<" | sed -E 's/(<|>)//g'`
 	
 	#not elegant but the only way to pull out the file name is pull out the name between '> and < tokens.  Might brake in the future. (xmllint does not work with https 
-	FILE=`curl -s ${URL} |  grep -o -E ">(.*$1.gmt)<" | grep -o -P "(?<=\">).*(?=<)"`
+	#FILE=`curl -s ${URL} |  grep -o -E ">(.*$1.gmt)<" | grep -o -P "(?<=\">).*(?=<)"`
+	#Nov. 4, 2024 - PFOCR added an additional file to their ftp site which broke the above messing regex.  Now there are two human files and one just contains chemical
+	FILE=`curl -s "https://data.wikipathways.org/pfocr/current/" |  grep -o -E ">(.*Homo_sapiens.gmt)<" | grep -o -P "(?<=\">).*(?=<)" | grep -v chemical`
 	curl ${URL}/${FILE} -o ${PFOCR}/PFOCR_${1}_entrezgene.gmt -s -L 
 	get_webfile_version ${URL}/${FILE} "PFOCR"
 }
