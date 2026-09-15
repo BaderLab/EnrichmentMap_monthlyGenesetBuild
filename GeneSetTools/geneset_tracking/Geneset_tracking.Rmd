@@ -1,18 +1,21 @@
 ---
 title: "Geneset Growth Stats"
-output: html_document
+output:
+  html_document:
+    toc: true
+    toc_float: true
 params:
-  species: Mouse
+  species: Human
   identifier: entrezgene
   year: 2019
   width: 600
   height: 600
   pointsz: 14
-  home_dir: /home/rstudio/projects
-  
+  home_dir: /home/rstudio/projects  
 ---
 
 # Changes/Growth of Genesets By Source over the years
+
 ```{r load libraries, echo=FALSE,message=FALSE, warning=FALSE}
 
 home_dir <- params$home_dir
@@ -35,13 +38,65 @@ tryCatch(expr = { library("ggplot2")},
 ```
 
 
+```{r, echo=FALSE,message=FALSE, warning=FALSE}
+
+safe_getURL <- function(url, timeout = 60, quiet = FALSE) {
+  # Optional: point to a CA bundle to reduce handshake issues without disabling verification
+  cainfo <- if (requireNamespace("curl", quietly = TRUE)) {
+    system.file("curl", "cacert.pem", package = "curl")
+  } else NULL
+
+  tryCatch(
+    {
+      RCurl::getURL(url,
+                    connecttimeout = timeout,
+                    followlocation = TRUE,
+                    ssl.verifypeer = FALSE,
+                    ssl.verifyhost = FALSE,
+                    cainfo = cainfo)
+    },
+    error = function(e) {
+      # This is where "gnutls_handshake() failed: Error in the pull function." would land
+      message(sprintf("[safe_getURL] %s -> ERROR: %s", url, conditionMessage(e)))
+      return(NA_character_)  # safe default so the script can continue
+    },
+    warning = function(w) {
+      message(sprintf("[safe_getURL] WARNING: %s", conditionMessage(w)))
+      invokeRestart("muffleWarning")
+    }
+  )
+}
+
+
+safe_download.file <- function(url, destfile, mode = "wb", method = "libcurl", tries = 15) {
+  dir.create(dirname(destfile), recursive = TRUE, showWarnings = FALSE)
+  for (i in seq_len(tries)) {
+    res <- try(utils::download.file(url, destfile, mode = mode, method = method), 
+               silent = TRUE)
+    if (!inherits(res, "try-error") && res == 0L && file.exists(destfile)) return(TRUE)
+    if (file.exists(destfile)) unlink(destfile)
+    Sys.sleep(2^(i - 1))
+  }
+  FALSE
+}
+
+
+
+```
+
+
 ```{r include=FALSE}
 #Download all the directory names from the downloads website.
 
-download_url = "http://download.baderlab.org/EM_Genesets/"
+download_url = "https://download.baderlab.org/EM_Genesets/"
 
 #list all the files on the server
-filenames = getURL(download_url)
+filenames = safe_getURL(download_url)
+
+if (is.na(filenames)) {
+  paste("issue with download")
+}
+
 tc = textConnection(filenames)
 contents = readLines(tc)
 close(tc)
@@ -69,7 +124,12 @@ get_summary_file <- function(species = "Human", identifier="entrezgene", year=20
               current_directory = paste(download_url,download_directories [i], species,"/",sep="")
             
             #list all the files in this directory
-            current_filenames = getURL(current_directory)
+            current_filenames = safe_getURL(current_directory)
+            if (is.na(current_filenames)) {
+              paste("issue with download")
+              next
+            }
+
             tc = textConnection(current_filenames)
             contents = readLines(tc)
             close(tc)
@@ -78,17 +138,28 @@ get_summary_file <- function(species = "Human", identifier="entrezgene", year=20
               contents, perl = TRUE)
             log_files = unlist(regmatches(contents, rx))
             
+	    # ADD THIS:
+	    if(length(log_files) == 0){ next }
+
             current_log_file <- log_files[grep(log_files,pattern=identifier)]
             
-            if(length(current_log_file) == 0 && length(log_files == 1)){
+            if(length(current_log_file) == 0 && length(log_files) == 1){
               current_log_file = log_files
             }
-            
+           
+	   # ADD THIS too, in case identifier still didn't match:
+	   if(length(current_log_file) == 0){ next }
+ 
             dest_log_file <- file.path(home_dir,current_log_file )
-            
-            download.file(paste(current_directory,current_log_file,sep=""),destfile = dest_log_file,quiet = FALSE)
-            
-            current_log_contents <- read.table(dest_log_file,header=FALSE,sep="\t",stringsAsFactors = FALSE,strip.white = TRUE)
+ 
+
+               safe_download.file(paste(current_directory,current_log_file,sep=""),
+                            destfile = dest_log_file)
+                if(is.null(dest_log_file) || is.na(dest_log_file)){
+                  next
+                }
+                current_log_contents <- read.table(dest_log_file,header=FALSE,sep="\t",
+                                               stringsAsFactors = FALSE,strip.white = TRUE)
             current_log_contents <- current_log_contents[grep(current_log_contents[,1],pattern=".gmt"),]
             #current_log_contents <- sapply(current_log_contents,FUN = function(x){strsplit(x,pattern=" ")})
             
@@ -101,8 +172,9 @@ get_summary_file <- function(species = "Human", identifier="entrezgene", year=20
             stats[,1] <- gsub(stats[,1],pattern = tolower(substr(download_directories [i],1,nchar(download_directories [i])-1)),replacement = "")
             
             #make sure that stats table is unique (there is an issue with multiple rows being added)
-            stats <- aggregate(stats, by=list(stats$gmt_file),FUN=max)
-            
+            stats <- aggregate(num_sets ~ gmt_file, data=stats, FUN=max)
+	    #stats <- aggregate(stats, by=list(stats$gmt_file),FUN=max)
+
             #get the date of this data
             proper_date <- as.Date(download_directories [i],"%B_%d_%Y")
             
@@ -121,8 +193,11 @@ get_summary_file <- function(species = "Human", identifier="entrezgene", year=20
               merged_data <- merge(stats_summary_table, stats,by.x = 1, by.y=1,
                                    all = TRUE)
               stats_summary_table <- merged_data
-              
             }
+
+            
+            
+           
       }
       
       return(stats_summary_ggplot)
@@ -149,7 +224,11 @@ get_identifier_conversion_file <- function(species = "Human", identifier="entrez
     current_directory = paste(download_url,download_directories[i], species,"/",sep="")
     
     #list all the files in this directory
-    current_filenames = getURL(current_directory)
+    current_filenames = safe_getURL(current_directory)
+     if (is.na(current_filenames)) {
+              paste("issue with download")
+              next
+    }
     tc = textConnection(current_filenames)
     contents = readLines(tc)
     close(tc)
@@ -170,10 +249,14 @@ get_identifier_conversion_file <- function(species = "Human", identifier="entrez
       break
     }
     
-    download.file(
+    safe_download.file(
       paste(current_directory,current_log_file,sep=""),
-      destfile = dest_log_file,quiet = TRUE
+      destfile = dest_log_file
     )
+    
+    if(is.null(dest_log_file) || is.na(dest_log_file)){
+      next
+    }
     
     current_log_contents <- read.table(dest_log_file,header=FALSE,sep="\t",stringsAsFactors = FALSE,strip.white = TRUE,fill = TRUE)
     colnames(current_log_contents) <- c("empty","Filename",	"Original Identifier",	"ID translated",	"Total #genes",	 "#genes translated",	"#genes missing",	 "percent not translated",	 "Total Annotations",	 "Annotations not translated",	 "percent annot not translated","empty")
@@ -226,13 +309,18 @@ get_identifier_conversion_file_by_type <- function(species = "Human", identifier
   for(i in 1:length(download_directories )){
     #only go back as far as December 2014
     #if(length(grep(download_directories[i], pattern=year )>0)){
-    if(unlist(strsplit(gsub(download_directories[i],pattern = "/",replacement = ""),split = "_"))[3] < year) {
+    if(unlist(strsplit(gsub(download_directories[i],pattern = "/",replacement = ""),
+                       split = "_"))[3] < year) {
       next
     }
     current_directory = paste(download_url,download_directories[i], species,"/",identifier,"/",type,"/",sep="")
     
     #list all the files in this directory
-    current_filenames = getURL(current_directory)
+    current_filenames = safe_getURL(current_directory)
+     if (is.na(current_filenames)) {
+              paste("issue with download")
+              next
+            }
     tc = textConnection(current_filenames)
     contents = readLines(tc)
     close(tc)
@@ -250,46 +338,58 @@ get_identifier_conversion_file_by_type <- function(species = "Human", identifier
     
     #for each of the log files
     for(j in 1:length(log_files)){
+      
+        if(is.na(log_files[j]) || log_files[j]=="NA"){
+          next
+        }
         db_name <- unlist(strsplit(log_files[j],split = "_"))[2]
       dest_log_file <- file.path(home_dir,log_files[j] )
-      download.file(
-        paste(current_directory,log_files[j],sep=""),destfile = dest_log_file,quiet = TRUE
-      )
-      current_log_contents <- read.table(dest_log_file,header=FALSE,sep="\t",
-                                         stringsAsFactors = FALSE,strip.white = TRUE,fill = TRUE)
-     
-      num <- 1
-      #if there is more than one stats record for this file
-      if((dim(current_log_contents)[1] >  12) && (proper_date > as.Date("2020-11-17"))){
-        stats <- t(current_log_contents[1:10,2])
-        while(num*11 < dim(current_log_contents)[1]){
-          stats <- rbind(stats, current_log_contents[(11*num+1):(11*num+10),2])
-          num <- num+1
-        }
-      } else if((dim(current_log_contents)[1] >  12) && (proper_date <= as.Date("2020-11-17"))){
-        stats <- cbind(t(current_log_contents[1:4,2]), "",t(current_log_contents[5:9,2]))
-        while(num*10 < dim(current_log_contents)[1]){
-          start <- (10*num+1)
-          end <- (10*num+9)
-          stats <- rbind(stats, cbind(t(current_log_contents[start:(start + 4),2]),"",
-                         t(current_log_contents[(start+5):end,2])))
-          num <- num+1
-        }
-      } else if(proper_date <= as.Date("2020-11-17")){
-        stats <- cbind(t(current_log_contents[1:4,2]), "",t(current_log_contents[5:9,2]))
-        } else{
-         stats <- t(current_log_contents[1:10,2])
-      }
+
+           safe_download.file(
+            paste(current_directory,log_files[j],sep=""),
+            destfile = dest_log_file
+          )
+          if(is.null(dest_log_file) || is.na(dest_log_file)){
+            next
+          }
+           
+          current_log_contents <- read.table(dest_log_file,header=FALSE,sep="\t",
+                                             stringsAsFactors = FALSE,strip.white = TRUE,fill = TRUE)
+         
+          num <- 1
+          #if there is more than one stats record for this file
+          if((dim(current_log_contents)[1] >  12) && (proper_date > as.Date("2020-11-17"))){
+            stats <- t(current_log_contents[1:10,2])
+            while(num*11 < dim(current_log_contents)[1]){
+              stats <- rbind(stats, current_log_contents[(11*num+1):(11*num+10),2])
+              num <- num+1
+            }
+          } else if((dim(current_log_contents)[1] >  12) && (proper_date <= as.Date("2020-11-17"))){
+            stats <- cbind(t(current_log_contents[1:4,2]), "",t(current_log_contents[5:9,2]))
+            while(num*10 < dim(current_log_contents)[1]){
+              start <- (10*num+1)
+              end <- (10*num+9)
+              stats <- rbind(stats, cbind(t(current_log_contents[start:(start + 4),2]),"",
+                             t(current_log_contents[(start+5):end,2])))
+              num <- num+1
+            }
+          } else if(proper_date <= as.Date("2020-11-17")){
+            stats <- cbind(t(current_log_contents[1:4,2]), "",t(current_log_contents[5:9,2]))
+            } else{
+             stats <- t(current_log_contents[1:10,2])
+          }
+          
+          
+          
+          if(i == 1 && j == 1){
+            ids_summary_ggplot <- data.frame(source=db_name,stats, date = proper_date)
+          } else{
+            ids_summary_ggplot <- rbind(ids_summary_ggplot, 
+                                        data.frame(source=db_name, stats, date = proper_date))
+            
+          }
       
       
-      
-      if(i == 1 && j == 1){
-        ids_summary_ggplot <- data.frame(source=db_name,stats, date = proper_date)
-      } else{
-        ids_summary_ggplot <- rbind(ids_summary_ggplot, 
-                                    data.frame(source=db_name, stats, date = proper_date))
-        
-      }
       
       
     }
@@ -432,7 +532,7 @@ dev.off()
 
 ![](`r file.path(".",figure_directory, Pathway_figure_filename)`)
 
-**excluded the pathway ocr numbers as there are drastically more pathways found in this pathway resource compared to all the others and it makes it impossible to see the changes in the remaining pathway resources
+** excluded the pathway ocr numbers as there are drastically more pathways found in this pathway resource compared to all the others and it makes it impossible to see the changes in the remaining pathway resources
 
 # Changes/Growth of Identifier mapping By Source over the years
 
@@ -524,35 +624,37 @@ dev.off()
 
 
 ```{r message=FALSE, warning=FALSE,include=FALSE}
-id_summary_ggplot_DrugTargets <- get_identifier_conversion_file_by_type(species,identifier,"2021","DrugTargets")
+      id_summary_ggplot_DrugTargets <- get_identifier_conversion_file_by_type(species,identifier,"2019","DrugTargets")
+    
+    if(!is.null(id_summary_ggplot_DrugTargets)){
+      subset_id_summary <- data.frame(source = id_summary_ggplot_DrugTargets$Filename, not_translated = as.numeric(id_summary_ggplot_DrugTargets$`Annotations not translated`), total = as.numeric(id_summary_ggplot_DrugTargets$`Total Annotations`), date= id_summary_ggplot_DrugTargets$date, stringsAsFactors = FALSE)
+      
+      subset_id_summary_agg <- aggregate(subset_id_summary[,2:3],by = list(subset_id_summary$source,subset_id_summary$date),FUN = sum)
+      colnames(subset_id_summary_agg) <- c("Filename","date","not_translated","total")
+      
+      Drugid_figure_filename <- "Drugbank_identifier_stats.png"
+      
+      png(file.path(home_dir,figure_directory, Drugid_figure_filename),
+          width = params$width, height = params$height,  pointsize = params$pointsz)
+      
+      ggplot(subset_id_summary_agg, aes(x=date, y=(not_translated/total)*100, group=Filename,color=Filename)) +
+        geom_line() + theme(legend.position = "right",
+        legend.key.size = unit(0.25, 'cm'), #change legend key size
+        legend.key.height = unit(0.25, 'cm'), #change legend key height
+        legend.key.width = unit(0.25, 'cm'), #change legend key width
+        legend.title = element_text(size=9), #change legend title font size
+        legend.direction = "vertical",
+        legend.spacing = unit(0.04, "cm"),
+        legend.text = element_text(size=10)) + #change legend text font size
+        ggtitle(paste("Percent missing Annotation translations  \n for DrugTargets", species,"from", year, "- Present", sep = " " )) +
+        guides(colour = guide_legend(ncol = 1)) +
+        ylab("Percent (1-100%) Annotations not translated") + xlab("time") 
+      
+      dev.off()
+    }
 
-if(!is.null(id_summary_ggplot_DrugTargets)){
-  subset_id_summary <- data.frame(source = id_summary_ggplot_DrugTargets$Filename, not_translated = as.numeric(id_summary_ggplot_DrugTargets$`Annotations not translated`), total = as.numeric(id_summary_ggplot_DrugTargets$`Total Annotations`), date= id_summary_ggplot_DrugTargets$date, stringsAsFactors = FALSE)
-  
-  subset_id_summary_agg <- aggregate(subset_id_summary[,2:3],by = list(subset_id_summary$source,subset_id_summary$date),FUN = sum)
-  colnames(subset_id_summary_agg) <- c("Filename","date","not_translated","total")
-  
-  Drugid_figure_filename <- "Drugbank_identifier_stats.png"
-  
-  png(file.path(home_dir,figure_directory, Drugid_figure_filename),
-      width = params$width, height = params$height,  pointsize = params$pointsz)
-  
-  ggplot(subset_id_summary_agg, aes(x=date, y=(not_translated/total)*100, group=Filename,color=Filename)) +
-    geom_line() + theme(legend.position = "right",
-    legend.key.size = unit(0.25, 'cm'), #change legend key size
-    legend.key.height = unit(0.25, 'cm'), #change legend key height
-    legend.key.width = unit(0.25, 'cm'), #change legend key width
-    legend.title = element_text(size=9), #change legend title font size
-    legend.direction = "vertical",
-    legend.spacing = unit(0.04, "cm"),
-    legend.text = element_text(size=10)) + #change legend text font size
-    ggtitle(paste("Percent missing Annotation translations  \n for DrugTargets", species,"from", year, "- Present", sep = " " )) +
-    guides(colour = guide_legend(ncol = 1)) +
-    ylab("Percent (1-100%) Annotations not translated") + xlab("time") 
-  
-  dev.off()
-}
 
+ 
 ```
 
 ```{r message=FALSE, warning=FALSE,include=FALSE}
