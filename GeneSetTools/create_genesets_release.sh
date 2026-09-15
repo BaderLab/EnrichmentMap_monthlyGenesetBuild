@@ -927,11 +927,11 @@ copy2release_nomerge DiseasePhenotypes Human ${DISEASE}
 DRUGSSRC=${SOURCE}/DrugBank
 mkdir -p ${DRUGSSRC}
 cd ${DRUGSSRC}
-download_drugbank_data
+#download_drugbank_data
 
 # if drugbank goes down revert to using static file
-#cp ${STATICDIR}/Drugbank/drugbank.xml.zip ./
-#cp ${STATICDIR}/Drugbank/*.txt ${VERSIONS}
+cp ${STATICDIR}/Drugbank/drugbank.xml.zip ./
+cp ${STATICDIR}/Drugbank/*.txt ${VERSIONS}
 
 for file in *.zip; do
 	unzip $file	
