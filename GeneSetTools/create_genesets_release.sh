@@ -19,8 +19,9 @@ function download_panther_data {
 	    echo "[Downloading current Panther Pathway data]"
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Panther Pathway data"'"}' `cat ${TOOLDIR}/slack_webhook`
             # temporarily  change this to get the 3.5 release as the latest release is broken.  Change back once we hear back from  them.
-	    URL="ftp://ftp.pantherdb.org/pathway/current_release/"
+	    #URL="ftp://ftp.pantherdb.org/pathway/current_release/"
 	    #URL="ftp://ftp.pantherdb.org//pathway/3.5/"
+	    URL="https://data.pantherdb.org/ftp/pathway/current_release/"
 	    curl  ${URL}/BioPAX.tar.gz -o ${PANTHER}/BioPAX.tar.gz -s 
 	    get_webfile_version ${URL}/BioPAX.tar.gz "Panther"
 }
@@ -71,9 +72,12 @@ function download_netpath_data {
 function download_reactome_data {
 	echo "[Downloading current Reactome data]"
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Reactome data"'"}' `cat ${TOOLDIR}/slack_webhook`
-	URL="https://www.reactome.org/download/current/"
-	curl ${URL}/biopax.zip -o ${REACTOME}/biopax.zip -s -L 
-	get_webfile_version ${URL}/biopax.zip "Reactome"
+	
+	#LATEST=$(curl -s https://download.reactome.org/ | grep -oE '[0-9]+/' | tr -d '/' | sort -n | tail -1)
+	LATEST=$(curl -s https://reactome.org/ContentService/data/database/version)
+	URL="https://download.reactome.org"
+	curl ${URL}/${LATEST}/biopax.zip -o ${REACTOME}/biopax.zip -L --fail -w "%{http_code}" 
+	get_webfile_version ${URL}/${LATEST}/biopax.zip "Reactome"
 }
 
 function download_wikipathways_data {
@@ -156,7 +160,8 @@ function download_GOhuman_data {
 	#get the obo file from the gene ontology website
 	echo "[Downloading current GO OBO file]"
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Go OBO data"'"}' `cat ${TOOLDIR}/slack_webhook`
-	URL="http://current.geneontology.org/ontology"
+	#Feb 27,2026 - updated to https from http
+	URL="https://current.geneontology.org/ontology"
 	curl ${URL}/go.obo -o ${GOSRC}/go.obo -s 
 	get_webfile_version ${URL}/go.obo "GO_OBO_FILE"
 
@@ -734,10 +739,11 @@ mkdir ${HUMANCYC}
 
 #issue - novemeber 20,2018 -can't download new data without new subscription
 #retrying download after U of T sponsored subscriptions.
-download_biocyc_data "human" ${HUMANCYC}
+# March 2026 --> u of t no longer has a subscription.  reverted back to last version that we had - August 2025
+#download_biocyc_data "human" ${HUMANCYC}
 cd ${HUMANCYC}
 
-#cp ${STATICDIR}/biocyc/human*.gz ./
+cp ${STATICDIR}/biocyc/human*.gz ./
 
 #unzip and untar human.tar.gz file
 tar --wildcards -xvzf human.tar.gz humancyc/*level3.owl
