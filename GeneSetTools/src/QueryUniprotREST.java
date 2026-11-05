@@ -211,9 +211,13 @@ public class QueryUniprotREST
         	Map<Object, Object> data = new HashMap<>();
 		data.put("from",this.oldID_index);
 		data.put("to",this.newID_index);
-/*		if(oldID_index.equalsIgnoreCase("Gene_Name") || oldID_index.equalsIgnoreCase("GeneID"))
+		//restrict gene symbol and entrez gene lookups to this species. Without taxId
+		// uniprot maps a symbol in every species (e.g. TP53 -> TP53 in dozens of
+		// organisms) and, as of Nov 2026, returns jobStatus ERROR for any Gene_Name
+		// -> UniProtKB job. UniProt ids are already species specific.
+		if(usesTaxIdFilter(this.oldID_index))
 			data.put("taxId",Integer.toString(this.organism));
-*/		data.put("ids",String.join(",",current_ids));
+		data.put("ids",String.join(",",current_ids));
 		
 		//System.out.println(String.join(",",current_ids));	
 
@@ -259,6 +263,14 @@ public class QueryUniprotREST
 	}
 	//System.out.println("the array of jobids" + Arrays.toString(jobIds));
 	return jobIds;
+}
+
+/*
+ * Whether uniprot lookups from this (uniprot id mapping) id type should be
+ * restricted to one species with taxId.
+ */
+static boolean usesTaxIdFilter(String fromIdType){
+	return "Gene_Name".equalsIgnoreCase(fromIdType) || "GeneID".equalsIgnoreCase(fromIdType);
 }
 
 /*
