@@ -137,6 +137,10 @@ public class GeneSetTranslator_UniprotREST {
         //setup 
         setup();
 
+        //the GMT reader only logs a warning for a missing file and carries on
+        // with no gene sets, so check the input file first
+        GenesetTools.exitIfUnreadable(gmt_filename, "GMT");
+
         //parse gmt
         //Load in the GMT file
         try{
@@ -146,11 +150,11 @@ public class GeneSetTranslator_UniprotREST {
             gmtFile.run();
 
         } catch (OutOfMemoryError e) {
-            System.out.println("Out of Memory. Please increase memory allotement for cytoscape.");
-            return;
+            System.err.println("Out of Memory. Please increase memory allotement for cytoscape.");
+            System.exit(1);
         }  catch(Exception e){
-            System.out.println("unable to load GMT file");
-            return;
+            System.err.println("unable to load GMT file " + gmt_filename + ": " + e);
+            System.exit(1);
         }
 
         HashMap<String, HashSet<String>> unfoundIds = new HashMap<String, HashSet<String>>();
