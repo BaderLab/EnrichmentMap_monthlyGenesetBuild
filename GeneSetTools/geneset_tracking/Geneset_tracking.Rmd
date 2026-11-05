@@ -269,14 +269,16 @@ get_identifier_conversion_file <- function(species = "Human", identifier="entrez
     
     current_log_file <- log_files[grep(log_files,pattern=identifier)]
     
-    if(length(current_log_file) == 0 && length(log_files == 1)){
+    if(length(current_log_file) == 0 && length(log_files) == 1){
       current_log_file = log_files
     }
     
     dest_log_file <- file.path(home_dir,current_log_file )
     
-    if(length(dest_log_file) == 0){
-      break
+    # skip a release without a build summary (e.g. a failed or partial build) -
+    # 'break' here stopped at the newest release and left the table empty
+    if(length(dest_log_file) != 1){
+      next
     }
     
     # dest_log_file is just the path, so it is never NULL/NA - check whether the download worked
