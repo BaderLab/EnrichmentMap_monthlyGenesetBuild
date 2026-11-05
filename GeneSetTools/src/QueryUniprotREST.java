@@ -24,15 +24,25 @@ import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.Arrays;
+import java.time.Duration;
 
 public class QueryUniprotREST
 {
-  private static final String UNIPROT_SERVER = "https://rest.uniprot.org/idmapping";
+  //the server can be overridden (-Duniprot.server=...) so the code can be tested against a fake server
+  private static final String UNIPROT_SERVER = System.getProperty("uniprot.server", "https://rest.uniprot.org/idmapping");
   private static final Logger LOG = Logger.getAnonymousLogger();
+
+  //how many times to check a job's status, and how long to wait between checks, before giving up on it
+  static final int MAX_STATUS_CHECKS = Integer.getInteger("uniprot.status.max.checks", 100);
+  static final long STATUS_WAIT_MS = Long.getLong("uniprot.status.wait.ms", 5 * 1000L);
+
+  //without timeouts a dropped connection can hang the build forever
+  static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(30);
+  static final Duration REQUEST_TIMEOUT = Duration.ofMinutes(Long.getLong("uniprot.request.timeout.minutes", 5L));
 
   private static final HttpClient httpClient = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_1_1)
-            //.connectTimeout(Duration.ofSeconds(10))
+            .connectTimeout(CONNECT_TIMEOUT)
             .build();
 
   private String oldID_index;
@@ -94,6 +104,7 @@ public class QueryUniprotREST
 			while(more_results){
 				HttpRequest results_request = HttpRequest.newBuilder()
                 		.GET()
+                		.timeout(REQUEST_TIMEOUT)
                 		.uri(URI.create(Uniprot_Results_URI.toString()))
                 		.setHeader("User-Agent", "Java 11 HttpClient Bot") // add request header
 				.build();
@@ -218,6 +229,7 @@ public class QueryUniprotREST
 		
 		HttpRequest request = HttpRequest.newBuilder()
                 .POST(ofFormData(data))
+                .timeout(REQUEST_TIMEOUT)
                 .uri(URI.create(Uniprot_Run_URI.toString()))
                 .setHeader("User-Agent", "Java 11 HttpClient Bot") // add request header
 		.header("Content-Type", "application/x-www-form-urlencoded")
@@ -268,44 +280,70 @@ public static HttpRequest.BodyPublisher ofFormData(Map<Object, Object> data) {
     }
 
 
-public boolean check_job_status(String jobId) throws IOException, InterruptedException, Exception{
+/*
+ * Fetches the status of a UniProt id mapping job.  Separated out so the polling
+ * logic can be tested without a network connection.
+ */
+interface JobStatusFetcher {
+	JSONObject fetch(String jobId) throws Exception;
+}
 
-	int attempt = 0;
+public boolean check_job_status(String jobId) throws IOException, InterruptedException, Exception{
+	return waitForJob(jobId, this::fetchJobStatus, MAX_STATUS_CHECKS, STATUS_WAIT_MS);
+}
+
+private JSONObject fetchJobStatus(String jobId) throws Exception {
 	StringBuilder Uniprot_Results_URI = new StringBuilder(UNIPROT_SERVER + "/status/" + jobId );
-	while(true){	
-		HttpRequest status_request = HttpRequest.newBuilder()
+	HttpRequest status_request = HttpRequest.newBuilder()
         	.GET()
+        	.timeout(REQUEST_TIMEOUT)
         	.uri(URI.create(Uniprot_Results_URI.toString()))
         	.setHeader("User-Agent", "Java 11 HttpClient Bot") // add request heade
 		.build();
 
-        	HttpResponse<String> results_response = httpClient.send(status_request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> results_response = httpClient.send(status_request, HttpResponse.BodyHandlers.ofString());
 
-        	//System.out.println(results_response.body());
+        //System.out.println(results_response.body());
 
-        	Object obj = new JSONParser().parse(results_response.body());
-          
-        	// typecasting obj to JSONObject
-        	JSONObject jo = (JSONObject) obj;	
-		//System.out.println(jo.toString());
+        // typecasting obj to JSONObject
+        return (JSONObject) new JSONParser().parse(results_response.body());
+}
+
+/*
+ * Check a job's status until it is FINISHED (returns true), reports an ERROR
+ * (returns false) or has been checked maxChecks times without finishing
+ * (returns false).  Every check that isn't finished or an error counts towards
+ * maxChecks - not just RUNNING - so an unexpected status can't loop forever.
+ *
+ * (This used to do "attempt = attempt++", which never changes attempt, so the
+ * 100 check limit never triggered and a stuck job was checked forever.)
+ */
+static boolean waitForJob(String jobId, JobStatusFetcher fetcher, int maxChecks, long waitMs) throws Exception{
+
+	int attempt = 0;
+	while(attempt < maxChecks){
+		JSONObject jo = fetcher.fetch(jobId);
+		attempt++;
 
 		// getting status
-        	String status = (String) jo.get("jobStatus");
+        	String status = (jo == null) ? null : (String) jo.get("jobStatus");
 
-		if(attempt > 100){
-			System.out.println("Queried job:" + jobId + "more than 100 times and it is still not complete");
-			return false;
-		}else if(status.equalsIgnoreCase("RUNNING")){
-			attempt = attempt++;
-      			Thread.sleep(5 * 1000);
-		}else if(status.equalsIgnoreCase("ERROR")){
+		if(status == null && jo != null && (jo.containsKey("results") || jo.containsKey("failedIds"))){
+			//when a job is finished uniprot can return the results directly instead of a status
+			return true;
+		}else if("FINISHED".equalsIgnoreCase(status)){
+			return true;
+		}else if("ERROR".equalsIgnoreCase(status)){
 			System.out.println("Returned errors -" + jo.get("errors"));
-		       return false;	
-		}else if(status.equalsIgnoreCase("FINISHED")){
-			return true; 
+		       return false;
 		}
+
+		//NEW, RUNNING or anything unexpected - wait and check again
+		if(attempt < maxChecks)
+      			Thread.sleep(waitMs);
 	}
-	//return false;
+	System.out.println("Queried job:" + jobId + " " + maxChecks + " times and it is still not complete");
+	return false;
 }
 
   public HashMap<String, Set<String>> runQuery(String tool)
