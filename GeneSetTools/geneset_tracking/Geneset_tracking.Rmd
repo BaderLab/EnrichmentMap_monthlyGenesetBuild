@@ -203,7 +203,9 @@ get_summary_file <- function(species = "Human", identifier="entrezgene", year=20
             #colnames(stats)[2] <- proper_date
       
             
-            if(i == 1){
+            #set up the tables from the first release that has a summary file - not
+            # necessarily release 1, which is skipped if its build failed or was partial
+            if(is.null(stats_summary_table)){
       
               stats_summary_ggplot <- data.frame(stats, date = proper_date)
               colnames(stats)[2] <- download_directories [i]
