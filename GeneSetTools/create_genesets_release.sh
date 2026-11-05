@@ -820,6 +820,8 @@ mkdir ${HUMANCYC}
 cd ${HUMANCYC}
 
 cp ${STATICDIR}/biocyc/human*.gz ./
+#copy the version note along with the static data so it ends up in the versions file
+cp ${STATICDIR}/biocyc/humancyc.txt ${VERSIONS}
 
 #unzip and untar human.tar.gz file
 tar --wildcards -xvzf human.tar.gz humancyc/*level3.owl
@@ -899,6 +901,8 @@ cd ${NCI}
 #download_nci_data
 
 cp ${STATICDIR}/NCI/*.gz ./
+#copy the version note along with the static data so it ends up in the versions file
+cp ${STATICDIR}/NCI/NCI_Nature.txt ${VERSIONS}
 gunzip *.gz
 #modify gmt file so the gmt conforms to our standard with name and description
 for file in *.owl; do
@@ -947,6 +951,8 @@ mkdir ${NETPATH}
 cd ${NETPATH}
 
 cp ${STATICDIR}/NetPath/NetPath_modified/*.owl ./
+#copy the version note along with the static data so it ends up in the versions file
+cp ${STATICDIR}/NetPath/NetPath.txt ${VERSIONS}
 
 #process each file in the NetPath directory.
 for file in *.owl; do
