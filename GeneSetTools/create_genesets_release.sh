@@ -1394,7 +1394,7 @@ createDivisionDirs ${SYMBOL}
 
 #for some reason the validated and fixed Reactome file hangs.
 #for file in *.owl; do
-#	process_biopax_novalidation $file "UniProt" "Reactome"
+#	process_biopax_novalidation $file "UniProt" "Reactome" "10090"
 #done
 #for file in *.gmt; do
 #	translate_gmt_UniProt $file "10090" "UniProt"
@@ -1787,7 +1787,7 @@ unzip biopax.zip Rattus_norvegicus.owl
 
 #for some reason the validated and fixed Reactome file hangs.
 for file in *.owl; do
-	process_biopax_novalidation $file "UniProt" "Reactome"
+	process_biopax_novalidation $file "UniProt" "Reactome" "10116"
 done
 for file in *.gmt; do
 	translate_gmt_UniProt $file "10116" "UniProt"
