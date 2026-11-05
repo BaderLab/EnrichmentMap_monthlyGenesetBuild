@@ -2187,7 +2187,7 @@ cat ../Woodchuck_AllPathways_${dir_name}_symbol.gmt Woodchuck_Human_GOALL_${WITH
 cat ../Woodchuck_AllPathways_${dir_name}_symbol.gmt Woodchuck_Human_GOALL_${NOIEA}_${dir_name}_symbol.gmt > ../Woodchuck_Human_GO_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
 
 #create two new all pathways files with GOBP included
-cat ../Woodchuck_AllPathways_${dir_name}_symbol.gmt Woodchuck_Human_GO_bp_${WITHIEA}_symbol.gmt > ../Woodchuck_Huamn_GOBP_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
+cat ../Woodchuck_AllPathways_${dir_name}_symbol.gmt Woodchuck_Human_GO_bp_${WITHIEA}_symbol.gmt > ../Woodchuck_Human_GOBP_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
 cat ../Woodchuck_AllPathways_${dir_name}_symbol.gmt Woodchuck_Human_GO_bp_${NOIEA}_symbol.gmt > ../Woodchuck_Human_GOBP_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
 
 
