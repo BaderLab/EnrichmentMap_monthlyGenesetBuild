@@ -24,6 +24,8 @@ import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.time.Duration;
 
 public class QueryUniprotREST
@@ -33,6 +35,9 @@ public class QueryUniprotREST
   private static final Logger LOG = Logger.getAnonymousLogger();
 
   //how many times to check a job's status, and how long to wait between checks, before giving up on it
+  //how many ids to send to uniprot in each job
+  static final int BATCH_SIZE = 1000;
+
   static final int MAX_STATUS_CHECKS = Integer.getInteger("uniprot.status.max.checks", 100);
   static final long STATUS_WAIT_MS = Long.getLong("uniprot.status.wait.ms", 5 * 1000L);
 
@@ -188,31 +193,19 @@ public class QueryUniprotREST
 		return null; 
 	}
 	
-	//how many jobs is it going to be divided into
-	
-	String[] jobIds = new String[((int)Math.ceil(ids.size()/1000)+1)];
-	int i = 0;
-
-	//Uniprot server will max out but can't find max query.  - batch by 10,000s
+	//Uniprot server will max out but can't find max query.  - batch by 1000s
 	//convert Hashset into an array
 	String[] ids_batch = new String[ids.size()];
 	ids.toArray(ids_batch);
 	System.out.println("converting " + ids_batch.length + " ids in total");
-	int start = 0;
-	int end = 1000;
-	if(ids_batch.length < 1000)
-		end = ids_batch.length;
-	while(start<ids_batch.length){
 
-		String[] current_ids = Arrays.copyOfRange(ids_batch,start,end);
+	//one job per batch
+	List<String[]> batches = splitIntoBatches(ids_batch, BATCH_SIZE);
+	String[] jobIds = new String[batches.size()];
+	int i = 0;
+
+	for(String[] current_ids : batches){
 		//System.out.println("Converting:" + String.join(" ", current_ids));
-		//update numbers for next round
-		start = end + 1;
-		end = end + 1000;
-		if(end > ids_batch.length)
-			end = ids_batch.length -1;
-		else
-			end = end;
 
 		// form parameters
         	Map<Object, Object> data = new HashMap<>();
@@ -264,6 +257,25 @@ public class QueryUniprotREST
 	}
 	//System.out.println("the array of jobids" + Arrays.toString(jobIds));
 	return jobIds;
+}
+
+/*
+ * Split ids into consecutive batches of at most batchSize ids.  Every id is in
+ * exactly one batch, in the original order.
+ *
+ * (The old loop did start = end + 1 with copyOfRange's exclusive end, which
+ * skipped one id per batch, set the last end to length - 1, which dropped the
+ * last id, and sized the job array so that some list sizes queried job "null".)
+ */
+static List<String[]> splitIntoBatches(String[] ids, int batchSize){
+	if(batchSize < 1)
+		throw new IllegalArgumentException("batchSize must be at least 1");
+	List<String[]> batches = new ArrayList<String[]>();
+	for(int start = 0; start < ids.length; start += batchSize){
+		int end = Math.min(start + batchSize, ids.length);
+		batches.add(Arrays.copyOfRange(ids, start, end));
+	}
+	return batches;
 }
 
 public static HttpRequest.BodyPublisher ofFormData(Map<Object, Object> data) {
