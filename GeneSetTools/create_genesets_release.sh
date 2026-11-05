@@ -98,6 +98,23 @@ function download_reactome_data {
 	get_webfile_version ${URL}/${LATEST}/biopax.zip "Reactome"
 }
 
+#WikiPathways and PFOCR file names are scraped from their download page, which
+# already broke once (Nov 2024). Stop if the page didn't give exactly one name.
+# argument 1 - the file name(s) found
+# argument 2 - source name (for the error message)
+# argument 3 - species
+function check_scraped_filename {
+	if [ -z "$1" ]; then
+		echo "ERROR: could not find a $2 file for $3 on the download page - $2 not downloaded"
+		return 1
+	fi
+	if [ `echo "$1" | wc -l` -gt 1 ]; then
+		echo "ERROR: found more than one $2 file for $3 on the download page ($(echo $1)) - $2 not downloaded"
+		return 1
+	fi
+	return 0
+}
+
 function download_wikipathways_data {
 	echo "[Downloading current WikiPathways data]"
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current WikiPathways data"'"}' `cat ${TOOLDIR}/slack_webhook`
@@ -110,6 +127,9 @@ function download_wikipathways_data {
 	
 	#not elegant but the only way to pull out the file name is pull out the name between '> and < tokens.  Might brake in the future. (xmllint does not work with https 
 	FILE=`curl -s ${URL} |  grep -o -E ">(.*$1.gmt)<" | grep -o -P "(?<=\">).*(?=<)"`
+	if ! check_scraped_filename "$FILE" "WikiPathways" "$1" ; then
+		return 1
+	fi
 	download_file ${URL}/${FILE} ${WIKIPATHWAYS}/WikiPathways_${1}_entrezgene.gmt "WikiPathways"
 	get_webfile_version ${URL}/${FILE} "WikiPathways"
 }
@@ -125,7 +145,17 @@ function download_pfocr_data {
 	#not elegant but the only way to pull out the file name is pull out the name between '> and < tokens.  Might brake in the future. (xmllint does not work with https 
 	#FILE=`curl -s ${URL} |  grep -o -E ">(.*$1.gmt)<" | grep -o -P "(?<=\">).*(?=<)"`
 	#Nov. 4, 2024 - PFOCR added an additional file to their ftp site which broke the above messing regex.  Now there are two human files and one just contains chemical
-	FILE=`curl -s "https://data.wikipathways.org/pfocr/current/" |  grep -o -E ">(.*Homo_sapiens.gmt)<" | grep -o -P "(?<=\">).*(?=<)" | grep -v chemical`
+	#NOTE: every species is given the HUMAN PFOCR file, which is then saved as
+	# PFOCR_<species>_entrezgene.gmt. This is the behaviour the Mouse build has
+	# always had (data.wikipathways.org does have a separate, much smaller,
+	# Mus_musculus file). Whether Mouse should keep using the human file is still
+	# to be decided - see GitHub issue #25. To use each species' own file instead,
+	# change PFOCR_SOURCE_SPECIES to ${1}.
+	PFOCR_SOURCE_SPECIES="Homo_sapiens"
+	FILE=`curl -s "${URL}" |  grep -o -E ">(.*${PFOCR_SOURCE_SPECIES}.gmt)<" | grep -o -P "(?<=\">).*(?=<)" | grep -v chemical`
+	if ! check_scraped_filename "$FILE" "PFOCR" "${PFOCR_SOURCE_SPECIES}" ; then
+		return 1
+	fi
 	download_file ${URL}/${FILE} ${PFOCR}/PFOCR_${1}_entrezgene.gmt "PFOCR"
 	get_webfile_version ${URL}/${FILE} "PFOCR"
 }
