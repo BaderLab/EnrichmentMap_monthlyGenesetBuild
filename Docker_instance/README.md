@@ -48,3 +48,17 @@
     ```
    sudo docker run -dit  -v /home/geneset-cron/geneset_build_drive:/mnt/build -v /home/geneset-cron/em_genesets_code_drive:/home/geneset-cron --name geneset_build geneset_build/geneset_build /bin/bash 
    ```
+
+## Updating GenesetTools.jar
+The container does **not** compile the Java code when it starts (it used to, and
+when that failed the build carried on with the old jar without saying so). The
+monthly build uses whatever `GeneSetTools/GenesetTools.jar` is on the code drive.
+
+Whenever the Java code in `GeneSetTools/src` changes, rebuild the jar as a
+separate step:
+```
+sudo docker run --rm -v /home/geneset-cron/em_genesets_code_drive:/home/geneset-cron geneset_build/geneset_build /home/geneset-cron/EnrichmentMap_monthlyGenesetBuild/GeneSetTools/build_jar.sh
+```
+`build_jar.sh` stops with `ERROR: GenesetTools.jar did not compile` and keeps the
+previous jar if the build fails. Run the tests (`GeneSetTools/tests/run_tests.sh`)
+before deploying a new jar.
