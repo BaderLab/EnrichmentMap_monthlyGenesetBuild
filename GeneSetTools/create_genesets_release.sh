@@ -176,9 +176,9 @@ function download_biocyc_data {
 	#URL="https://brg-files.ai.sri.com/public/dist"
 
 	echo "${URL}/tier1-tier2-biopax.tar.gz" >> ${VERSIONS}/${1}cyc.txt
-	curl ${URL}/tier1-tier2-biopax.tar.gz -u biocyc-flatfiles:data-20541 -I | grep "Last-Modified" >> ${VERSIONS}/${1}cyc.txt
+	curl ${URL}/tier1-tier2-biopax.tar.gz -u "$(cat ${TOOLDIR}/biocyc_login)" -I | grep "Last-Modified" >> ${VERSIONS}/${1}cyc.txt
 	echo "curl ${URL}/tier1-tier2-biopax.tar.gz -o ${2}/${1}.tar.gz "  
-	curl -sSfL ${URL}/tier1-tier2-biopax.tar.gz -o ${2}/${1}.tar.gz -u biocyc-flatfiles:data-20541 || echo "ERROR: BioCyc download failed"
+	curl -sSfL ${URL}/tier1-tier2-biopax.tar.gz -o ${2}/${1}.tar.gz -u "$(cat ${TOOLDIR}/biocyc_login)" || echo "ERROR: BioCyc download failed"
 
 	# unfortunately the latest biopax file seems to be missing all the genes
 	# associated with the pathways.  - wait on hearing back from them before
@@ -264,7 +264,7 @@ function download_drugbank_data {
 	echo "[Downloading current Drugbank data]"
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current DrugBank data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	URL="http://www.drugbank.ca/system/downloads/current"
-        curl -sSLf -o drugbank.xml.zip -u ruth.isserlin@gmail.com:emililab https://go.drugbank.com/releases/latest/downloads/all-full-database || echo "ERROR: DrugBank download failed"
+        curl -sSLf -o drugbank.xml.zip -u "$(cat ${TOOLDIR}/drugbank_login)" https://go.drugbank.com/releases/latest/downloads/all-full-database || echo "ERROR: DrugBank download failed"
         #curl ${URL}/drugbank.xml.zip -o ${DRUGSSRC}/drugbank.xml.zip -s -w "Drugbank : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
 	#get_webfile_version ${URL}/drugbank.xml.zip "DrugBank"
 
