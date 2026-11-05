@@ -2116,7 +2116,7 @@ cp Woodchuck*_Entrezgene.gmt ${EG}/${PATHWAYS}/
 cp Woodchuck*_symbol.gmt ${SYMBOL}/${PATHWAYS}/
 
 #concatenate all the translation summaries	
-files=$(ls *10090_conversion.log 2> /dev/null | wc -l)
+files=$(ls *9995_conversion.log 2> /dev/null | wc -l)
 if [ $files != 0 ] ; then
 	cat *9995_conversion.log > Woodchuck_translatedPathways_entrezgene_translation_summary.log
 	cp Woodchuck_translatedPathways_entrezgene_translation_summary.log ${EG}/${PATHWAYS}/Woodchuck_translatedPathways_Entrezgene_translation_summary.log
