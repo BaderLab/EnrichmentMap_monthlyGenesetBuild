@@ -23,7 +23,7 @@ function get_pc_version {
 
 function download_pc_data {
 	    echo "[Downloading current Pathway Commons data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Pathway Commons data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current Pathway Commons data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	    URL="http://www.pathwaycommons.org/pc-snapshot/current-release/gsea/by_source/"
 	    download_file ${URL}/nci-nature-entrez-gene-id.gmt.zip ${PATHWAYCOMMONS}/nci-nature-entrez-gene-id.gmt.zip "Pathway Commons"
 	    get_pc_version
@@ -31,7 +31,7 @@ function download_pc_data {
 
 function download_panther_data {
 	    echo "[Downloading current Panther Pathway data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Panther Pathway data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current Panther Pathway data"'"}' `cat ${TOOLDIR}/slack_webhook`
             # temporarily  change this to get the 3.5 release as the latest release is broken.  Change back once we hear back from  them.
 	    #URL="ftp://ftp.pantherdb.org/pathway/current_release/"
 	    #URL="ftp://ftp.pantherdb.org//pathway/3.5/"
@@ -42,7 +42,7 @@ function download_panther_data {
 
 function download_pathbank_data {
 	    echo "[Downloading current Path Bank data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current PathBank data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current PathBank data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	    URL="https://pathbank.org/downloads"
 	    download_file ${URL}/pathbank_primary_biopax.zip ${PATHBANK}/pathbank_primary_biopax.zip "PathBank"
 	    #get_pc_version
@@ -62,7 +62,7 @@ function get_webfile_version {
 #download NCI from PID
 function download_nci_data {
 	echo "[Downloading current NCI data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current NCI data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current NCI data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	URL="ftp://ftp1.nci.nih.gov/pub/PID/BioPAX_Level_3/NCI-Nature_Curated.bp3.owl.gz"
 	wget ${URL}
 	#curl ${URL} -o ${NCI}/NCI-Nature_Curated.bp3.owl.gz -s  -w "NCI : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
@@ -74,7 +74,7 @@ function download_nci_data {
 function download_netpath_data {
 	echo "[Downloading current NetPath data]"
 
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current NetPath data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current NetPath data"'"}' `cat ${TOOLDIR}/slack_webhook`
 
 	URL="http://www.netpath.org/data/biopax/"
 	for Num in {1..25}; do
@@ -85,7 +85,7 @@ function download_netpath_data {
 
 function download_reactome_data {
 	echo "[Downloading current Reactome data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Reactome data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current Reactome data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	
 	#LATEST=$(curl -s https://download.reactome.org/ | grep -oE '[0-9]+/' | tr -d '/' | sort -n | tail -1)
 	LATEST=$(curl -sSf https://reactome.org/ContentService/data/database/version)
@@ -117,7 +117,7 @@ function check_scraped_filename {
 
 function download_wikipathways_data {
 	echo "[Downloading current WikiPathways data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current WikiPathways data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current WikiPathways data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	#updated Nov. 2023 - checked with Wikipathways to find out if this is the url going forward - https://github.com/wikipathways/wikipathways-help/discussions/79
 	URL="https://data.wikipathways.org/current/gmt/"
 	#FILE=`echo "cat //html/body/div/table/tbody/tr/td/a" |  xmllint --html --shell ${URL} | grep -o -E ">(.*$1.gmt)<" | sed -E 's/(<|>)//g'`
@@ -137,7 +137,7 @@ function download_wikipathways_data {
 
 function download_pfocr_data {
 	echo "[Downloading current Pathways Figures DB data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Pathways figures DB data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current Pathways figures DB data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	
 	URL="https://data.wikipathways.org/pfocr/current/"
 	#FILE=`echo "cat //html/body/div/table/tbody/tr/td/a" |  xmllint --html --shell ${URL} | grep -o -E ">(.*$1.gmt)<" | sed -E 's/(<|>)//g'`
@@ -164,7 +164,7 @@ function download_pfocr_data {
 #argument 2 - directory to put the file
 function download_biocyc_data {
 	echo "[Downloading current BioCyc data - for species $1]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current BioCyc data - for species $1"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current BioCyc data - for species $1"'"}' `cat ${TOOLDIR}/slack_webhook`
 	#URL="http://bioinformatics.ai.sri.com/ecocyc/dist/flatfiles-52983746/"
 	#URL="https://bioinformatics.ai.sri.com/ecocyc/dist/flatfiles-52983746/"
 
@@ -198,7 +198,7 @@ function download_biocyc_data {
 # Go human data comes directly from ebi as they are the primary curators of human GO annotations
 function download_GOhuman_data {
 	echo "[Downloading current Go Human EBI data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Go Human EBI data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current Go Human EBI data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	URL="ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/HUMAN/"
 
 	#June 2016 - looks like they changed the name of the go files !!!
@@ -207,7 +207,7 @@ function download_GOhuman_data {
 
 	#get the obo file from the gene ontology website
 	echo "[Downloading current GO OBO file]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Go OBO data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current Go OBO data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	#Feb 27,2026 - updated to https from http
 	URL="https://current.geneontology.org/ontology"
 	download_file ${URL}/go.obo ${GOSRC}/go.obo "GO OBO"
@@ -219,7 +219,7 @@ function download_GOhuman_data {
 #Mouse data is downloaded from the Gene ontology website and comes from MGI
 function download_GOmouse_data {
 	echo "[Downloading current Go Mouse MGI  data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Go Mouse MGI data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current Go Mouse MGI data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	#URL="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.mgi.gz?rev=HEAD"
 	#URL="http://www.informatics.jax.org/downloads/reports/gene_association.mgi.gz"
 	URL="ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/MOUSE/goa_mouse.gaf.gz"
@@ -231,7 +231,7 @@ function download_GOmouse_data {
 function download_HPO_data {
 	#file no longer exists.  Use latest version from June 16, 2013
 	echo "[Downloading current Human Phenotype data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Human Phenotypes data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current Human Phenotypes data"'"}' `cat ${TOOLDIR}/slack_webhook`
         #URL="http://compbio.charite.de/hudson/job/hpo.annotations.monthly/lastStableBuild/artifact/annotation/ALL_SOURCES_ALL_FREQUENCIES_genes_to_phenotype.txt"
 	#URL="http://purl.obolibrary.org/obo/hp/hpoa/genes_to_phenotype.txt"
 	#URL="https://ci.monarchinitiative.org/view/hpo/job/hpo.annotations/lastSuccessfulBuild/artifact/rare-diseases/util/annotation/genes_to_phenotype.txt"
@@ -242,7 +242,7 @@ function download_HPO_data {
 
 	#get the obo file
 	echo "[Downloading current Phenotype OBO file]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Phenotypes OBO data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current Phenotypes OBO data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	#URL="http://compbio.charite.de/svn/hpo/trunk/src/ontology/"
 	#curl ${URL}/human-phenotype-ontology.obo -o ${DISEASESRC}/human-phenotype-ontology.obo -s  -w "HPO (obo) : HTTP code - %{http_code};time:%{time_total} millisec; size:%{size_download} Bytes\n"
         #URL="http://compbio.charite.de/jenkins/job/hpo/lastStableBuild/artifact/hp"
@@ -262,7 +262,7 @@ function download_drugbank_data {
 	# needed to create an account and URL changed
 
 	echo "[Downloading current Drugbank data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current DrugBank data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current DrugBank data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	URL="http://www.drugbank.ca/system/downloads/current"
         curl -sSLf -o drugbank.xml.zip -u "$(cat ${TOOLDIR}/drugbank_login)" https://go.drugbank.com/releases/latest/downloads/all-full-database || echo "ERROR: DrugBank download failed"
         #curl ${URL}/drugbank.xml.zip -o ${DRUGSSRC}/drugbank.xml.zip -s -w "Drugbank : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
@@ -1741,7 +1741,7 @@ getstats ${ENSEMBL} "ensembl" ${MOUSESOURCE}
 #Rat data is downloaded from the Gene ontology website and comes from RGD
 function download_GORat_data {
 	echo "[Downloading current Go Rat  data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Go Rat data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current Go Rat data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	#URL="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.rgd.gz?rev=HEAD"
 	#URL="http://current.geneontology.org/annotations/rgd.gaf.gz"
 	URL="ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/RAT/goa_rat.gaf.gz"
@@ -1751,7 +1751,7 @@ function download_GORat_data {
 	#get the obo file from the gene ontology website
 	echo "[Downloading current GO OBO file]"
 	
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Go Rat OBO"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current Go Rat OBO"'"}' `cat ${TOOLDIR}/slack_webhook`
 	URL="https://current.geneontology.org/ontology"
 	download_file ${URL}/go.obo ${GOSRC}/go.obo "GO OBO"
 	get_webfile_version ${URL}/go.obo "GO_OBO_FILE"
@@ -2079,7 +2079,7 @@ mkdir ${GOSRC}
 cd ${GOSRC}
 
 echo "[Processing Woodchuck   data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Processing Woodchuck data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Processing Woodchuck data"'"}' `cat ${TOOLDIR}/slack_webhook`
 
 
 #create a directory will all the gmt from human we want to convert to mouse
@@ -2117,7 +2117,7 @@ cp ${HUMANVERSIONS}/WikiPathways.txt ${VERSIONS}
 cp ${HUMANVERSIONS}/GO_Human.txt ${VERSIONS}
 
 echo "[Converting Woodchuck data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Converting Woodchuck data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Converting Woodchuck data"'"}' `cat ${TOOLDIR}/slack_webhook`
 
 #go through each of the gmt file and convert to mouse entrez genes
 for file in Human*.gmt ; do
@@ -2243,7 +2243,7 @@ getstats ${EG} "entrezgene" ${WOODCHUCKSOURCE}
 getstats ${SYMBOL} "symbol" ${WOODCHUCKSOURCE}
 
 echo "[Finished Woodchuck  data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Finished woodchuck data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Finished woodchuck data"'"}' `cat ${TOOLDIR}/slack_webhook`
 
 #don't publish if any species is missing its combined files.
 # The build has no other error handling (set -e isn't usable because several
@@ -2272,6 +2272,6 @@ ln -sfn $dir_name/ current_release
 #rm -rf ${CUR_RELEASE}
 
 echo "[data build complete]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[data build complete"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[data build complete"'"}' `cat ${TOOLDIR}/slack_webhook`
 
 exit 0
