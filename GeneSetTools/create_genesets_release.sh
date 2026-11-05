@@ -1635,11 +1635,11 @@ done
 
 cat *.gmt > ../Mouse_AllPathways_withPFOCR_${dir_name}_symbol.gmt
 cd ${SYMBOL}/${GO}
-cat ../Mouse_AllPathways_withPFOCR${dir_name}_symbol.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_symbol.gmt
-cat ../Mouse_AllPathways_withPFOCR_${dir_name}_symbol.gmt Mouse_GOALL_${NOIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_withPFOCR${NOIEA}_${dir_name}_symbol.gmt
+cat ../Mouse_AllPathways_withPFOCR_${dir_name}_symbol.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_symbol.gmt
+cat ../Mouse_AllPathways_withPFOCR_${dir_name}_symbol.gmt Mouse_GOALL_${NOIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_withPFOCR_${NOIEA}_${dir_name}_symbol.gmt
 
-cat ../Mouse_AllPathways_noPFOCR${dir_name}_symbol.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_noPFOCR_${WITHIEA}_${dir_name}_symbol.gmt
-cat ../Mouse_AllPathways_noPFOCR_${dir_name}_symbol.gmt Mouse_GOALL_${NOIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_noPFOCR${NOIEA}_${dir_name}_symbol.gmt
+cat ../Mouse_AllPathways_noPFOCR_${dir_name}_symbol.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_noPFOCR_${WITHIEA}_${dir_name}_symbol.gmt
+cat ../Mouse_AllPathways_noPFOCR_${dir_name}_symbol.gmt Mouse_GOALL_${NOIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_noPFOCR_${NOIEA}_${dir_name}_symbol.gmt
 
 #create two new all pathways files with GOBP included
 cat ../Mouse_AllPathways_withPFOCR_${dir_name}_symbol.gmt MOUSE_GO_bp_${WITHIEA}*_symbol.gmt > ../Mouse_GOBP_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_symbol.gmt
@@ -1660,11 +1660,11 @@ done
 
 cat *.gmt > ../Mouse_AllPathways_withPFOCR_${dir_name}_ensembl.gmt
 cd ${ENSEMBL}/${GO}
-cat ../Mouse_AllPathways_withPFOCR${dir_name}_ensembl.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_ensembl.gmt > ../Mouse_GO_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_ensembl.gmt
-cat ../Mouse_AllPathways_withPFOCR_${dir_name}_ensembl.gmt Mouse_GOALL_${NOIEA}_${dir_name}_ensembl.gmt > ../Mouse_GO_AllPathways_withPFOCR${NOIEA}_${dir_name}_ensembl.gmt
+cat ../Mouse_AllPathways_withPFOCR_${dir_name}_ensembl.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_ensembl.gmt > ../Mouse_GO_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_ensembl.gmt
+cat ../Mouse_AllPathways_withPFOCR_${dir_name}_ensembl.gmt Mouse_GOALL_${NOIEA}_${dir_name}_ensembl.gmt > ../Mouse_GO_AllPathways_withPFOCR_${NOIEA}_${dir_name}_ensembl.gmt
 
-cat ../Mouse_AllPathways_noPFOCR${dir_name}_ensembl.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_ensembl.gmt > ../Mouse_GO_AllPathways_noPFOCR_${WITHIEA}_${dir_name}_ensembl.gmt
-cat ../Mouse_AllPathways_noPFOCR_${dir_name}_ensembl.gmt Mouse_GOALL_${NOIEA}_${dir_name}_ensembl.gmt > ../Mouse_GO_AllPathways_noPFOCR${NOIEA}_${dir_name}_ensembl.gmt
+cat ../Mouse_AllPathways_noPFOCR_${dir_name}_ensembl.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_ensembl.gmt > ../Mouse_GO_AllPathways_noPFOCR_${WITHIEA}_${dir_name}_ensembl.gmt
+cat ../Mouse_AllPathways_noPFOCR_${dir_name}_ensembl.gmt Mouse_GOALL_${NOIEA}_${dir_name}_ensembl.gmt > ../Mouse_GO_AllPathways_noPFOCR_${NOIEA}_${dir_name}_ensembl.gmt
 
 #create two new all pathways files with GOBP included
 cat ../Mouse_AllPathways_withPFOCR_${dir_name}_ensembl.gmt MOUSE_GO_bp_${WITHIEA}*_ensembl.gmt > ../Mouse_GOBP_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_ensembl.gmt
