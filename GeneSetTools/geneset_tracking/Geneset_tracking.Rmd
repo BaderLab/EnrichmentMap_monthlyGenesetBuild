@@ -664,6 +664,8 @@ dev.off()
       png(file.path(home_dir,figure_directory, Drugid_figure_filename),
           width = params$width, height = params$height,  pointsize = params$pointsz)
       
+      # inside an if block a ggplot is only drawn if it is print()ed
+      print(
       ggplot(subset_id_summary_agg, aes(x=date, y=(not_translated/total)*100, group=Filename,color=Filename)) +
         geom_line() + theme(legend.position = "right",
         legend.key.size = unit(0.25, 'cm'), #change legend key size
@@ -675,7 +677,8 @@ dev.off()
         legend.text = element_text(size=10)) + #change legend text font size
         ggtitle(paste("Percent missing Annotation translations  \n for DrugTargets", species,"from", year, "- Present", sep = " " )) +
         guides(colour = guide_legend(ncol = 1)) +
-        ylab("Percent (1-100%) Annotations not translated") + xlab("time") 
+        ylab("Percent (1-100%) Annotations not translated") + xlab("time")
+      ) 
       
       dev.off()
     }
@@ -707,6 +710,8 @@ colnames(subset_id_summary_agg) <- c("source","date","not_translated","total")
 	png(file.path(home_dir,figure_directory, Mirid_figure_filename),
     width = params$width, height = params$height,  pointsize = params$pointsz)
 
+  	# inside an if block a ggplot is only drawn if it is print()ed
+  	print(
   	ggplot(subset_id_summary_agg, aes(x=date, y=(not_translated/total)*100, group=source,color=source)) +
     	geom_line() + theme(legend.position = "right",
     	legend.key.size = unit(0.25, 'cm'), #change legend key size
@@ -718,7 +723,8 @@ colnames(subset_id_summary_agg) <- c("source","date","not_translated","total")
     	legend.text = element_text(size=10)) + #change legend text font size
     	ggtitle(paste("Percent missing Annotation translations  \n for miRs", species,"from", year, "- Present", sep = " " )) +
     	guides(colour = guide_legend(ncol = 1)) +
-    	ylab("Percent Annotations not translated") + xlab("time") 
+    	ylab("Percent Annotations not translated") + xlab("time")
+  	) 
 
 	dev.off()
 }
@@ -747,6 +753,8 @@ colnames(subset_id_summary_agg) <- c("source","date","not_translated","total")
 	png(file.path(home_dir,figure_directory, Diseaseid_figure_filename),
     	width = params$width, height = params$height,  pointsize = params$pointsz)
 
+  	# inside an if block a ggplot is only drawn if it is print()ed
+  	print(
   	ggplot(subset_id_summary_agg, aes(x=date, y=(not_translated/total)*100, group=source,color=source)) +
     	geom_line() + theme(legend.position = "right",
     	legend.key.size = unit(0.25, 'cm'), #change legend key size
@@ -758,7 +766,8 @@ colnames(subset_id_summary_agg) <- c("source","date","not_translated","total")
     	legend.text = element_text(size=10)) + #change legend text font size
     	ggtitle(paste("Percent missing Annotation translations \n for DiseasePhenotypes", species,"from", year, "- Present", sep = " " )) +
     	guides(colour = guide_legend(ncol = 1)) +
-    	ylab("Percent Annotations not translated") + xlab("time") 
+    	ylab("Percent Annotations not translated") + xlab("time")
+  	) 
 
 	dev.off()
 }
