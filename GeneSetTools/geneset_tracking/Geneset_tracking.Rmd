@@ -42,19 +42,25 @@ tryCatch(expr = { library("ggplot2")},
 ```{r, echo=FALSE,message=FALSE, warning=FALSE}
 
 safe_getURL <- function(url, timeout = 60, quiet = FALSE) {
+  # SSL certificates are verified (the default). If connections fail with
+  # certificate errors, update ca-certificates in the bioc_summaries image
+  # (see Docker_instance/Dockerfile_bioc_summaries) rather than turning
+  # verification off.
   # Optional: point to a CA bundle to reduce handshake issues without disabling verification
   cainfo <- if (requireNamespace("curl", quietly = TRUE)) {
     system.file("curl", "cacert.pem", package = "curl")
-  } else NULL
+  } else ""
+
+  curl_options <- list(connecttimeout = timeout,
+                       followlocation = TRUE)
+  # system.file() returns "" when the bundle isn't there - only use it if it exists
+  if (nzchar(cainfo) && file.exists(cainfo)) {
+    curl_options$cainfo <- cainfo
+  }
 
   tryCatch(
     {
-      RCurl::getURL(url,
-                    connecttimeout = timeout,
-                    followlocation = TRUE,
-                    ssl.verifypeer = FALSE,
-                    ssl.verifyhost = FALSE,
-                    cainfo = cainfo)
+      do.call(RCurl::getURL, c(list(url), curl_options))
     },
     error = function(e) {
       # This is where "gnutls_handshake() failed: Error in the pull function." would land
