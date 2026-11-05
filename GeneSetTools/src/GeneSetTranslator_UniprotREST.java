@@ -576,9 +576,11 @@ public HashMap<String, Set<String>> convertUniprotWebservice(Set GeneQuerySet,St
 			unfoundIds.addAll(queryset);
 
 		} catch (Exception e){
-			System.out.println("Something is wrong with the uniprot web service");
-			System.out.println(e.getMessage());
-			System.out.println(e.toString());
+			//don't carry on and write a gmt from partial (or no) results - stop with an
+			// error so the build log and exit status show that the translation failed
+			System.err.println("Something is wrong with the uniprot web service: " + e.toString());
+			System.out.println("Something is wrong with the uniprot web service: " + e.toString());
+			System.exit(1);
 		}
 
 	return new_genes;

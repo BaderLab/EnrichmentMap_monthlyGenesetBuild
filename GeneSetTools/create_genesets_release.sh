@@ -403,6 +403,18 @@ function translate_gmt_woodchuck {
 
 
 
+#translate one gmt file to one new identifier with the uniprot web service.
+# GenesetTools exits with an error if the web service fails, so report it in the build log.
+# argument 1 - gmt file name
+# argument 2 - taxonomy id
+# argument 3 - id found in gmt file
+# argument 4 - id to translate to
+function translate_uniprot_rest {
+	if ! java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "$4" 2>> translate_process.err 1>> translate_output.txt ; then
+		echo "ERROR: translating $1 from $3 to $4 failed (see translate_process.err)"
+	fi
+}
+
 # argument 1 - gmt file name
 # argument 2 - taxonomy id
 # argument 3 - id found in gmt file
@@ -411,39 +423,39 @@ function translate_gmt_UniProt {
 
 	if [[ $3 == "UniProt" ]] ; then
 		
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "symbol" 2>> translate_process.err 1>> translate_output.txt 
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "entrezgene" 2>> translate_process.err 1>> translate_output.txt 
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "ensembl" 2>> translate_process.err 1>> translate_output.txt 
+		translate_uniprot_rest $1 $2 $3 "symbol"
+		translate_uniprot_rest $1 $2 $3 "entrezgene"
+		translate_uniprot_rest $1 $2 $3 "ensembl"
 	fi
 
 	if [[ $3 == "entrezgene" ]] ; then
 	
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "symbol" 2>> translate_process.err 1>> translate_output.txt 
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "UniProt" 2>> translate_process.err 1>> translate_output.txt 
+		translate_uniprot_rest $1 $2 $3 "symbol"
+		translate_uniprot_rest $1 $2 $3 "UniProt"
 	
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "ensembl" 2>> translate_process.err 1>> translate_output.txt 
+		translate_uniprot_rest $1 $2 $3 "ensembl"
 	fi
 
 
 	if [[ $3 == "symbol" ]] ; then
 	
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "UniProt" 2>> translate_process.err 1>> translate_output.txt 
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "entrezgene" 2>> translate_process.err 1>> translate_output.txt 
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "ensembl" 2>> translate_process.err 1>> translate_output.txt 
+		translate_uniprot_rest $1 $2 $3 "UniProt"
+		translate_uniprot_rest $1 $2 $3 "entrezgene"
+		translate_uniprot_rest $1 $2 $3 "ensembl"
 	fi
 
 	if [[ $3 == "MGI" ]] ; then
 	
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "symbol" 2>> translate_process.err 1>> translate_output.txt 
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "UniProt" 2>> translate_process.err 1>> translate_output.txt 
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "entrezgene" 2>> translate_process.err 1>> translate_output.txt 
+		translate_uniprot_rest $1 $2 $3 "symbol"
+		translate_uniprot_rest $1 $2 $3 "UniProt"
+		translate_uniprot_rest $1 $2 $3 "entrezgene"
 	fi
 
 	if [[ $3 == "RGD" ]] ; then
 	
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "symbol" 2>> translate_process.err 1>> translate_output.txt 
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "UniProt" 2>> translate_process.err 1>> translate_output.txt 
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "entrezgene" 2>> translate_process.err 1>> translate_output.txt 
+		translate_uniprot_rest $1 $2 $3 "symbol"
+		translate_uniprot_rest $1 $2 $3 "UniProt"
+		translate_uniprot_rest $1 $2 $3 "entrezgene"
 	fi
 }
 

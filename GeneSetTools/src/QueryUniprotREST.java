@@ -180,7 +180,8 @@ public class QueryUniprotREST
         			}
 			}//while more results
 		}else{
-			System.out.println("Unable to get Finished status from job:" + j);
+			//a missing job means missing translations - fail instead of returning partial results
+			throw new Exception("Unable to get Finished status from uniprot job:" + j);
 		}
 	}//job id for loop
   	return convertedIds;
@@ -189,8 +190,7 @@ public class QueryUniprotREST
   public String[] submitJob() throws IOException, InterruptedException, Exception{
 
 	if(!this.newID_index.contains("UniProtKB") && !this.oldID_index.contains("UniProtKB")){
-		System.out.println("You need one identifier to be uniprot accesions orelse web service wont' work");
-		return null; 
+		throw new IllegalArgumentException("You need one identifier to be uniprot accesions orelse web service wont' work");
 	}
 	
 	//Uniprot server will max out but can't find max query.  - batch by 1000s
@@ -250,6 +250,8 @@ public class QueryUniprotREST
 		// getting firstName and lastName
         	String jobid = (String) jo.get("jobId");
         	System.out.println(jobid);
+		if(jobid == null)
+			throw new Exception("Uniprot did not return a job id (HTTP status " + response.statusCode() + "): " + response.body());
 		
 		jobIds[i] = jobid;
 		i++;
