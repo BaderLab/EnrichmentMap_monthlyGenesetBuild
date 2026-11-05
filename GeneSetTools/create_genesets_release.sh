@@ -658,6 +658,32 @@ function getstats {
 	mv ${1}/Build_summary_stats_${2}.log ${OUTPUTDIR}
 }
 
+#check that every species has non-empty combined (AllPathways) files before publishing
+#argument 1 - release directory
+#remaining arguments - species to check
+#returns 1 (and prints every problem) if anything is missing or empty
+function check_release_outputs {
+	local release_dir=$1
+	shift
+	local status=0
+	for sp in "$@"; do
+		local found=0
+		for f in ${release_dir}/${sp}/entrezgene/*AllPathways*.gmt; do
+			if [ ! -s "$f" ]; then
+				echo "ERROR: $f is missing or empty"
+				status=1
+			else
+				found=1
+			fi
+		done
+		if [ $found == 0 ]; then
+			echo "ERROR: no AllPathways files were created for ${sp}"
+			status=1
+		fi
+	done
+	return $status
+}
+
 #source all configuration parameters we need (contains paths to output directories and the like)
 
 #make sure we are using Java 6
@@ -675,6 +701,8 @@ VALIDATORDIR=${TOOLDIR}/biopax-validator-5.0.0-SNAPSHOT
 STATICDIR=${TOOLDIR}/staticSrcFiles
 WORKINGDIR=`pwd`
 CUR_RELEASE=${WORKINGDIR}/${dir_name}
+#where finished releases are published (can be overridden for testing)
+PUBLISH_DIR=${PUBLISH_DIR:-/mnt/build/EM_Genesets}
 
 
 ##########################################################
@@ -2140,19 +2168,33 @@ getstats ${SYMBOL} "symbol" ${WOODCHUCKSOURCE}
 echo "[Finished Woodchuck  data]"
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Finished woodchuck data"'"}' `cat ${TOOLDIR}/slack_webhook`
 
+#don't publish if any species is missing its combined files.
+# The build has no other error handling (set -e isn't usable because several
+# harmless cp commands fail every month), so this is the last chance to stop a
+# broken release from replacing current_release.
+if ! check_release_outputs ${CUR_RELEASE} Human Mouse Rat Woodchuck ; then
+	echo "ERROR: release ${dir_name} is incomplete - not publishing it. current_release was not changed."
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[ERROR: release ${dir_name} is incomplete - not published]"'"}' `cat ${TOOLDIR}/slack_webhook`
+	exit 1
+fi
+
 #copy the files over the webserver
-mkdir /mnt/build/EM_Genesets/$dir_name
-cp -R ${CUR_RELEASE}/Human /mnt/build/EM_Genesets/$dir_name/
-cp -R ${CUR_RELEASE}/Mouse /mnt/build/EM_Genesets/$dir_name/
-cp -R ${CUR_RELEASE}/Rat /mnt/build/EM_Genesets/$dir_name/
-cp -R ${CUR_RELEASE}/Woodchuck /mnt/build/EM_Genesets/$dir_name/
+mkdir -p ${PUBLISH_DIR}/$dir_name
+for sp in Human Mouse Rat Woodchuck; do
+	if ! cp -R ${CUR_RELEASE}/${sp} ${PUBLISH_DIR}/$dir_name/ ; then
+		echo "ERROR: could not copy ${sp} to ${PUBLISH_DIR}/$dir_name - not updating current_release"
+		exit 1
+	fi
+done
 
 #create a symbolic link to the latest download indicating it as current_release
-rm /mnt/build/EM_Genesets/current_release
-cd /mnt/build/EM_Genesets
-ln -sf $dir_name/ current_release
+#(-n replaces the old link itself instead of creating a link inside the old release)
+cd ${PUBLISH_DIR}
+ln -sfn $dir_name/ current_release
 
 #rm -rf ${CUR_RELEASE}
 
 echo "[data build complete]"
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[data build complete"'"}' `cat ${TOOLDIR}/slack_webhook`
+
+exit 0
