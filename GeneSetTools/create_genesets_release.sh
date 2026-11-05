@@ -1740,7 +1740,7 @@ function download_GORat_data {
 	echo "[Downloading current GO OBO file]"
 	
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Go Rat OBO"'"}' `cat ${TOOLDIR}/slack_webhook`
-	URL="http://current.geneontology.org/ontology"
+	URL="https://current.geneontology.org/ontology"
 	download_file ${URL}/go.obo ${GOSRC}/go.obo "GO OBO"
 	get_webfile_version ${URL}/go.obo "GO_OBO_FILE"
 
