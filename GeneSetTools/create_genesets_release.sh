@@ -275,6 +275,20 @@ function download_drugbank_data {
 
 }
 
+#ticket #209 - get rid of forward slashes in a gmt file made from biopax.
+# Only touches the file if the java step actually made a non-empty gmt, so a
+# failed conversion doesn't leave behind an empty gmt that later steps use.
+# argument 1 - gmt file name
+# argument 2 - biopax file it was made from (for the error message)
+function remove_slashes_from_gmt {
+	if [ -s "$1" ]; then
+		sed 's/\// /g' "$1" > temp.txt
+		mv temp.txt "$1"
+	else
+		echo "ERROR: no gmt made from $2 (see biopax_process.err)"
+	fi
+}
+
 #this function will validate, autofix and create gmt files from biopax files.
 # argument 1 - biopax file name
 # argument 2 - identifier to extract from file
@@ -303,8 +317,7 @@ function process_biopax {
 	#ticket #209
         #get rid of forward slashes in the resutls gmt file (occurs in NCI, Reactome, and Humancyc) and causes
 	#GSEA to produce error when creating a details file.
-	sed 's/\// /g' ${1}_${2//[[:space:]]}.gmt > temp.txt
-	mv temp.txt ${1}_${2//[[:space:]]}.gmt
+	remove_slashes_from_gmt ${1}_${2//[[:space:]]}.gmt $1
 }
 
 #this function create gmt files from biopax files without validation and auto-fix.
@@ -322,8 +335,7 @@ function process_biopax_novalidation {
 	#ticket #209
         #get rid of forward slashes in the resutls gmt file (occurs in NCI, Reactome, and Humancyc) and causes
 	#GSEA to produce error when creating a details file.
-	sed 's/\// /g' ${1}_${2//[[:space:]]}.gmt > temp.txt
-	mv temp.txt ${1}_${2//[[:space:]]}.gmt
+	remove_slashes_from_gmt ${1}_${2//[[:space:]]}.gmt $1
 
 }
 
@@ -342,8 +354,7 @@ function process_biopax_novalidation_nospeciescheck {
 	#ticket #209
         #get rid of forward slashes in the resutls gmt file (occurs in NCI, Reactome, and Humancyc) and causes
 	#GSEA to produce error when creating a details file.
-	sed 's/\// /g' ${1}_${2//[[:space:]]}.gmt > temp.txt
-	mv temp.txt ${1}_${2//[[:space:]]}.gmt
+	remove_slashes_from_gmt ${1}_${2//[[:space:]]}.gmt $1
 
 }
 
