@@ -12,6 +12,7 @@ params:
   height: 600
   pointsz: 14
   home_dir: /home/rstudio/projects  
+  download_url: https://download.baderlab.org/EM_Genesets/
 ---
 
 # Changes/Growth of Genesets By Source over the years
@@ -106,13 +107,15 @@ safe_download.file <- function(url, destfile, mode = "wb", method = "libcurl",
 ```{r include=FALSE}
 #Download all the directory names from the downloads website.
 
-download_url = "https://download.baderlab.org/EM_Genesets/"
+download_url = params$download_url
 
 #list all the files on the server
 filenames = safe_getURL(download_url)
 
-if (is.na(filenames)) {
-  paste("issue with download")
+#without the list of releases there is nothing to report on - stop with a clear message
+# (paste() on its own did nothing, so the report carried on and failed later with a confusing error)
+if (length(filenames) != 1 || is.na(filenames)) {
+  stop("Could not read the list of releases from ", download_url)
 }
 
 tc = textConnection(filenames)
