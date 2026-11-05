@@ -1706,7 +1706,7 @@ mergesummaries ${UNIPROT} UniProt
 getstats ${EG} "entrezgene" ${MOUSESOURCE}
 getstats ${UNIPROT} "UniProt" ${MOUSESOURCE}
 getstats ${SYMBOL} "symbol" ${MOUSESOURCE}
-getstats ${ENSMBL} "ensembl" ${MOUSESOURCE}
+getstats ${ENSEMBL} "ensembl" ${MOUSESOURCE}
 
 
 #Rat data is downloaded from the Gene ontology website and comes from RGD
