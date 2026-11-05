@@ -329,7 +329,8 @@ get_identifier_conversion_file_by_type <- function(species = "Human", identifier
                   contents, perl = TRUE)
     log_files = unlist(regmatches(contents, rx))
     
-    if(is.na(log_files) || length(log_files) ==0){
+    # (is.na(log_files) || ... is an error on R >= 4.3 when there is more than one log file)
+    if(length(log_files) == 0 || all(is.na(log_files))){
       next
     }
     
