@@ -1,5 +1,19 @@
 #!/bin/bash
 
+#download a file and report an error if it fails.
+#  -S shows errors even though -s is on, -f fails on HTTP errors (instead of saving
+#  the server's error page as if it were the data file) and -L follows redirects.
+# argument 1 - url
+# argument 2 - file to save it to
+# argument 3 - name of the source (used in the error message)
+function download_file {
+	if ! curl -sSfL "$1" -o "$2" ; then
+		echo "ERROR: $3 download failed ($1)"
+		rm -f "$2"
+		return 1
+	fi
+}
+
 
 function get_pc_version {
 	    # pathway commons uses a release date instead of a version
@@ -11,7 +25,7 @@ function download_pc_data {
 	    echo "[Downloading current Pathway Commons data]"
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Pathway Commons data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	    URL="http://www.pathwaycommons.org/pc-snapshot/current-release/gsea/by_source/"
-	    curl ${URL}/nci-nature-entrez-gene-id.gmt.zip -o ${PATHWAYCOMMONS}/nci-nature-entrez-gene-id.gmt.zip -s
+	    download_file ${URL}/nci-nature-entrez-gene-id.gmt.zip ${PATHWAYCOMMONS}/nci-nature-entrez-gene-id.gmt.zip "Pathway Commons"
 	    get_pc_version
 }
 
@@ -22,7 +36,7 @@ function download_panther_data {
 	    #URL="ftp://ftp.pantherdb.org/pathway/current_release/"
 	    #URL="ftp://ftp.pantherdb.org//pathway/3.5/"
 	    URL="https://data.pantherdb.org/ftp/pathway/current_release/"
-	    curl  ${URL}/BioPAX.tar.gz -o ${PANTHER}/BioPAX.tar.gz -s 
+	    download_file ${URL}/BioPAX.tar.gz ${PANTHER}/BioPAX.tar.gz "Panther"
 	    get_webfile_version ${URL}/BioPAX.tar.gz "Panther"
 }
 
@@ -30,7 +44,7 @@ function download_pathbank_data {
 	    echo "[Downloading current Path Bank data]"
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current PathBank data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	    URL="https://pathbank.org/downloads"
-	    curl ${URL}/pathbank_primary_biopax.zip -o ${PATHBANK}/pathbank_primary_biopax.zip -s
+	    download_file ${URL}/pathbank_primary_biopax.zip ${PATHBANK}/pathbank_primary_biopax.zip "PathBank"
 	    #get_pc_version
 }
 
@@ -65,7 +79,7 @@ function download_netpath_data {
 	URL="http://www.netpath.org/data/biopax/"
 	for Num in {1..25}; do
 		get_webfile_version ${URL}/NetPath_${Num}.owl "NetPath"
-		curl ${URL}/NetPath_${Num}.owl -o ${NETPATH}/NetPath_${Num}.owl -s  
+		download_file ${URL}/NetPath_${Num}.owl ${NETPATH}/NetPath_${Num}.owl "NetPath"
 	done
 }
 
@@ -74,9 +88,13 @@ function download_reactome_data {
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Reactome data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	
 	#LATEST=$(curl -s https://download.reactome.org/ | grep -oE '[0-9]+/' | tr -d '/' | sort -n | tail -1)
-	LATEST=$(curl -s https://reactome.org/ContentService/data/database/version)
+	LATEST=$(curl -sSf https://reactome.org/ContentService/data/database/version)
+	if [ -z "$LATEST" ]; then
+		echo "ERROR: could not get the current Reactome version - Reactome not downloaded"
+		return 1
+	fi
 	URL="https://download.reactome.org"
-	curl ${URL}/${LATEST}/biopax.zip -o ${REACTOME}/biopax.zip -L --fail -w "%{http_code}" 
+	download_file ${URL}/${LATEST}/biopax.zip ${REACTOME}/biopax.zip "Reactome"
 	get_webfile_version ${URL}/${LATEST}/biopax.zip "Reactome"
 }
 
@@ -92,7 +110,7 @@ function download_wikipathways_data {
 	
 	#not elegant but the only way to pull out the file name is pull out the name between '> and < tokens.  Might brake in the future. (xmllint does not work with https 
 	FILE=`curl -s ${URL} |  grep -o -E ">(.*$1.gmt)<" | grep -o -P "(?<=\">).*(?=<)"`
-	curl ${URL}/${FILE} -o ${WIKIPATHWAYS}/WikiPathways_${1}_entrezgene.gmt -s -L 
+	download_file ${URL}/${FILE} ${WIKIPATHWAYS}/WikiPathways_${1}_entrezgene.gmt "WikiPathways"
 	get_webfile_version ${URL}/${FILE} "WikiPathways"
 }
 
@@ -108,7 +126,7 @@ function download_pfocr_data {
 	#FILE=`curl -s ${URL} |  grep -o -E ">(.*$1.gmt)<" | grep -o -P "(?<=\">).*(?=<)"`
 	#Nov. 4, 2024 - PFOCR added an additional file to their ftp site which broke the above messing regex.  Now there are two human files and one just contains chemical
 	FILE=`curl -s "https://data.wikipathways.org/pfocr/current/" |  grep -o -E ">(.*Homo_sapiens.gmt)<" | grep -o -P "(?<=\">).*(?=<)" | grep -v chemical`
-	curl ${URL}/${FILE} -o ${PFOCR}/PFOCR_${1}_entrezgene.gmt -s -L 
+	download_file ${URL}/${FILE} ${PFOCR}/PFOCR_${1}_entrezgene.gmt "PFOCR"
 	get_webfile_version ${URL}/${FILE} "PFOCR"
 }
 	
@@ -130,7 +148,7 @@ function download_biocyc_data {
 	echo "${URL}/tier1-tier2-biopax.tar.gz" >> ${VERSIONS}/${1}cyc.txt
 	curl ${URL}/tier1-tier2-biopax.tar.gz -u biocyc-flatfiles:data-20541 -I | grep "Last-Modified" >> ${VERSIONS}/${1}cyc.txt
 	echo "curl ${URL}/tier1-tier2-biopax.tar.gz -o ${2}/${1}.tar.gz "  
-	curl ${URL}/tier1-tier2-biopax.tar.gz -o ${2}/${1}.tar.gz -u biocyc-flatfiles:data-20541
+	curl -sSfL ${URL}/tier1-tier2-biopax.tar.gz -o ${2}/${1}.tar.gz -u biocyc-flatfiles:data-20541 || echo "ERROR: BioCyc download failed"
 
 	# unfortunately the latest biopax file seems to be missing all the genes
 	# associated with the pathways.  - wait on hearing back from them before
@@ -154,7 +172,7 @@ function download_GOhuman_data {
 	URL="ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/HUMAN/"
 
 	#June 2016 - looks like they changed the name of the go files !!!
-	curl ${URL}/goa_human.gaf.gz -o ${GOSRC}/gene_association.goa_human.gz -s 
+	download_file ${URL}/goa_human.gaf.gz ${GOSRC}/gene_association.goa_human.gz "GO Human"
 	get_webfile_version ${URL}/goa_human.gaf.gz "GO_Human"
 
 	#get the obo file from the gene ontology website
@@ -162,7 +180,7 @@ function download_GOhuman_data {
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Go OBO data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	#Feb 27,2026 - updated to https from http
 	URL="https://current.geneontology.org/ontology"
-	curl ${URL}/go.obo -o ${GOSRC}/go.obo -s 
+	download_file ${URL}/go.obo ${GOSRC}/go.obo "GO OBO"
 	get_webfile_version ${URL}/go.obo "GO_OBO_FILE"
 
 
@@ -175,7 +193,7 @@ function download_GOmouse_data {
 	#URL="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.mgi.gz?rev=HEAD"
 	#URL="http://www.informatics.jax.org/downloads/reports/gene_association.mgi.gz"
 	URL="ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/MOUSE/goa_mouse.gaf.gz"
-	curl $URL -o ${GOSRC}/gene_association.mgi.gz -s 
+	download_file ${URL} ${GOSRC}/gene_association.mgi.gz "GO Mouse"
 	get_webfile_version ${URL} "GO_Mouse"
 }
 
@@ -189,7 +207,7 @@ function download_HPO_data {
 	#URL="https://ci.monarchinitiative.org/view/hpo/job/hpo.annotations/lastSuccessfulBuild/artifact/rare-diseases/util/annotation/genes_to_phenotype.txt"
 	#URL="http://purl.obolibrary.org/obo/hp/hpoa/genes_to_phenotype.txt"
 	URL="https://github.com/obophenotype/human-phenotype-ontology/releases/latest/download/genes_to_phenotype.txt"
-	curl -L ${URL} -o ${DISEASESRC}/genes_to_phenotype.txt -s
+	download_file ${URL} ${DISEASESRC}/genes_to_phenotype.txt "Human Phenotype"
 	get_webfile_version ${URL} "Human_Phenotype"
 
 	#get the obo file
@@ -202,7 +220,7 @@ function download_HPO_data {
 	#URL="https://raw.githubusercontent.com/obophenotype/human-phenotype-ontology/master/hp.obo"
 	#URL="http://purl.obolibrary.org/obo/hp.obo"
 	URL="https://raw.githubusercontent.com/obophenotype/human-phenotype-ontology/master/hp.obo"
-	curl ${URL} -o ${DISEASESRC}/human-phenotype-ontology.obo -s 
+	download_file ${URL} ${DISEASESRC}/human-phenotype-ontology.obo "Human Phenotype OBO"
 	get_webfile_version ${URL} "Human_phenotype_OBO_FILE"
 
 }
@@ -216,7 +234,7 @@ function download_drugbank_data {
 	echo "[Downloading current Drugbank data]"
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current DrugBank data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	URL="http://www.drugbank.ca/system/downloads/current"
-        curl -Lf -o drugbank.xml.zip -u ruth.isserlin@gmail.com:emililab https://go.drugbank.com/releases/latest/downloads/all-full-database -s	
+        curl -sSLf -o drugbank.xml.zip -u ruth.isserlin@gmail.com:emililab https://go.drugbank.com/releases/latest/downloads/all-full-database || echo "ERROR: DrugBank download failed"
         #curl ${URL}/drugbank.xml.zip -o ${DRUGSSRC}/drugbank.xml.zip -s -w "Drugbank : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
 	#get_webfile_version ${URL}/drugbank.xml.zip "DrugBank"
 
@@ -1668,7 +1686,7 @@ function download_GORat_data {
 	#URL="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.rgd.gz?rev=HEAD"
 	#URL="http://current.geneontology.org/annotations/rgd.gaf.gz"
 	URL="ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/RAT/goa_rat.gaf.gz"
-	curl $URL -o ${GOSRC}/gene_association.rgd.gz -s 
+	download_file ${URL} ${GOSRC}/gene_association.rgd.gz "GO Rat"
 	get_webfile_version ${URL} "GO_Rat"
 
 	#get the obo file from the gene ontology website
@@ -1676,7 +1694,7 @@ function download_GORat_data {
 	
 	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Go Rat OBO"'"}' `cat ${TOOLDIR}/slack_webhook`
 	URL="http://current.geneontology.org/ontology"
-	curl ${URL}/go.obo -o ${GOSRC}/go.obo -s 
+	download_file ${URL}/go.obo ${GOSRC}/go.obo "GO OBO"
 	get_webfile_version ${URL}/go.obo "GO_OBO_FILE"
 
 }
