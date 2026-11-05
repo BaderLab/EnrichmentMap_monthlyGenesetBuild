@@ -43,7 +43,7 @@ public class QueryUniprotREST
 
   //without timeouts a dropped connection can hang the build forever
   static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(30);
-  static final Duration REQUEST_TIMEOUT = Duration.ofMinutes(Long.getLong("uniprot.request.timeout.minutes", 5L));
+  static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(Long.getLong("uniprot.request.timeout.seconds", 5 * 60L));
 
   private static final HttpClient httpClient = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_1_1)
