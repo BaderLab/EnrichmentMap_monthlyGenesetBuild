@@ -1796,7 +1796,7 @@ copy2release Reactome Rat ${PATHWAYS}
 
 
 #download the WikiPathways gmt files
-WIKIPATHWAYS=${RATSOURCE}/WikiPathways
+WIKIPATHWAYS=${RatSOURCE}/WikiPathways
 mkdir ${WIKIPATHWAYS}
 download_wikipathways_data Rattus_norvegicus
 cd ${WIKIPATHWAYS}
@@ -1809,7 +1809,7 @@ copy2release WikiPathways Rat ${PATHWAYS}
 
 
 #download the PFOCR gmt files - there is no release for rat yet
-#PFOCR=${RATSOURCE}/PFOCR
+#PFOCR=${RatSOURCE}/PFOCR
 #mkdir ${PFOCR}
 #download_pfocr_data Rattus_norvegicus
 #cd ${PFOCR}
