@@ -12,6 +12,7 @@ params:
   height: 600
   pointsz: 14
   home_dir: /home/rstudio/projects  
+  download_url: https://download.baderlab.org/EM_Genesets/
 ---
 
 # Changes/Growth of Genesets By Source over the years
@@ -41,19 +42,25 @@ tryCatch(expr = { library("ggplot2")},
 ```{r, echo=FALSE,message=FALSE, warning=FALSE}
 
 safe_getURL <- function(url, timeout = 60, quiet = FALSE) {
+  # SSL certificates are verified (the default). If connections fail with
+  # certificate errors, update ca-certificates in the bioc_summaries image
+  # (see Docker_instance/Dockerfile_bioc_summaries) rather than turning
+  # verification off.
   # Optional: point to a CA bundle to reduce handshake issues without disabling verification
   cainfo <- if (requireNamespace("curl", quietly = TRUE)) {
     system.file("curl", "cacert.pem", package = "curl")
-  } else NULL
+  } else ""
+
+  curl_options <- list(connecttimeout = timeout,
+                       followlocation = TRUE)
+  # system.file() returns "" when the bundle isn't there - only use it if it exists
+  if (nzchar(cainfo) && file.exists(cainfo)) {
+    curl_options$cainfo <- cainfo
+  }
 
   tryCatch(
     {
-      RCurl::getURL(url,
-                    connecttimeout = timeout,
-                    followlocation = TRUE,
-                    ssl.verifypeer = FALSE,
-                    ssl.verifyhost = FALSE,
-                    cainfo = cainfo)
+      do.call(RCurl::getURL, c(list(url), curl_options))
     },
     error = function(e) {
       # This is where "gnutls_handshake() failed: Error in the pull function." would land
@@ -68,15 +75,33 @@ safe_getURL <- function(url, timeout = 60, quiet = FALSE) {
 }
 
 
-safe_download.file <- function(url, destfile, mode = "wb", method = "libcurl", tries = 15) {
+# Returns TRUE if the file was downloaded, FALSE otherwise.
+# Retries with a growing wait (capped at max_wait seconds - uncapped, 15 tries
+# waited 2^14 s on the last try, ~9 hours in total for one missing file).
+# A 404 means the file isn't there, so it isn't retried.
+safe_download.file <- function(url, destfile, mode = "wb", method = "libcurl",
+                               tries = getOption("geneset_tracking.download_tries", 15),
+                               max_wait = getOption("geneset_tracking.max_wait", 60)) {
   dir.create(dirname(destfile), recursive = TRUE, showWarnings = FALSE)
   for (i in seq_len(tries)) {
-    res <- try(utils::download.file(url, destfile, mode = mode, method = method), 
+    # the HTTP status (e.g. 404) is only reported in a warning, so keep the warnings
+    warnings_seen <- character(0)
+    res <- try(withCallingHandlers(
+                 utils::download.file(url, destfile, mode = mode, method = method, quiet = TRUE),
+                 warning = function(w) {
+                   warnings_seen <<- c(warnings_seen, conditionMessage(w))
+                   invokeRestart("muffleWarning")
+                 }),
                silent = TRUE)
     if (!inherits(res, "try-error") && res == 0L && file.exists(destfile)) return(TRUE)
     if (file.exists(destfile)) unlink(destfile)
-    Sys.sleep(2^(i - 1))
+    if (any(grepl("404", warnings_seen))) {
+      message(sprintf("[safe_download.file] %s not found (404)", url))
+      return(FALSE)
+    }
+    if (i < tries) Sys.sleep(min(2^(i - 1), max_wait))
   }
+  message(sprintf("[safe_download.file] could not download %s", url))
   FALSE
 }
 
@@ -88,13 +113,15 @@ safe_download.file <- function(url, destfile, mode = "wb", method = "libcurl", t
 ```{r include=FALSE}
 #Download all the directory names from the downloads website.
 
-download_url = "https://download.baderlab.org/EM_Genesets/"
+download_url = params$download_url
 
 #list all the files on the server
 filenames = safe_getURL(download_url)
 
-if (is.na(filenames)) {
-  paste("issue with download")
+#without the list of releases there is nothing to report on - stop with a clear message
+# (paste() on its own did nothing, so the report carried on and failed later with a confusing error)
+if (length(filenames) != 1 || is.na(filenames)) {
+  stop("Could not read the list of releases from ", download_url)
 }
 
 tc = textConnection(filenames)
@@ -153,9 +180,10 @@ get_summary_file <- function(species = "Human", identifier="entrezgene", year=20
             dest_log_file <- file.path(home_dir,current_log_file )
  
 
-               safe_download.file(paste(current_directory,current_log_file,sep=""),
+               # dest_log_file is just the path, so it is never NULL/NA - check whether the download worked
+               ok <- safe_download.file(paste(current_directory,current_log_file,sep=""),
                             destfile = dest_log_file)
-                if(is.null(dest_log_file) || is.na(dest_log_file)){
+                if(!ok){
                   next
                 }
                 current_log_contents <- read.table(dest_log_file,header=FALSE,sep="\t",
@@ -181,7 +209,9 @@ get_summary_file <- function(species = "Human", identifier="entrezgene", year=20
             #colnames(stats)[2] <- proper_date
       
             
-            if(i == 1){
+            #set up the tables from the first release that has a summary file - not
+            # necessarily release 1, which is skipped if its build failed or was partial
+            if(is.null(stats_summary_table)){
       
               stats_summary_ggplot <- data.frame(stats, date = proper_date)
               colnames(stats)[2] <- download_directories [i]
@@ -239,22 +269,25 @@ get_identifier_conversion_file <- function(species = "Human", identifier="entrez
     
     current_log_file <- log_files[grep(log_files,pattern=identifier)]
     
-    if(length(current_log_file) == 0 && length(log_files == 1)){
+    if(length(current_log_file) == 0 && length(log_files) == 1){
       current_log_file = log_files
     }
     
     dest_log_file <- file.path(home_dir,current_log_file )
     
-    if(length(dest_log_file) == 0){
-      break
+    # skip a release without a build summary (e.g. a failed or partial build) -
+    # 'break' here stopped at the newest release and left the table empty
+    if(length(dest_log_file) != 1){
+      next
     }
     
-    safe_download.file(
+    # dest_log_file is just the path, so it is never NULL/NA - check whether the download worked
+    ok <- safe_download.file(
       paste(current_directory,current_log_file,sep=""),
       destfile = dest_log_file
     )
     
-    if(is.null(dest_log_file) || is.na(dest_log_file)){
+    if(!ok){
       next
     }
     
@@ -329,7 +362,8 @@ get_identifier_conversion_file_by_type <- function(species = "Human", identifier
                   contents, perl = TRUE)
     log_files = unlist(regmatches(contents, rx))
     
-    if(is.na(log_files) || length(log_files) ==0){
+    # (is.na(log_files) || ... is an error on R >= 4.3 when there is more than one log file)
+    if(length(log_files) == 0 || all(is.na(log_files))){
       next
     }
     
@@ -345,11 +379,12 @@ get_identifier_conversion_file_by_type <- function(species = "Human", identifier
         db_name <- unlist(strsplit(log_files[j],split = "_"))[2]
       dest_log_file <- file.path(home_dir,log_files[j] )
 
-           safe_download.file(
+           # dest_log_file is just the path, so it is never NULL/NA - check whether the download worked
+           ok <- safe_download.file(
             paste(current_directory,log_files[j],sep=""),
             destfile = dest_log_file
           )
-          if(is.null(dest_log_file) || is.na(dest_log_file)){
+          if(!ok){
             next
           }
            
@@ -637,6 +672,8 @@ dev.off()
       png(file.path(home_dir,figure_directory, Drugid_figure_filename),
           width = params$width, height = params$height,  pointsize = params$pointsz)
       
+      # inside an if block a ggplot is only drawn if it is print()ed
+      print(
       ggplot(subset_id_summary_agg, aes(x=date, y=(not_translated/total)*100, group=Filename,color=Filename)) +
         geom_line() + theme(legend.position = "right",
         legend.key.size = unit(0.25, 'cm'), #change legend key size
@@ -648,7 +685,8 @@ dev.off()
         legend.text = element_text(size=10)) + #change legend text font size
         ggtitle(paste("Percent missing Annotation translations  \n for DrugTargets", species,"from", year, "- Present", sep = " " )) +
         guides(colour = guide_legend(ncol = 1)) +
-        ylab("Percent (1-100%) Annotations not translated") + xlab("time") 
+        ylab("Percent (1-100%) Annotations not translated") + xlab("time")
+      ) 
       
       dev.off()
     }
@@ -657,9 +695,11 @@ dev.off()
  
 ```
 
-```{r message=FALSE, warning=FALSE,include=FALSE}
+```{r echo=FALSE}
+# exists() only checks for R variables, so use file.exists() for the figure file.
+# (This chunk used include=FALSE, which also hid the figure.)
 if(exists("Drugid_figure_filename")){
-  if(exists( file.path(".",figure_directory, Drugid_figure_filename))){
+  if(file.exists(file.path(home_dir, figure_directory, Drugid_figure_filename))){
     knitr::include_graphics( file.path(".",figure_directory, Drugid_figure_filename))
   }
 }
@@ -668,7 +708,7 @@ if(exists("Drugid_figure_filename")){
 ```{r message=FALSE, warning=FALSE,include=FALSE}
 id_summary_ggplot_miRs <- get_identifier_conversion_file_by_type(species,identifier,"2019","miRs")
 
-if(is.null(id_summary_ggplot_miRs) && length(id_summary_ggplot_miRs) > 0){
+if(!is.null(id_summary_ggplot_miRs) && length(id_summary_ggplot_miRs) > 0){
 
 	subset_id_summary <- data.frame(source = id_summary_ggplot_miRs$source, not_translated = as.numeric(id_summary_ggplot_miRs$`Annotations not translated`), total = as.numeric(id_summary_ggplot_miRs$`Total Annotations`), date= id_summary_ggplot_miRs$date, stringsAsFactors = FALSE)
 
@@ -680,6 +720,8 @@ colnames(subset_id_summary_agg) <- c("source","date","not_translated","total")
 	png(file.path(home_dir,figure_directory, Mirid_figure_filename),
     width = params$width, height = params$height,  pointsize = params$pointsz)
 
+  	# inside an if block a ggplot is only drawn if it is print()ed
+  	print(
   	ggplot(subset_id_summary_agg, aes(x=date, y=(not_translated/total)*100, group=source,color=source)) +
     	geom_line() + theme(legend.position = "right",
     	legend.key.size = unit(0.25, 'cm'), #change legend key size
@@ -691,15 +733,18 @@ colnames(subset_id_summary_agg) <- c("source","date","not_translated","total")
     	legend.text = element_text(size=10)) + #change legend text font size
     	ggtitle(paste("Percent missing Annotation translations  \n for miRs", species,"from", year, "- Present", sep = " " )) +
     	guides(colour = guide_legend(ncol = 1)) +
-    	ylab("Percent Annotations not translated") + xlab("time") 
+    	ylab("Percent Annotations not translated") + xlab("time")
+  	) 
 
 	dev.off()
 }
 ```
 
-```{r message=FALSE, warning=FALSE,include=FALSE}
-if(exists( "Mirid_figure_filename")){
-  if(exists( file.path(".",figure_directory, Mirid_figure_filename))){
+```{r echo=FALSE}
+# exists() only checks for R variables, so use file.exists() for the figure file.
+# (This chunk used include=FALSE, which also hid the figure.)
+if(exists("Mirid_figure_filename")){
+  if(file.exists(file.path(home_dir, figure_directory, Mirid_figure_filename))){
     knitr::include_graphics( file.path(".",figure_directory, Mirid_figure_filename))
   }
 }
@@ -709,7 +754,7 @@ if(exists( "Mirid_figure_filename")){
 ```{r message=FALSE, warning=FALSE,include=FALSE}
 id_summary_ggplot_DiseasePhenotypes <- get_identifier_conversion_file_by_type(species,identifier,"2021","DiseasePhenotypes")
 
-if(is.null(id_summary_ggplot_DiseasePhenotypes) && length(id_summary_ggplot_DiseasePhenotypes) > 0){
+if(!is.null(id_summary_ggplot_DiseasePhenotypes) && length(id_summary_ggplot_DiseasePhenotypes) > 0){
 	subset_id_summary <- data.frame(source = id_summary_ggplot_DiseasePhenotypes$source, not_translated = as.numeric(id_summary_ggplot_DiseasePhenotypes$`Annotations not translated`), total = as.numeric(id_summary_ggplot_DiseasePhenotypes$`Total Annotations`), date= id_summary_ggplot_DiseasePhenotypes$date, stringsAsFactors = FALSE)
 
 	subset_id_summary_agg <- aggregate(subset_id_summary[,2:3],by = list(subset_id_summary$source,subset_id_summary$date),FUN = sum)
@@ -720,6 +765,8 @@ colnames(subset_id_summary_agg) <- c("source","date","not_translated","total")
 	png(file.path(home_dir,figure_directory, Diseaseid_figure_filename),
     	width = params$width, height = params$height,  pointsize = params$pointsz)
 
+  	# inside an if block a ggplot is only drawn if it is print()ed
+  	print(
   	ggplot(subset_id_summary_agg, aes(x=date, y=(not_translated/total)*100, group=source,color=source)) +
     	geom_line() + theme(legend.position = "right",
     	legend.key.size = unit(0.25, 'cm'), #change legend key size
@@ -731,15 +778,18 @@ colnames(subset_id_summary_agg) <- c("source","date","not_translated","total")
     	legend.text = element_text(size=10)) + #change legend text font size
     	ggtitle(paste("Percent missing Annotation translations \n for DiseasePhenotypes", species,"from", year, "- Present", sep = " " )) +
     	guides(colour = guide_legend(ncol = 1)) +
-    	ylab("Percent Annotations not translated") + xlab("time") 
+    	ylab("Percent Annotations not translated") + xlab("time")
+  	) 
 
 	dev.off()
 }
 ```
 
-```{r message=FALSE, warning=FALSE,include=FALSE}
-if(exists( "Diseaseid_figure_filename")){
-  if(exists( file.path(".",figure_directory, Diseaseid_figure_filename))){
+```{r echo=FALSE}
+# exists() only checks for R variables, so use file.exists() for the figure file.
+# (This chunk used include=FALSE, which also hid the figure.)
+if(exists("Diseaseid_figure_filename")){
+  if(file.exists(file.path(home_dir, figure_directory, Diseaseid_figure_filename))){
     knitr::include_graphics( file.path(".",figure_directory, Diseaseid_figure_filename))
   }
 }

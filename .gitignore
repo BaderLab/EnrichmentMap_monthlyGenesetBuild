@@ -1,0 +1,5 @@
+# secrets that live on the build server only - never commit these
+GeneSetTools/slack_webhook
+GeneSetTools/geneset_tracking/slack_webhook
+GeneSetTools/biocyc_login
+GeneSetTools/drugbank_login

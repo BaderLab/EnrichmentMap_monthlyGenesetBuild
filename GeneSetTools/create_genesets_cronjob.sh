@@ -13,7 +13,12 @@ ABSPATH=$HOMEDIR/EnrichmentMap_monthlyGenesetBuild/GeneSetTools
 cd ${ABSPATH}
 
 #./create_genesets_release.sh >  ${BUILDLOG} 2>&1
-${ABSPATH}/create_genesets_release.sh > ${ABSPATH}/${BUILDLOG} 2>&1
+#create_genesets_release.sh exits 1 if the release was incomplete and wasn't published
+if ${ABSPATH}/create_genesets_release.sh > ${ABSPATH}/${BUILDLOG} 2>&1; then
+	MSG="Finished Geneset build - see log file for details"
+else
+	MSG="Geneset build FAILED - see ${BUILDLOG}"
+fi
 
 LOGFILE=`cat ${ABSPATH}/${BUILDLOG}`
 
@@ -21,4 +26,4 @@ LOGFILE=`cat ${ABSPATH}/${BUILDLOG}`
 
 #sending log file via gmail no longer works - send log file through slack.
 #curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"${LOGFILE}"'"}' `cat ${ABSPATH}/slack_webhook`
-curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"Finished Geneset build - see log file for details"'"}' `cat ${ABSPATH}/slack_webhook`
+curl -X POST -H 'Content-type: application/json' --data '{"text":"'"${MSG}"'"}' `cat ${ABSPATH}/slack_webhook`
