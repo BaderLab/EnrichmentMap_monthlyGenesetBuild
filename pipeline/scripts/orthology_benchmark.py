@@ -93,19 +93,22 @@ def main():
                                  cache / f"ensembl_{sp}_entrez.tsv.gz"))
         live = live_ncbi_ids(fetch(f"https://ftp.ncbi.nlm.nih.gov/gene/DATA/GENE_INFO/Mammalia/{cfg['ncbi']}.gene_info.gz",
                                    cache / f"ncbi_{sp}_gene_info.gz"))
-        # the species' own dump (mouse is missing from the human file in release 116)
-        compara = fetch(f"https://ftp.ensembl.org/pub/release-{e}/tsv/ensembl-compara/homologies/{cfg['ens']}/"
-                        f"Compara.{e}.protein_default.homologies.tsv.gz", cache / f"compara_{e}_{sp}.tsv.gz")
+        # Release 116 keeps some pairs only in the human dump (rat) and others only in the
+        # species' own dump (mouse), so read both.
+        dumps = [fetch(f"https://ftp.ensembl.org/pub/release-{e}/tsv/ensembl-compara/homologies/{d}/"
+                       f"Compara.{e}.protein_default.homologies.tsv.gz", cache / f"compara_{e}_{name}.tsv.gz")
+                 for d, name in [("homo_sapiens", "human"), (cfg["ens"], sp)]]
         comp = defaultdict(set)
-        with gzip.open(compara, "rt") as fh:
-            for r in csv.DictReader(fh, delimiter="\t"):
-                if not r["homology_type"].startswith("ortholog"):
-                    continue
-                pair = {r["species"]: r["gene_stable_id"], r["homology_species"]: r["homology_gene_stable_id"]}
-                if "homo_sapiens" not in pair or cfg["ens"] not in pair:
-                    continue
-                for hg in hum.get(pair["homo_sapiens"], ()):
-                    comp[hg] |= other.get(pair[cfg["ens"]], set())
+        for dump in dumps:
+            with gzip.open(dump, "rt") as fh:
+                for r in csv.DictReader(fh, delimiter="\t"):
+                    if not r["homology_type"].startswith("ortholog"):
+                        continue
+                    pair = {r["species"]: r["gene_stable_id"], r["homology_species"]: r["homology_gene_stable_id"]}
+                    if "homo_sapiens" not in pair or cfg["ens"] not in pair:
+                        continue
+                    for hg in hum.get(pair["homo_sapiens"], ()):
+                        comp[hg] |= other.get(pair[cfg["ens"]], set())
         hg = homologene(a.homologene, cfg["taxid"])
         methods = {"HomoloGene (legacy)": hg, "Ensembl Compara": comp}
         for name, m in methods.items():
@@ -139,7 +142,7 @@ def main():
     d = df[df["method"].isin(["HomoloGene (legacy)", "Ensembl Compara"])]
     fig, axes = plt.subplots(1, 3, figsize=(12, 3.3))
     for ax, col, title in zip(axes, ["coverage_pct", "one_to_one_pct", "dead_target_pct"],
-                              ["Human genes with an ortholog", "…exactly one ortholog", "Ortholog IDs retired at NCBI"]):
+                              ["Human genes with an ortholog", "Of those, exactly one ortholog", "Ortholog IDs retired at NCBI"]):
         for i, m in enumerate(["HomoloGene (legacy)", "Ensembl Compara"]):
             vals = [d[(d["species"] == s) & (d["method"] == m)][col].squeeze() for s in SPECIES]
             xs = [k + (i - 0.5) * 0.36 for k in range(len(SPECIES))]
@@ -151,7 +154,8 @@ def main():
         ax.set_title(title)
         ax.set_ylabel("%")
         ax.grid(axis="x", visible=False)
-    axes[0].legend(fontsize=8, loc="lower left")
+    fig.legend(*axes[0].get_legend_handles_labels(), loc="upper center", ncol=2, fontsize=9,
+               bbox_to_anchor=(0.5, 1.08))
     fig.suptitle(f"{len(universe):,} human protein-coding genes; Ensembl release {e}", color=TEXT2, fontsize=9, y=0.02)
     fig.savefig(out / "orthology.png")
     plt.close(fig)

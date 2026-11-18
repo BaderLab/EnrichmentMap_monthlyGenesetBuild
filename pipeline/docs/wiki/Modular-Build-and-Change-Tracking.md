@@ -171,7 +171,24 @@ Four methods were compared:
 
 Mouse and rat gene sets are converted from human with **HomoloGene**, which NCBI stopped updating in 2014. This test compares it with current **Ensembl Compara** orthologues, measured on human protein-coding genes. It also checks the woodchuck homology table from 2021.
 
-> *Results pending. The Ensembl Compara download was still running when this page was written. They will be in `results/aim2/orthology/orthology_summary.tsv` and `orthology.png`.*
+![Cross-species conversion](https://github.com/BaderLab/EnrichmentMap_monthlyGenesetBuild/blob/feature/reena-bugfixes/pipeline/results/aim2/orthology/orthology.png?raw=true)
+
+| | Mouse: HomoloGene | Mouse: Compara | Rat: HomoloGene | Rat: Compara |
+|---|---|---|---|---|
+| Human genes with an ortholog | 85.6% | **90.8%** | 78.4% | **88.5%** |
+| Of those, exactly one ortholog | 97.8% | 95.4% | 98.7% | 94.8% |
+| Ortholog IDs retired at NCBI | 0.7% | 0.1% | 1.9% | 0.04% |
+
+Out of 19,298 human protein-coding genes:
+
+- **HomoloGene misses many genes.** Compara finds a mouse ortholog for 1,446 genes that HomoloGene can't convert, and a rat ortholog for 2,676. HomoloGene finds 446 (mouse) and 728 (rat) that Compara doesn't.
+- **Where both map a gene, they agree** on the ortholog 98.7% (mouse) and 97.3% (rat) of the time.
+- **HomoloGene is decaying**, most clearly in rat: 1.9% of its rat gene IDs no longer exist at NCBI.
+- **Woodchuck:** the 2021 homology table covers 90.5% of human protein-coding genes; 0.46% of its human gene IDs are no longer current in HGNC.
+
+So because HomoloGene is frozen, the mouse and rat conversions cover about 5 (mouse) and 10 (rat) percentage points fewer human genes than Compara would. It is slightly less often one-to-one, so the conversion needs a rule for genes with several orthologs.
+
+Data: [`orthology_summary.tsv`](https://github.com/BaderLab/EnrichmentMap_monthlyGenesetBuild/blob/feature/reena-bugfixes/pipeline/results/aim2/orthology/orthology_summary.tsv)
 
 ### 5. Static sources and identifier decay
 
@@ -215,7 +232,8 @@ The test also caught a bug in the new GO module. A compressed file saved without
 2. **Keep the UniProt mapping, but record its version** (UniProt release and date) with every release, and save the mapping table used so a release can be rebuilt.
 3. **Flag shared aliases** instead of letting the translator pick one gene.
 4. **Rescue renamed symbols in static sources** through HGNC previous symbols before translation.
-5. **Count unique gene set IDs, not lines**, in summary reports and monitoring.
+5. **Replace HomoloGene with Ensembl Compara** for mouse and rat conversion, with a rule for one-to-many orthologs and the Ensembl release recorded.
+6. **Count unique gene set IDs, not lines**, in summary reports and monitoring.
 
 ## Still to do
 
@@ -223,7 +241,6 @@ The test also caught a bug in the new GO module. A compressed file saved without
 - Move ID translation (UniProt to Entrez / symbol / Ensembl) and mouse/rat/woodchuck conversion into the workflow.
 - Provenance manifest per GMT file (Aim 1.3). The `.download.json` files already hold the URL, time, `Last-Modified` and SHA-256.
 - Run `release_history` overnight to measure what each *published* release contained and to detect change points.
-- Finish the orthology benchmark (section 4).
 
 ## Caveats
 

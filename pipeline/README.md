@@ -53,6 +53,10 @@ accurate (95.4% agree with HGNC, 0.5% one-to-many). Ensembl 94.2%, BridgeDb 93.9
 On symbols, only the legacy route resolves renamed genes (76%). BridgeDb and g:Profiler resolve 0% of
 previous symbols. But the legacy route silently picks one gene for 22% of shared aliases.
 
+**Orthology (2.1).** HomoloGene (legacy, frozen since 2014) finds a mouse ortholog for 85.6% of human
+protein-coding genes and a rat ortholog for 78.4%. Ensembl Compara 116 finds 90.8% and 88.5%. Where both map
+a gene they agree on the ortholog 98.7% / 97.3% of the time. 1.9% of HomoloGene's rat IDs are retired at NCBI.
+
 **Decay (2.3).** 5.2% of the July 2011 KEGG symbols are no longer approved HGNC symbols; checking previous
 symbols would rescue all but 0.8%. NCI-Nature: 1.9% of UniProt IDs; IOB: 0.1% of Entrez IDs.
 
@@ -66,6 +70,8 @@ finished. Rerunning after the fix ran only the Panther job.
 - Translation of the GO module's UniProt output to Entrez/symbol/Ensembl, and mouse/rat/woodchuck conversion.
 - Provenance manifests (Aim 1.3). The `.download.json` files already hold the URL, time, `Last-Modified` and SHA-256.
 - `release_history` hasn't run yet because of the download window.
+- Note: Ensembl 116 keeps human-rat pairs only in the human Compara dump and human-mouse pairs only in the
+  mouse dump, so `orthology_benchmark.py` reads both.
 - Caveats: the archived GO files are the GO Consortium copies of the EBI GOA files the live build downloads.
   BioMart was unreachable on 18 Nov 2026, so the benchmark uses Ensembl 116 release files. BridgeDb's
   data is Ensembl 111 (built Oct 2024).
