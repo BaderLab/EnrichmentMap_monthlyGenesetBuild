@@ -1,0 +1,7 @@
+matplotlib==3.11.2
+pandas==3.1.1
+pytest==9.2.0
+PyYAML==6.0.3
+requests==2.34.2
+ruptures==1.1.10
+snakemake==9.27.2

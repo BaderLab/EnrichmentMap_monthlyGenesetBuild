@@ -1,0 +1,181 @@
+# Source registry (Aim 1.1). One entry per gene set source used by create_genesets_release.sh.
+# The Snakefile reads this file; adding/retiring a source means editing one entry here.
+#
+# status:   active  = downloaded every month
+#           static  = frozen file under GeneSetTools/staticSrcFiles (only IDs are re-translated)
+# parser:   go_build      - pipeline/scripts/go_build.py (Python port of GOGeneSetFileMaker, 100% parity)
+#           gmt           - already a GMT, just renamed/translated
+#           biopax_legacy - still GenesetTools.jar toGSEA (not ported yet)
+#           hpo_legacy / drugbank_legacy - still Java / Perl (not ported yet)
+# url:      for 'scrape' sources the url is an index page and 'pattern' picks the file name.
+# in_repo:  false = the build needs a file that only exists on the build server (see Docker_instance/README.md)
+
+sources:
+  GO_human:
+    status: active
+    species: [human]
+    format: GAF+OBO
+    native_id: UniProt
+    parser: go_build
+    files:
+      gaf: https://ftp.ebi.ac.uk/pub/databases/GO/goa/HUMAN/goa_human.gaf.gz
+      obo: https://current.geneontology.org/ontology/go.obo
+    outputs: GO/Human_GO_{bp,mf,cc}_{with,no}_GO_iea, GO/Human_GOALL_*
+  GO_mouse:
+    status: active
+    species: [mouse]
+    format: GAF+OBO
+    native_id: UniProt
+    parser: go_build
+    files:
+      gaf: https://ftp.ebi.ac.uk/pub/databases/GO/goa/MOUSE/goa_mouse.gaf.gz
+      obo: https://current.geneontology.org/ontology/go.obo
+  GO_rat:
+    status: active
+    species: [rat]
+    format: GAF+OBO
+    native_id: UniProt
+    parser: go_build
+    files:
+      gaf: https://ftp.ebi.ac.uk/pub/databases/GO/goa/RAT/goa_rat.gaf.gz
+      obo: https://current.geneontology.org/ontology/go.obo
+  Reactome:
+    status: active
+    species: [human, rat]
+    format: BioPAX3 (zip)
+    native_id: UniProt
+    parser: biopax_legacy
+    version_url: https://reactome.org/ContentService/data/database/version
+    files:
+      biopax: https://download.reactome.org/{version}/biopax.zip
+  Panther:
+    status: active
+    species: [human]
+    format: BioPAX3 (tar.gz)
+    native_id: UniProt
+    parser: biopax_legacy
+    files:
+      biopax: https://data.pantherdb.org/ftp/pathway/current_release/BioPAX.tar.gz
+  PathBank:
+    status: active
+    species: [human]
+    format: BioPAX3 (zip)
+    native_id: UniProt
+    parser: biopax_legacy
+    files:
+      biopax: https://pathbank.org/downloads/pathbank_primary_biopax.zip
+  WikiPathways:
+    status: active
+    species: [human, mouse, rat]
+    format: GMT
+    native_id: Entrez
+    parser: gmt
+    scrape:
+      index: https://data.wikipathways.org/current/gmt/
+      pattern: 'wikipathways-[0-9]+-gmt-Homo_sapiens\.gmt'
+  PFOCR:
+    status: active
+    species: [human]
+    format: GMT
+    native_id: Entrez
+    parser: gmt
+    scrape:
+      index: https://data.wikipathways.org/pfocr/current/
+      pattern: 'pfocr-[0-9]+-gmt-Homo_sapiens\.gmt'
+  HPO:
+    status: active
+    species: [human]
+    format: TSV+OBO
+    native_id: Entrez
+    parser: hpo_legacy
+    files:
+      annotations: https://github.com/obophenotype/human-phenotype-ontology/releases/latest/download/genes_to_phenotype.txt
+      obo: https://github.com/obophenotype/human-phenotype-ontology/releases/latest/download/hp.obo
+
+  # ---- static sources (frozen copies under GeneSetTools/staticSrcFiles) ----
+  HumanCyc:
+    status: static
+    species: [human]
+    format: BioPAX3
+    native_id: UniProt
+    parser: biopax_legacy
+    path: GeneSetTools/staticSrcFiles/biocyc
+    in_repo: false
+  NCI_Nature:
+    status: static
+    species: [human]
+    format: BioPAX3
+    native_id: UniProt
+    parser: biopax_legacy
+    path: GeneSetTools/staticSrcFiles/NCI
+    in_repo: true
+  NetPath:
+    status: static
+    species: [human]
+    format: BioPAX
+    native_id: Entrez
+    parser: biopax_legacy
+    path: GeneSetTools/staticSrcFiles/NetPath
+    in_repo: false
+  IOB:
+    status: static
+    species: [human]
+    format: BioPAX
+    native_id: Entrez
+    parser: biopax_legacy
+    path: GeneSetTools/staticSrcFiles/IOB
+    in_repo: true
+  KEGG:
+    status: static
+    species: [human]
+    format: GMT
+    native_id: symbol
+    parser: gmt
+    path: GeneSetTools/staticSrcFiles/KEGG/July2011_Human_KEGG_symbol.gmt
+    in_repo: true
+  DrugBank:
+    status: static
+    species: [human]
+    format: XML
+    native_id: UniProt
+    parser: drugbank_legacy
+    path: GeneSetTools/staticSrcFiles/Drugbank
+    in_repo: false
+  MSigDB_C2:
+    status: static
+    species: [human]
+    format: GMT
+    native_id: Entrez
+    parser: gmt
+    path: GeneSetTools/staticSrcFiles/msigdb_path
+    in_repo: false
+  MSigDB_Hallmark:
+    status: static
+    species: [human]
+    format: GMT
+    native_id: Entrez
+    parser: gmt
+    path: GeneSetTools/staticSrcFiles/msigdb_hall
+    in_repo: false
+  MSigDB_miR:
+    status: static
+    species: [human]
+    format: GMT
+    native_id: Entrez
+    parser: gmt
+    path: GeneSetTools/staticSrcFiles/mirs
+    in_repo: false
+  MSigDB_TF:
+    status: static
+    species: [human]
+    format: GMT
+    native_id: Entrez
+    parser: gmt
+    path: GeneSetTools/staticSrcFiles/tf
+    in_repo: false
+
+# Not gene set sources, but inputs that change results (Aim 2.1):
+mapping:
+  uniprot_idmapping: https://rest.uniprot.org/idmapping   # legacy, live service, version not recorded
+  homologene: GeneSetTools/testFiles/homologene.data       # human -> mouse/rat, frozen (NCBI retired HomoloGene)
+  woodchuck: woodchuck_gmt_conversion/homologroupHumanWoodchuck_May29_2021_addedcol.tsv

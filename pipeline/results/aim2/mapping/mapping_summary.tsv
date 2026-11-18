@@ -1,0 +1,17 @@
+test	method	n_query	coverage_pct	one_to_many_pct	n_with_truth	accuracy_pct	missed_pct
+A_uniprot_GO	legacy	19776	95.0	0.5	19623.0	95.43	4.36
+A_uniprot_GO	bridgedb	19776	94.21	1.28	19623.0	93.87	5.11
+A_uniprot_GO	ensembl	19776	94.77	1.44	19623.0	94.2	4.66
+A_uniprot_GO	gprofiler	19776	94.5	3.73	19623.0	91.79	4.82
+B_symbol_renamed	bridgedb	50				0.0	
+B_symbol_shared_alias	bridgedb	50				100.0	
+B_symbol_unambiguous	bridgedb	50				94.0	
+B_symbol_withdrawn	bridgedb	50				100.0	
+B_symbol_renamed	gprofiler	50				0.0	
+B_symbol_shared_alias	gprofiler	50				92.0	
+B_symbol_unambiguous	gprofiler	50				94.0	
+B_symbol_withdrawn	gprofiler	50				100.0	
+B_symbol_renamed	legacy	50				76.0	
+B_symbol_shared_alias	legacy	50				78.0	
+B_symbol_unambiguous	legacy	50				98.0	
+B_symbol_withdrawn	legacy	50				100.0	

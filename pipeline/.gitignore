@@ -1,0 +1,8 @@
+.venv/
+raw/
+build/
+.snakemake/
+logs_*.txt
+__pycache__/
+.pytest_cache/
+results/aim2/go_counts/

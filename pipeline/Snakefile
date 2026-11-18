@@ -1,0 +1,225 @@
+# Modular gene set build + Aim 2 analyses.
+#
+#   snakemake -c4 --keep-going                 # all Aim 2 analyses that can run any time of day
+#   snakemake -c4 --keep-going monthly_raw     # Aim 1.2: download every live source (one job each) + GO module
+#   snakemake -c4 go_funnel                    # Aim 2.2: GO attrition across archived GO releases
+#   snakemake -c4 mapping_benchmark            # Aim 2.1: identifier mapping benchmark
+#   snakemake -c4 orthology_benchmark          # Aim 2.1: HomoloGene vs Ensembl Compara
+#   snakemake -c4 source_status                # Aim 2.3: source classification + static-source decay
+#   snakemake -c1 release_history              # Aim 2.2: Bader Lab archive - ONLY 9 pm-8 am ET
+#
+# --keep-going: one failed source does not stop the others; a rerun only redoes what is missing.
+
+import datetime
+import yaml
+
+configfile: "config.yaml"
+
+SOURCES = yaml.safe_load(open(config.get("sources_file", "sources.yaml")))["sources"]
+PY = "python3 scripts/"
+TODAY = datetime.date.today().strftime("%Y-%m")
+GO_RELEASES = [str(r) for r in config["go_releases"]]
+ENS = config["ensembl_release"]
+
+LIVE_FILES = {
+    (s, k): url
+    for s, v in SOURCES.items()
+    if v["status"] == "active"
+    for k, url in v.get("files", {}).items()
+    if "{" not in url
+}
+SCRAPED = [s for s, v in SOURCES.items() if v["status"] == "active" and "scrape" in v]
+
+
+rule all:
+    input:
+        "results/aim2/go_funnel/go_genesets_over_time.png",
+        "results/aim2/mapping/mapping_summary.tsv",
+        "results/aim2/orthology/orthology_summary.tsv",
+        "results/aim2/status/decay.png",
+
+
+# ------------------------------------------------------------------ Aim 1.2: per-source modules
+
+rule download_file:
+    output:
+        "raw/{source}/" + TODAY + "/{key}.download",
+    params:
+        url=lambda w: LIVE_FILES[(w.source, w.key)],
+    retries: 2
+    shell:
+        PY + "fetch_url.py --url '{params.url}' --out {output}"
+
+
+rule download_scraped:
+    output:
+        "raw/{source}/" + TODAY + "/gmt.download",
+    params:
+        index=lambda w: SOURCES[w.source]["scrape"]["index"],
+        pattern=lambda w: SOURCES[w.source]["scrape"]["pattern"],
+    wildcard_constraints:
+        source="|".join(SCRAPED),
+    shell:
+        PY + "fetch_url.py --index '{params.index}' --pattern '{params.pattern}' --out {output}"
+
+
+ruleorder: download_scraped > download_file
+
+
+rule go_current:
+    input:
+        gaf="raw/GO_human/" + TODAY + "/gaf.download",
+        obo="raw/GO_human/" + TODAY + "/obo.download",
+    output:
+        "build/" + TODAY + "/GO_human/counts.tsv",
+    params:
+        outdir="build/" + TODAY + "/GO_human",
+        release=TODAY,
+    shell:
+        PY + "go_build.py --gaf {input.gaf} --obo {input.obo} --mode legacy --release {params.release} --outdir {params.outdir}"
+
+
+rule monthly_raw:
+    input:
+        [f"raw/{s}/{TODAY}/{k}.download" for (s, k) in LIVE_FILES],
+        [f"raw/{s}/{TODAY}/gmt.download" for s in SCRAPED],
+        "build/" + TODAY + "/GO_human/counts.tsv",
+
+
+# ------------------------------------------------------------------ Aim 2.2: GO attrition
+
+rule fetch_go_release:
+    output:
+        gaf="raw/go/{release}/goa_human.gaf.gz",
+        obo="raw/go/{release}/go.obo",
+    retries: 1
+    shell:
+        PY + "fetch_go_release.py --release {wildcards.release} --gaf {output.gaf} --obo {output.obo}"
+
+
+rule fetch_go_basic:
+    output:
+        "raw/go/{release}/go-basic.obo",
+    retries: 1
+    shell:
+        PY + "fetch_url.py --url https://release.geneontology.org/{wildcards.release}/ontology/go-basic.obo --out {output}"
+
+
+GO_FLAGS = {
+    "legacy": "--mode legacy",
+    "legacyGoBasic": "--mode legacy",
+    "legacyKeepNOT": "--mode legacy --keep-not",
+    "fixed": "--mode fixed",
+}
+
+
+rule go_rebuild:
+    input:
+        gaf="raw/go/{release}/goa_human.gaf.gz",
+        obo=lambda w: f"raw/go/{w.release}/go-basic.obo" if w.mode == "legacyGoBasic" else f"raw/go/{w.release}/go.obo",
+    output:
+        "results/aim2/go_counts/{release}_{mode}.tsv",
+    wildcard_constraints:
+        mode="legacy|legacyKeepNOT|legacyGoBasic|fixed",
+    params:
+        flags=lambda w: GO_FLAGS[w.mode],
+    shell:
+        """
+        tmp=$(mktemp -d)
+        python3 scripts/go_build.py --gaf {input.gaf} --obo {input.obo} {params.flags} \
+            --release {wildcards.release} --outdir $tmp --no-gmt
+        mv $tmp/counts.tsv {output}
+        rm -rf $tmp
+        """
+
+
+rule go_funnel:
+    input:
+        expand("results/aim2/go_counts/{release}_{mode}.tsv", release=GO_RELEASES, mode=list(GO_FLAGS)),
+    output:
+        "results/aim2/go_funnel/go_genesets_over_time.png",
+        "results/aim2/go_funnel/go_stage_change.tsv",
+    shell:
+        PY + "go_funnel_report.py {input} --outdir results/aim2/go_funnel"
+
+
+# ------------------------------------------------------------------ Aim 2.2: Bader Lab release history
+
+rule release_history:
+    output:
+        "results/aim2/release_history/release_history.tsv",
+    params:
+        archive=config["baderlab_archive"],
+    shell:
+        PY + "release_history.py --archive {params.archive} --cache raw/baderlab_archive --outdir results/aim2/release_history"
+
+
+# ------------------------------------------------------------------ Aim 2.1: mapping + orthology benchmark
+
+rule reference_files:
+    output:
+        hgnc="raw/reference/hgnc_complete_set.txt",
+        withdrawn="raw/reference/withdrawn.txt",
+        ens_entrez="raw/reference/ensembl_human_entrez.tsv.gz",
+        ens_uniprot="raw/reference/ensembl_human_uniprot.tsv.gz",
+    params:
+        hgnc="https://storage.googleapis.com/public-download-files/hgnc/tsv/tsv",
+        ens=f"https://ftp.ensembl.org/pub/release-{ENS}/tsv/homo_sapiens/Homo_sapiens.GRCh38.{ENS}",
+    shell:
+        """
+        python3 scripts/fetch_url.py --url {params.hgnc}/hgnc_complete_set.txt --out {output.hgnc}
+        python3 scripts/fetch_url.py --url {params.hgnc}/withdrawn.txt --out {output.withdrawn}
+        python3 scripts/fetch_url.py --url {params.ens}.entrez.tsv.gz --out {output.ens_entrez}
+        python3 scripts/fetch_url.py --url {params.ens}.uniprot.tsv.gz --out {output.ens_uniprot}
+        """
+
+
+rule mapping_benchmark:
+    input:
+        hgnc="raw/reference/hgnc_complete_set.txt",
+        withdrawn="raw/reference/withdrawn.txt",
+        ens_entrez="raw/reference/ensembl_human_entrez.tsv.gz",
+        ens_uniprot="raw/reference/ensembl_human_uniprot.tsv.gz",
+        gaf="raw/go/" + GO_RELEASES[-1] + "/goa_human.gaf.gz",
+    output:
+        "results/aim2/mapping/mapping_summary.tsv",
+    shell:
+        """
+        python3 scripts/mapping_benchmark.py --hgnc {input.hgnc} --withdrawn {input.withdrawn} \
+            --ens-entrez {input.ens_entrez} --ens-uniprot {input.ens_uniprot} --gaf {input.gaf} \
+            --outdir results/aim2/mapping --cache raw/mapping_cache
+        """
+
+
+rule orthology_benchmark:
+    input:
+        hgnc="raw/reference/hgnc_complete_set.txt",
+        ens_entrez="raw/reference/ensembl_human_entrez.tsv.gz",
+    output:
+        "results/aim2/orthology/orthology_summary.tsv",
+    params:
+        ens=ENS,
+    shell:
+        """
+        python3 scripts/orthology_benchmark.py --ensembl-release {params.ens} \
+            --homologene ../GeneSetTools/testFiles/homologene.data \
+            --woodchuck ../GeneSetTools/woodchuck_gmt_conversion/homologroupHumanWoodchuck_May29_2021_addedcol.tsv \
+            --hgnc {input.hgnc} --cache raw/reference --outdir results/aim2/orthology
+        """
+
+
+# ------------------------------------------------------------------ Aim 2.3: source life cycle + decay
+
+rule source_status:
+    input:
+        hgnc="raw/reference/hgnc_complete_set.txt",
+    output:
+        "results/aim2/status/decay.png",
+        "results/aim2/status/source_status.tsv",
+    params:
+        months=" ".join(str(m) for m in config["decay_months"]),
+    shell:
+        """
+        python3 scripts/source_status.py --sources sources.yaml --repo .. --months {params.months} \
+            --cache raw/hgnc_monthly --ledger results/aim2/status/ledger.tsv --outdir results/aim2/status
+        """

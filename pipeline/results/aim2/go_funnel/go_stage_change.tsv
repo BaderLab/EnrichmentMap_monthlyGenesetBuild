@@ -1,0 +1,21 @@
+iea	stage	first	last	pct_change
+no_GO_iea	GO terms in ontology (not obsolete)	44091	38092	-13.61
+no_GO_iea	Annotations in GAF	606839	910476	50.04
+no_GO_iea	…after removing NOT	605550	908979	50.11
+no_GO_iea	…after evidence filter (IEA/ND/RCA)	533344	711663	33.43
+no_GO_iea	Directly annotated terms	16049	16633	3.64
+no_GO_iea	Gene sets after propagation (own branch)	20383	20148	-1.15
+no_GO_iea	Gene sets written (incl. other-branch terms)	22116	21466	-2.94
+no_GO_iea	GOALL lines (what line counts see)	22116	21466	-2.94
+no_GO_iea	GOALL unique GO IDs	20428	20184	-1.19
+no_GO_iea	REFERENCE: GO itself (own-branch, non-obsolete)	20383	20148	-1.15
+with_GO_iea	GO terms in ontology (not obsolete)	44091	38092	-13.61
+with_GO_iea	Annotations in GAF	606839	910476	50.04
+with_GO_iea	…after removing NOT	605550	908979	50.11
+with_GO_iea	…after evidence filter (IEA/ND/RCA)	605550	908979	50.11
+with_GO_iea	Directly annotated terms	18298	17986	-1.71
+with_GO_iea	Gene sets after propagation (own branch)	22362	21102	-5.63
+with_GO_iea	Gene sets written (incl. other-branch terms)	24167	22433	-7.18
+with_GO_iea	GOALL lines (what line counts see)	24167	22433	-7.18
+with_GO_iea	GOALL unique GO IDs	22365	21103	-5.64
+with_GO_iea	REFERENCE: GO itself (own-branch, non-obsolete)	22362	21102	-5.63
