@@ -599,3 +599,203 @@ gprofiler	ANKRD33B-IT1	withdrawn	NONE		True
 gprofiler	FSHMD1A	withdrawn	NONE		True
 gprofiler	ALS7	withdrawn	NONE		True
 gprofiler	MRT19	withdrawn	NONE		True
+adopted	DRAXIN	unambiguous	374946	374946	True
+adopted	ZNF830	unambiguous	91603	91603	True
+adopted	CAPRIN2	unambiguous	65981	65981	True
+adopted	LCN2	unambiguous	3934	3934	True
+adopted	DBN1	unambiguous	1627	1627	True
+adopted	TIMM23	unambiguous	100287932	100287932	True
+adopted	SLC5A10	unambiguous	125206	125206	True
+adopted	STARD4	unambiguous	134429	134429	True
+adopted	PRKAG1	unambiguous	5571	5571	True
+adopted	HLA-DRA	unambiguous	3122	3122	True
+adopted	CLEC4G	unambiguous	339390	339390	True
+adopted	TCL1A	unambiguous	8115	8115	True
+adopted	ARHGAP26	unambiguous	23092	23092	True
+adopted	PTPRK	unambiguous	5796	5796	True
+adopted	SERTM2	unambiguous	401613	401613	True
+adopted	ABCG1	unambiguous	9619	9619	True
+adopted	SLC2A3	unambiguous	6515	6515	True
+adopted	LST1	unambiguous	7940	7940	True
+adopted	IPO5	unambiguous	3843	3843	True
+adopted	COX15	unambiguous	1355	1355	True
+adopted	NPIPB2	unambiguous	729978	729978	True
+adopted	ARL2	unambiguous	402	402	True
+adopted	ANKRD9	unambiguous	122416	122416	True
+adopted	APLP2	unambiguous	334	334	True
+adopted	WDR20	unambiguous	91833	91833	True
+adopted	ADCY4	unambiguous	196883	196883	True
+adopted	PROKR1	unambiguous	10887	10887	True
+adopted	HSPB3	unambiguous	8988	8988	True
+adopted	SACK1H	unambiguous	286077	286077	True
+adopted	ARHGEF1	unambiguous	9138	9138	True
+adopted	UBE2V2	unambiguous	7336	7336	True
+adopted	IGDCC3	unambiguous	9543	9543	True
+adopted	SIDT2	unambiguous	51092	51092	True
+adopted	TIMP4	unambiguous	7079	7079	True
+adopted	ZFP69B	unambiguous	65243	65243	True
+adopted	IZUMO2	unambiguous	126123	126123	True
+adopted	PAK6	unambiguous	56924	56924	True
+adopted	ISOC1	unambiguous	51015	51015	True
+adopted	ID1	unambiguous	3397	3397	True
+adopted	SORD	unambiguous	6652	6652	True
+adopted	MROH9	unambiguous	80133	80133	True
+adopted	ANKRD34C	unambiguous	390616	390616	True
+adopted	RPS23	unambiguous	6228	6228	True
+adopted	ZNF212	unambiguous	7988	7988	True
+adopted	COL5A3	unambiguous	50509	50509	True
+adopted	GLIS1	unambiguous	148979	148979	True
+adopted	MTURN	unambiguous	222166	222166	True
+adopted	DDX18	unambiguous	8886	8886	True
+adopted	OR2T29	unambiguous	343563	343563	True
+adopted	TMEM161A	unambiguous	54929	54929	True
+adopted	RBM32A	renamed	340529	340529	True
+adopted	WD	renamed	6521	6521	True
+adopted	DGAT2L3	renamed	158833	158833	True
+adopted	KIAA0759	renamed	23357	23357	True
+adopted	HSST	renamed	3340	3340	True
+adopted	UBXD1	renamed	80700	80700	True
+adopted	VPRBP	renamed	9730	9730	True
+adopted	PDNP3	renamed	5169	5169	True
+adopted	BMP8	renamed	656	656	True
+adopted	TMEM106A-AS1	renamed	100874261	100874261	True
+adopted	GCSL	renamed	1738	1738	True
+adopted	PPAP2B	renamed	8613	8613	True
+adopted	PTE1	renamed	10005	10005	True
+adopted	CXorf23	renamed	256643	256643	True
+adopted	NOP17	renamed	55011	55011	True
+adopted	OR1F10	renamed	4992	4992	True
+adopted	C20orf102	renamed	128434	128434	True
+adopted	SCYA20	renamed	6364	6364	True
+adopted	WDR40A	renamed	25853	25853	True
+adopted	C3orf83	renamed	100129480	100129480	True
+adopted	COCA1	renamed	4436	4436	True
+adopted	ZNF298	renamed	63977	63977	True
+adopted	PDNP2	renamed	5168	5168	True
+adopted	NUPL2	renamed	11097	11097	True
+adopted	TOC	renamed	79651	79651	True
+adopted	B3GALT7	renamed	374907	374907	True
+adopted	TADA2L	renamed	6871	6871	True
+adopted	C10orf96	renamed	374355	374355	True
+adopted	KIAA1467	renamed	57613	57613	True
+adopted	PDZD6	renamed	27152	27152	True
+adopted	CTAGE15P	renamed	441294	441294	True
+adopted	CSBP1	renamed	1432	1432	True
+adopted	USH2C	renamed	84059	84059	True
+adopted	FAM77D	renamed	286183		False
+adopted	AMAC1L2	renamed	83650	83650	True
+adopted	ECPN	renamed	23596	23596	True
+adopted	FDX1L	renamed	112812	112812	True
+adopted	PPAPDC1A	renamed	196051	196051	True
+adopted	YWHAD	renamed	7534	7534	True
+adopted	MJD	renamed	4287	4287	True
+adopted	MSS	renamed	64374	64374	True
+adopted	SPDYE13P	renamed	105180390	105180390	True
+adopted	HIST1H2AE	renamed	3012	3012	True
+adopted	ADMR	renamed	11318	11318	True
+adopted	OR5W2P	renamed	390148	390148	True
+adopted	XAGE2B	renamed	9502	9502	True
+adopted	C9orf105	renamed	401505	401505	True
+adopted	ZNF192	renamed	7745	7745	True
+adopted	ENO1L1	renamed	2023	2023	True
+adopted	RLTPR	renamed	146206	146206	True
+adopted	p38	shared_alias	AMBIGUOUS:10598|1432|7965		True
+adopted	ARP11	shared_alias	AMBIGUOUS:57180|653857		True
+adopted	MCAF	shared_alias	AMBIGUOUS:55729|6347		True
+adopted	U14	shared_alias	AMBIGUOUS:26822|85388		True
+adopted	HL-2	shared_alias	AMBIGUOUS:142683|1768		True
+adopted	OAT4	shared_alias	AMBIGUOUS:114571|55867		True
+adopted	NKIR	shared_alias	AMBIGUOUS:146722|6869		True
+adopted	DA2B	shared_alias	AMBIGUOUS:7136|7140		True
+adopted	p28	shared_alias	AMBIGUOUS:115482697|246778|5716		True
+adopted	ML-1	shared_alias	AMBIGUOUS:112744|51761		True
+adopted	KAP	shared_alias	AMBIGUOUS:1033|9476		True
+adopted	MCT1	shared_alias	AMBIGUOUS:27349|6566		True
+adopted	TCRAV19S1	shared_alias	AMBIGUOUS:28640|28664		True
+adopted	HGPS	shared_alias	AMBIGUOUS:10269|4000|64221		True
+adopted	KAP-1	shared_alias	AMBIGUOUS:10155|22920		True
+adopted	HCCR-2	shared_alias	AMBIGUOUS:140707|25875		True
+adopted	60B8AG	shared_alias	AMBIGUOUS:6279|6280		True
+adopted	NAP2	shared_alias	AMBIGUOUS:256236|4676		True
+adopted	NAT3	shared_alias	AMBIGUOUS:51126|55089		True
+adopted	PAR2	shared_alias	AMBIGUOUS:2150|55065|8856		True
+adopted	SPC1	shared_alias	AMBIGUOUS:28972|5045		True
+adopted	PAD	shared_alias	AMBIGUOUS:23569|79665		True
+adopted	HARP	shared_alias	AMBIGUOUS:23452|257629|50485|80025		True
+adopted	LIP2	shared_alias	AMBIGUOUS:302|305		True
+adopted	P54	shared_alias	AMBIGUOUS:2289|4841		True
+adopted	AIM-1	shared_alias	AMBIGUOUS:51151|9212		True
+adopted	Stv1	shared_alias	AMBIGUOUS:23545|50617|535		True
+adopted	E2	shared_alias	AMBIGUOUS:106478911|1737|6044		True
+adopted	PCD	shared_alias	AMBIGUOUS:1767|27019|352909|5092		True
+adopted	CRABP-I	shared_alias	AMBIGUOUS:1381|5947		True
+adopted	NIP	shared_alias	AMBIGUOUS:10755|90527		True
+adopted	OR19-18	shared_alias	AMBIGUOUS:26658|390894		True
+adopted	CRN	shared_alias	AMBIGUOUS:10699|51340		True
+adopted	TRY3	shared_alias	AMBIGUOUS:136540|5646		True
+adopted	BDP	shared_alias	AMBIGUOUS:10620|152926		True
+adopted	SUH	shared_alias	AMBIGUOUS:11317|3516		True
+adopted	NIP1	shared_alias	AMBIGUOUS:22916|63941		True
+adopted	STK7	shared_alias	AMBIGUOUS:5586|6790		True
+adopted	TRAMP	shared_alias	AMBIGUOUS:23471|8718|9189		True
+adopted	TCRBV12S2	shared_alias	AMBIGUOUS:28578|28585		True
+adopted	p19	shared_alias	AMBIGUOUS:1029|1032|115482685		True
+adopted	FAST	shared_alias	AMBIGUOUS:100996301|10922		True
+adopted	ALP	shared_alias	AMBIGUOUS:10850|26033|27295|6590|80150		True
+adopted	TN	shared_alias	AMBIGUOUS:3371|7123		True
+adopted	p32	shared_alias	AMBIGUOUS:708|925		True
+adopted	PP17	shared_alias	AMBIGUOUS:10226|3925		True
+adopted	AT2	shared_alias	AMBIGUOUS:101054525|186		True
+adopted	BAF190	shared_alias	AMBIGUOUS:6595|6597		True
+adopted	TTY11	shared_alias	AMBIGUOUS:83866|83867		True
+adopted	ACCA	shared_alias	AMBIGUOUS:2827|31		True
+adopted	NCRNA00055	withdrawn	NONE		True
+adopted	AKAP11-IT1	withdrawn	NONE		True
+adopted	SPG32	withdrawn	NONE		True
+adopted	SPG37	withdrawn	NONE		True
+adopted	HVBS1	withdrawn	NONE		True
+adopted	GSK2	withdrawn	NONE		True
+adopted	HMAB	withdrawn	NONE		True
+adopted	COLOT1	withdrawn	NONE		True
+adopted	UBTFL4	withdrawn	NONE		True
+adopted	RN7SL626P	withdrawn	NONE		True
+adopted	EJM2	withdrawn	NONE		True
+adopted	M195	withdrawn	NONE		True
+adopted	IDDM13	withdrawn	NONE		True
+adopted	C21orf118	withdrawn	NONE		True
+adopted	DNM1DN22	withdrawn	NONE		True
+adopted	DFNX3	withdrawn	NONE		True
+adopted	HAOL	withdrawn	NONE		True
+adopted	PNY1	withdrawn	NONE		True
+adopted	DNM1DN2@	withdrawn	NONE		True
+adopted	RNA5SP398	withdrawn	NONE		True
+adopted	HPCX	withdrawn	NONE		True
+adopted	RN7SL855P	withdrawn	NONE		True
+adopted	RPLP1L3	withdrawn	NONE		True
+adopted	IDDM7	withdrawn	NONE		True
+adopted	NCRNA00098	withdrawn	NONE		True
+adopted	RNY4P35	withdrawn	NONE		True
+adopted	KWE	withdrawn	NONE		True
+adopted	OR7E135P	withdrawn	NONE		True
+adopted	OCA5	withdrawn	NONE		True
+adopted	CRYAA2	withdrawn	NONE		True
+adopted	ARCN2	withdrawn	NONE		True
+adopted	INSSA2	withdrawn	NONE		True
+adopted	MIRN560	withdrawn	NONE		True
+adopted	LYST-AS1	withdrawn	NONE		True
+adopted	MRXS11	withdrawn	NONE		True
+adopted	U2AF1L5	withdrawn	NONE		True
+adopted	ERCC6-PGBD3	withdrawn	NONE		True
+adopted	HCG2P8	withdrawn	NONE		True
+adopted	CNC2	withdrawn	NONE		True
+adopted	GVQW1	withdrawn	NONE		True
+adopted	SDU	withdrawn	NONE		True
+adopted	P2RY10P1	withdrawn	NONE		True
+adopted	FAM93A	withdrawn	NONE		True
+adopted	RN7SL463P	withdrawn	NONE		True
+adopted	MSK31	withdrawn	NONE		True
+adopted	ZNF111	withdrawn	NONE		True
+adopted	ANKRD33B-IT1	withdrawn	NONE		True
+adopted	FSHMD1A	withdrawn	NONE		True
+adopted	ALS7	withdrawn	NONE		True
+adopted	MRT19	withdrawn	NONE		True

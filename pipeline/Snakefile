@@ -79,6 +79,51 @@ rule go_current:
         PY + "go_build.py --gaf {input.gaf} --obo {input.obo} --mode legacy --release {params.release} --outdir {params.outdir}"
 
 
+# Aim 2.1 adopted mapping: UniProt (release recorded in the manifest) + HGNC clean-up, no silent guesses
+rule translate_go:
+    input:
+        counts="build/" + TODAY + "/GO_human/counts.tsv",
+        hgnc="raw/reference/hgnc_complete_set.txt",
+    output:
+        "build/" + TODAY + "/GO_human/translated/Human_GO_{branch}_{iea}.manifest.json",
+    params:
+        gmt="build/" + TODAY + "/GO_human/Human_GO_{branch}_{iea}_UniProt.gmt",
+        out="build/" + TODAY + "/GO_human/translated/Human_GO_{branch}_{iea}",
+    wildcard_constraints:
+        branch="bp|mf|cc",
+        iea="no_GO_iea|with_GO_iea",
+    retries: 2
+    shell:
+        PY + "translate.py --gmt {params.gmt} --from uniprot --to entrezgene symbol ensembl --taxid 9606 "
+        "--hgnc {input.hgnc} --out {params.out}"
+
+
+# mouse / rat gene sets from the human Entrez sets with Ensembl Compara (replaces frozen HomoloGene)
+rule orthologs_go:
+    input:
+        "build/" + TODAY + "/GO_human/translated/Human_GO_{branch}_{iea}.manifest.json",
+    output:
+        "build/" + TODAY + "/GO_{species}/Ortholog_GO_{branch}_{iea}.manifest.json",
+    params:
+        gmt="build/" + TODAY + "/GO_human/translated/Human_GO_{branch}_{iea}_entrezgene.gmt",
+        out="build/" + TODAY + "/GO_{species}/Ortholog_GO_{branch}_{iea}",
+    wildcard_constraints:
+        species="mouse|rat",
+        branch="bp|mf|cc",
+        iea="no_GO_iea|with_GO_iea",
+    shell:
+        PY + "orthologs.py --gmt {params.gmt} --species {wildcards.species} --method compara "
+        f"--ensembl-release {ENS} --cache raw/reference --out {{params.out}}"
+
+
+rule translated_go:
+    input:
+        expand("build/" + TODAY + "/GO_human/translated/Human_GO_{branch}_{iea}.manifest.json",
+               branch=["bp", "mf", "cc"], iea=["no_GO_iea", "with_GO_iea"]),
+        expand("build/" + TODAY + "/GO_{species}/Ortholog_GO_{branch}_{iea}.manifest.json",
+               species=["mouse", "rat"], branch=["bp", "mf", "cc"], iea=["no_GO_iea", "with_GO_iea"]),
+
+
 rule monthly_raw:
     input:
         [f"raw/{s}/{TODAY}/{k}.download" for (s, k) in LIVE_FILES],

@@ -31,6 +31,7 @@ from pathlib import Path
 import pandas as pd
 import requests
 
+import translate
 from common import USER_AGENT
 from plotstyle import SERIES, TEXT2, plt
 
@@ -251,6 +252,9 @@ def main():
         "legacy": cached(a.cache, "symbol_legacy", lambda: legacy_symbol(q)),
         "bridgedb": cached(a.cache, "symbol_bridgedb", lambda: bridgedb(q, "H")),
         "gprofiler": cached(a.cache, "symbol_gprofiler", lambda: gprofiler(q)),
+        # the adopted method (scripts/translate.py): UniProt + HGNC previous-symbol rescue + no silent guesses
+        "adopted": cached(a.cache, "symbol_adopted",
+                          lambda: translate.map_ids(q, "symbol", ["entrezgene"], "9606", h)[0]["entrezgene"]),
     }
     detail = []
     for m, c in scalls.items():
@@ -287,12 +291,12 @@ def main():
     B = summ[summ["test"].str.startswith("B_")].copy()
     B["category"] = B["test"].str.replace("B_symbol_", "")
     cats = ["unambiguous", "renamed", "shared_alias", "withdrawn"]
-    meths = ["legacy", "bridgedb", "gprofiler"]
+    meths = ["legacy", "bridgedb", "gprofiler", "adopted"]
     fig, ax = plt.subplots(figsize=(8, 3.6))
-    w = 0.26
+    w = 0.2
     for i, m in enumerate(meths):
         vals = [B[(B["method"] == m) & (B["category"] == c)]["accuracy_pct"].squeeze() for c in cats]
-        xs = [k + (i - 1) * w for k in range(len(cats))]
+        xs = [k + (i - 1.5) * w for k in range(len(cats))]
         ax.bar(xs, vals, width=w - 0.03, color=SERIES[i], label=m)
         for x, v in zip(xs, vals):
             ax.annotate(f"{v:.0f}", (x, v), xytext=(0, 2), textcoords="offset points", ha="center",
@@ -302,7 +306,7 @@ def main():
     ax.set_ylabel("% correct")
     ax.set_ylim(0, 110)
     ax.set_title("Symbol → Entrez on the labelled test set (50 per category)")
-    ax.legend(ncol=3, fontsize=8, loc="upper center", bbox_to_anchor=(0.5, -0.22))
+    ax.legend(ncol=4, fontsize=8, loc="upper center", bbox_to_anchor=(0.5, -0.22))
     ax.grid(axis="x", visible=False)
     fig.savefig(out / "mapping_symbol_testset.png")
     plt.close(fig)

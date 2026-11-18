@@ -20,6 +20,7 @@ python -m pytest tests          # GO module tests (toy ontology reproducing issu
 | `snakemake -c4 --keep-going monthly_raw` | Aim 1.2: downloads every live source in `sources.yaml` (one job per file, retries, SHA-256 + provenance JSON) and builds GO with the Python GO module | any time |
 | `snakemake -c4 go_funnel` | Aim 2.2: rebuilds GO from 17 archived GO releases (2021–2026) and counts gene sets after every step | any time |
 | `snakemake -c4 mapping_benchmark` | Aim 2.1: legacy UniProt vs BridgeDb vs Ensembl vs g:Profiler, plus a labelled 200-symbol test set | any time |
+| `snakemake -c2 translated_go` | Aim 2.1 adopted method: translates this month's GO gene sets to Entrez/symbol/Ensembl (`scripts/translate.py`) and converts them to mouse and rat with Ensembl Compara (`scripts/orthologs.py`). Each output has a `.manifest.json` (UniProt or Ensembl release, counts, checksums) and a `.mapping.tsv` (every ID and what it became) | monthly, after `monthly_raw` |
 | `snakemake -c1 orthology_benchmark` | Aim 2.1: HomoloGene (legacy) vs Ensembl Compara for mouse/rat, plus woodchuck table coverage | any time |
 | `snakemake -c1 source_status` | Aim 2.3: classifies every source (active/static/unavailable) and plots identifier decay of static sources | monthly, after `monthly_raw` |
 | `snakemake -c1 release_history` | Aim 2.2: summarises every published Bader Lab release | **only 9 pm–8 am ET** (the server's rule). It refuses to start outside that window, stops when the window closes, and resumes the next night. |
@@ -53,6 +54,18 @@ accurate (95.4% agree with HGNC, 0.5% one-to-many). Ensembl 94.2%, BridgeDb 93.9
 On symbols, only the legacy route resolves renamed genes (76%). BridgeDb and g:Profiler resolve 0% of
 previous symbols. But the legacy route silently picks one gene for 22% of shared aliases.
 
+**Adopted method (2.1).** `translate.py` keeps UniProt (the most accurate) and fixes what the benchmark
+found. It records the UniProt release (2026_04 on 18 Nov 2026) and the full ID table with every build. It
+rescues renamed genes through HGNC previous symbols, refuses to guess shared aliases, and keeps both genes when
+one protein comes from duplicated genes (e.g. DEFB4A/DEFB4B) instead of one at random. On the 200-symbol test
+set it scores 100% unambiguous, 98% renamed, 100% shared alias, 100% withdrawn (legacy: 98 / 76 / 78 / 100).
+It also re-asks UniProt for IDs missing from a "finished" job: on 18 Nov 2026 UniProt twice returned a job
+with ~1,600 of ~2,600 symbols missing (all mapped fine on the second ask). Without the re-ask, Human GO BP
+with-IEA symbol coverage was 90.65% instead of 99.83%. The legacy Java code has no such check.
+`orthologs.py` uses Ensembl Compara 116 (one-to-one, plus high-confidence one-to-many). On this month's GO BP
+no-IEA sets it maps 90.2% of genes to mouse and 86.2% to rat, vs 88.8% and 81.7% with HomoloGene, and keeps
+35 more mouse and 141 more rat gene sets.
+
 **Orthology (2.1).** HomoloGene (legacy, frozen since 2014) finds a mouse ortholog for 85.6% of human
 protein-coding genes and a rat ortholog for 78.4%. Ensembl Compara 116 finds 90.8% and 88.5%. Where both map
 a gene they agree on the ortholog 98.7% / 97.3% of the time. 1.9% of HomoloGene's rat IDs are retired at NCBI.
@@ -67,7 +80,7 @@ finished. Rerunning after the fix ran only the Panther job.
 
 - BioPAX (Reactome, Panther, PathBank, HumanCyc, NCI, NetPath, IOB), HPO and DrugBank are still parsed by the
   legacy Java/Perl tools. `sources.yaml` marks them `*_legacy`.
-- Translation of the GO module's UniProt output to Entrez/symbol/Ensembl, and mouse/rat/woodchuck conversion.
+- Woodchuck conversion (uses the lab's own table, not Compara), and translation of non-GO sources in the new pipeline.
 - Provenance manifests (Aim 1.3). The `.download.json` files already hold the URL, time, `Last-Modified` and SHA-256.
 - `release_history` hasn't run yet because of the download window.
 - Note: Ensembl 116 keeps human-rat pairs only in the human Compara dump and human-mouse pairs only in the
