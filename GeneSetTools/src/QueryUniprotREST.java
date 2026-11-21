@@ -24,15 +24,30 @@ import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+import java.time.Duration;
 
 public class QueryUniprotREST
 {
-  private static final String UNIPROT_SERVER = "https://rest.uniprot.org/idmapping";
+  //the server can be overridden (-Duniprot.server=...) so the code can be tested against a fake server
+  private static final String UNIPROT_SERVER = System.getProperty("uniprot.server", "https://rest.uniprot.org/idmapping");
   private static final Logger LOG = Logger.getAnonymousLogger();
+
+  //how many times to check a job's status, and how long to wait between checks, before giving up on it
+  //how many ids to send to uniprot in each job
+  static final int BATCH_SIZE = 1000;
+
+  static final int MAX_STATUS_CHECKS = Integer.getInteger("uniprot.status.max.checks", 100);
+  static final long STATUS_WAIT_MS = Long.getLong("uniprot.status.wait.ms", 5 * 1000L);
+
+  //without timeouts a dropped connection can hang the build forever
+  static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(30);
+  static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(Long.getLong("uniprot.request.timeout.seconds", 5 * 60L));
 
   private static final HttpClient httpClient = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_1_1)
-            //.connectTimeout(Duration.ofSeconds(10))
+            .connectTimeout(CONNECT_TIMEOUT)
             .build();
 
   private String oldID_index;
@@ -94,6 +109,7 @@ public class QueryUniprotREST
 			while(more_results){
 				HttpRequest results_request = HttpRequest.newBuilder()
                 		.GET()
+                		.timeout(REQUEST_TIMEOUT)
                 		.uri(URI.create(Uniprot_Results_URI.toString()))
                 		.setHeader("User-Agent", "Java 11 HttpClient Bot") // add request header
 				.build();
@@ -164,7 +180,8 @@ public class QueryUniprotREST
         			}
 			}//while more results
 		}else{
-			System.out.println("Unable to get Finished status from job:" + j);
+			//a missing job means missing translations - fail instead of returning partial results
+			throw new Exception("Unable to get Finished status from uniprot job:" + j);
 		}
 	}//job id for loop
   	return convertedIds;
@@ -173,43 +190,34 @@ public class QueryUniprotREST
   public String[] submitJob() throws IOException, InterruptedException, Exception{
 
 	if(!this.newID_index.contains("UniProtKB") && !this.oldID_index.contains("UniProtKB")){
-		System.out.println("You need one identifier to be uniprot accesions orelse web service wont' work");
-		return null; 
+		throw new IllegalArgumentException("You need one identifier to be uniprot accesions orelse web service wont' work");
 	}
 	
-	//how many jobs is it going to be divided into
-	
-	String[] jobIds = new String[((int)Math.ceil(ids.size()/1000)+1)];
-	int i = 0;
-
-	//Uniprot server will max out but can't find max query.  - batch by 10,000s
+	//Uniprot server will max out but can't find max query.  - batch by 1000s
 	//convert Hashset into an array
 	String[] ids_batch = new String[ids.size()];
 	ids.toArray(ids_batch);
 	System.out.println("converting " + ids_batch.length + " ids in total");
-	int start = 0;
-	int end = 1000;
-	if(ids_batch.length < 1000)
-		end = ids_batch.length;
-	while(start<ids_batch.length){
 
-		String[] current_ids = Arrays.copyOfRange(ids_batch,start,end);
+	//one job per batch
+	List<String[]> batches = splitIntoBatches(ids_batch, BATCH_SIZE);
+	String[] jobIds = new String[batches.size()];
+	int i = 0;
+
+	for(String[] current_ids : batches){
 		//System.out.println("Converting:" + String.join(" ", current_ids));
-		//update numbers for next round
-		start = end + 1;
-		end = end + 1000;
-		if(end > ids_batch.length)
-			end = ids_batch.length -1;
-		else
-			end = end;
 
 		// form parameters
         	Map<Object, Object> data = new HashMap<>();
 		data.put("from",this.oldID_index);
 		data.put("to",this.newID_index);
-/*		if(oldID_index.equalsIgnoreCase("Gene_Name") || oldID_index.equalsIgnoreCase("GeneID"))
+		//restrict gene symbol and entrez gene lookups to this species. Without taxId
+		// uniprot maps a symbol in every species (e.g. TP53 -> TP53 in dozens of
+		// organisms) and, as of Nov 2026, returns jobStatus ERROR for any Gene_Name
+		// -> UniProtKB job. UniProt ids are already species specific.
+		if(usesTaxIdFilter(this.oldID_index))
 			data.put("taxId",Integer.toString(this.organism));
-*/		data.put("ids",String.join(",",current_ids));
+		data.put("ids",String.join(",",current_ids));
 		
 		//System.out.println(String.join(",",current_ids));	
 
@@ -218,6 +226,7 @@ public class QueryUniprotREST
 		
 		HttpRequest request = HttpRequest.newBuilder()
                 .POST(ofFormData(data))
+                .timeout(REQUEST_TIMEOUT)
                 .uri(URI.create(Uniprot_Run_URI.toString()))
                 .setHeader("User-Agent", "Java 11 HttpClient Bot") // add request header
 		.header("Content-Type", "application/x-www-form-urlencoded")
@@ -245,6 +254,8 @@ public class QueryUniprotREST
 		// getting firstName and lastName
         	String jobid = (String) jo.get("jobId");
         	System.out.println(jobid);
+		if(jobid == null)
+			throw new Exception("Uniprot did not return a job id (HTTP status " + response.statusCode() + "): " + response.body());
 		
 		jobIds[i] = jobid;
 		i++;
@@ -252,6 +263,33 @@ public class QueryUniprotREST
 	}
 	//System.out.println("the array of jobids" + Arrays.toString(jobIds));
 	return jobIds;
+}
+
+/*
+ * Whether uniprot lookups from this (uniprot id mapping) id type should be
+ * restricted to one species with taxId.
+ */
+static boolean usesTaxIdFilter(String fromIdType){
+	return "Gene_Name".equalsIgnoreCase(fromIdType) || "GeneID".equalsIgnoreCase(fromIdType);
+}
+
+/*
+ * Split ids into consecutive batches of at most batchSize ids.  Every id is in
+ * exactly one batch, in the original order.
+ *
+ * (The old loop did start = end + 1 with copyOfRange's exclusive end, which
+ * skipped one id per batch, set the last end to length - 1, which dropped the
+ * last id, and sized the job array so that some list sizes queried job "null".)
+ */
+static List<String[]> splitIntoBatches(String[] ids, int batchSize){
+	if(batchSize < 1)
+		throw new IllegalArgumentException("batchSize must be at least 1");
+	List<String[]> batches = new ArrayList<String[]>();
+	for(int start = 0; start < ids.length; start += batchSize){
+		int end = Math.min(start + batchSize, ids.length);
+		batches.add(Arrays.copyOfRange(ids, start, end));
+	}
+	return batches;
 }
 
 public static HttpRequest.BodyPublisher ofFormData(Map<Object, Object> data) {
@@ -268,44 +306,70 @@ public static HttpRequest.BodyPublisher ofFormData(Map<Object, Object> data) {
     }
 
 
-public boolean check_job_status(String jobId) throws IOException, InterruptedException, Exception{
+/*
+ * Fetches the status of a UniProt id mapping job.  Separated out so the polling
+ * logic can be tested without a network connection.
+ */
+interface JobStatusFetcher {
+	JSONObject fetch(String jobId) throws Exception;
+}
 
-	int attempt = 0;
+public boolean check_job_status(String jobId) throws IOException, InterruptedException, Exception{
+	return waitForJob(jobId, this::fetchJobStatus, MAX_STATUS_CHECKS, STATUS_WAIT_MS);
+}
+
+private JSONObject fetchJobStatus(String jobId) throws Exception {
 	StringBuilder Uniprot_Results_URI = new StringBuilder(UNIPROT_SERVER + "/status/" + jobId );
-	while(true){	
-		HttpRequest status_request = HttpRequest.newBuilder()
+	HttpRequest status_request = HttpRequest.newBuilder()
         	.GET()
+        	.timeout(REQUEST_TIMEOUT)
         	.uri(URI.create(Uniprot_Results_URI.toString()))
         	.setHeader("User-Agent", "Java 11 HttpClient Bot") // add request heade
 		.build();
 
-        	HttpResponse<String> results_response = httpClient.send(status_request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> results_response = httpClient.send(status_request, HttpResponse.BodyHandlers.ofString());
 
-        	//System.out.println(results_response.body());
+        //System.out.println(results_response.body());
 
-        	Object obj = new JSONParser().parse(results_response.body());
-          
-        	// typecasting obj to JSONObject
-        	JSONObject jo = (JSONObject) obj;	
-		//System.out.println(jo.toString());
+        // typecasting obj to JSONObject
+        return (JSONObject) new JSONParser().parse(results_response.body());
+}
+
+/*
+ * Check a job's status until it is FINISHED (returns true), reports an ERROR
+ * (returns false) or has been checked maxChecks times without finishing
+ * (returns false).  Every check that isn't finished or an error counts towards
+ * maxChecks - not just RUNNING - so an unexpected status can't loop forever.
+ *
+ * (This used to do "attempt = attempt++", which never changes attempt, so the
+ * 100 check limit never triggered and a stuck job was checked forever.)
+ */
+static boolean waitForJob(String jobId, JobStatusFetcher fetcher, int maxChecks, long waitMs) throws Exception{
+
+	int attempt = 0;
+	while(attempt < maxChecks){
+		JSONObject jo = fetcher.fetch(jobId);
+		attempt++;
 
 		// getting status
-        	String status = (String) jo.get("jobStatus");
+        	String status = (jo == null) ? null : (String) jo.get("jobStatus");
 
-		if(attempt > 100){
-			System.out.println("Queried job:" + jobId + "more than 100 times and it is still not complete");
-			return false;
-		}else if(status.equalsIgnoreCase("RUNNING")){
-			attempt = attempt++;
-      			Thread.sleep(5 * 1000);
-		}else if(status.equalsIgnoreCase("ERROR")){
+		if(status == null && jo != null && (jo.containsKey("results") || jo.containsKey("failedIds"))){
+			//when a job is finished uniprot can return the results directly instead of a status
+			return true;
+		}else if("FINISHED".equalsIgnoreCase(status)){
+			return true;
+		}else if("ERROR".equalsIgnoreCase(status)){
 			System.out.println("Returned errors -" + jo.get("errors"));
-		       return false;	
-		}else if(status.equalsIgnoreCase("FINISHED")){
-			return true; 
+		       return false;
 		}
+
+		//NEW, RUNNING or anything unexpected - wait and check again
+		if(attempt < maxChecks)
+      			Thread.sleep(waitMs);
 	}
-	//return false;
+	System.out.println("Queried job:" + jobId + " " + maxChecks + " times and it is still not complete");
+	return false;
 }
 
   public HashMap<String, Set<String>> runQuery(String tool)

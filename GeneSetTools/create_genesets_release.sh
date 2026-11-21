@@ -1,5 +1,19 @@
 #!/bin/bash
 
+#download a file and report an error if it fails.
+#  -S shows errors even though -s is on, -f fails on HTTP errors (instead of saving
+#  the server's error page as if it were the data file) and -L follows redirects.
+# argument 1 - url
+# argument 2 - file to save it to
+# argument 3 - name of the source (used in the error message)
+function download_file {
+	if ! curl -sSfL "$1" -o "$2" ; then
+		echo "ERROR: $3 download failed ($1)"
+		rm -f "$2"
+		return 1
+	fi
+}
+
 
 function get_pc_version {
 	    # pathway commons uses a release date instead of a version
@@ -9,28 +23,28 @@ function get_pc_version {
 
 function download_pc_data {
 	    echo "[Downloading current Pathway Commons data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Pathway Commons data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current Pathway Commons data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	    URL="http://www.pathwaycommons.org/pc-snapshot/current-release/gsea/by_source/"
-	    curl ${URL}/nci-nature-entrez-gene-id.gmt.zip -o ${PATHWAYCOMMONS}/nci-nature-entrez-gene-id.gmt.zip -s
+	    download_file ${URL}/nci-nature-entrez-gene-id.gmt.zip ${PATHWAYCOMMONS}/nci-nature-entrez-gene-id.gmt.zip "Pathway Commons"
 	    get_pc_version
 }
 
 function download_panther_data {
 	    echo "[Downloading current Panther Pathway data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Panther Pathway data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current Panther Pathway data"'"}' `cat ${TOOLDIR}/slack_webhook`
             # temporarily  change this to get the 3.5 release as the latest release is broken.  Change back once we hear back from  them.
 	    #URL="ftp://ftp.pantherdb.org/pathway/current_release/"
 	    #URL="ftp://ftp.pantherdb.org//pathway/3.5/"
 	    URL="https://data.pantherdb.org/ftp/pathway/current_release/"
-	    curl  ${URL}/BioPAX.tar.gz -o ${PANTHER}/BioPAX.tar.gz -s 
+	    download_file ${URL}/BioPAX.tar.gz ${PANTHER}/BioPAX.tar.gz "Panther"
 	    get_webfile_version ${URL}/BioPAX.tar.gz "Panther"
 }
 
 function download_pathbank_data {
 	    echo "[Downloading current Path Bank data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current PathBank data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current PathBank data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	    URL="https://pathbank.org/downloads"
-	    curl ${URL}/pathbank_primary_biopax.zip -o ${PATHBANK}/pathbank_primary_biopax.zip -s
+	    download_file ${URL}/pathbank_primary_biopax.zip ${PATHBANK}/pathbank_primary_biopax.zip "PathBank"
 	    #get_pc_version
 }
 
@@ -48,7 +62,7 @@ function get_webfile_version {
 #download NCI from PID
 function download_nci_data {
 	echo "[Downloading current NCI data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current NCI data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current NCI data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	URL="ftp://ftp1.nci.nih.gov/pub/PID/BioPAX_Level_3/NCI-Nature_Curated.bp3.owl.gz"
 	wget ${URL}
 	#curl ${URL} -o ${NCI}/NCI-Nature_Curated.bp3.owl.gz -s  -w "NCI : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
@@ -60,29 +74,50 @@ function download_nci_data {
 function download_netpath_data {
 	echo "[Downloading current NetPath data]"
 
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current NetPath data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current NetPath data"'"}' `cat ${TOOLDIR}/slack_webhook`
 
 	URL="http://www.netpath.org/data/biopax/"
 	for Num in {1..25}; do
 		get_webfile_version ${URL}/NetPath_${Num}.owl "NetPath"
-		curl ${URL}/NetPath_${Num}.owl -o ${NETPATH}/NetPath_${Num}.owl -s  
+		download_file ${URL}/NetPath_${Num}.owl ${NETPATH}/NetPath_${Num}.owl "NetPath"
 	done
 }
 
 function download_reactome_data {
 	echo "[Downloading current Reactome data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Reactome data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current Reactome data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	
 	#LATEST=$(curl -s https://download.reactome.org/ | grep -oE '[0-9]+/' | tr -d '/' | sort -n | tail -1)
-	LATEST=$(curl -s https://reactome.org/ContentService/data/database/version)
+	LATEST=$(curl -sSf https://reactome.org/ContentService/data/database/version)
+	if [ -z "$LATEST" ]; then
+		echo "ERROR: could not get the current Reactome version - Reactome not downloaded"
+		return 1
+	fi
 	URL="https://download.reactome.org"
-	curl ${URL}/${LATEST}/biopax.zip -o ${REACTOME}/biopax.zip -L --fail -w "%{http_code}" 
+	download_file ${URL}/${LATEST}/biopax.zip ${REACTOME}/biopax.zip "Reactome"
 	get_webfile_version ${URL}/${LATEST}/biopax.zip "Reactome"
+}
+
+#WikiPathways and PFOCR file names are scraped from their download page, which
+# already broke once (Nov 2024). Stop if the page didn't give exactly one name.
+# argument 1 - the file name(s) found
+# argument 2 - source name (for the error message)
+# argument 3 - species
+function check_scraped_filename {
+	if [ -z "$1" ]; then
+		echo "ERROR: could not find a $2 file for $3 on the download page - $2 not downloaded"
+		return 1
+	fi
+	if [ `echo "$1" | wc -l` -gt 1 ]; then
+		echo "ERROR: found more than one $2 file for $3 on the download page ($(echo $1)) - $2 not downloaded"
+		return 1
+	fi
+	return 0
 }
 
 function download_wikipathways_data {
 	echo "[Downloading current WikiPathways data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current WikiPathways data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current WikiPathways data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	#updated Nov. 2023 - checked with Wikipathways to find out if this is the url going forward - https://github.com/wikipathways/wikipathways-help/discussions/79
 	URL="https://data.wikipathways.org/current/gmt/"
 	#FILE=`echo "cat //html/body/div/table/tbody/tr/td/a" |  xmllint --html --shell ${URL} | grep -o -E ">(.*$1.gmt)<" | sed -E 's/(<|>)//g'`
@@ -92,14 +127,17 @@ function download_wikipathways_data {
 	
 	#not elegant but the only way to pull out the file name is pull out the name between '> and < tokens.  Might brake in the future. (xmllint does not work with https 
 	FILE=`curl -s ${URL} |  grep -o -E ">(.*$1.gmt)<" | grep -o -P "(?<=\">).*(?=<)"`
-	curl ${URL}/${FILE} -o ${WIKIPATHWAYS}/WikiPathways_${1}_entrezgene.gmt -s -L 
+	if ! check_scraped_filename "$FILE" "WikiPathways" "$1" ; then
+		return 1
+	fi
+	download_file ${URL}/${FILE} ${WIKIPATHWAYS}/WikiPathways_${1}_entrezgene.gmt "WikiPathways"
 	get_webfile_version ${URL}/${FILE} "WikiPathways"
 }
 
 
 function download_pfocr_data {
 	echo "[Downloading current Pathways Figures DB data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Pathways figures DB data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current Pathways figures DB data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	
 	URL="https://data.wikipathways.org/pfocr/current/"
 	#FILE=`echo "cat //html/body/div/table/tbody/tr/td/a" |  xmllint --html --shell ${URL} | grep -o -E ">(.*$1.gmt)<" | sed -E 's/(<|>)//g'`
@@ -107,8 +145,18 @@ function download_pfocr_data {
 	#not elegant but the only way to pull out the file name is pull out the name between '> and < tokens.  Might brake in the future. (xmllint does not work with https 
 	#FILE=`curl -s ${URL} |  grep -o -E ">(.*$1.gmt)<" | grep -o -P "(?<=\">).*(?=<)"`
 	#Nov. 4, 2024 - PFOCR added an additional file to their ftp site which broke the above messing regex.  Now there are two human files and one just contains chemical
-	FILE=`curl -s "https://data.wikipathways.org/pfocr/current/" |  grep -o -E ">(.*Homo_sapiens.gmt)<" | grep -o -P "(?<=\">).*(?=<)" | grep -v chemical`
-	curl ${URL}/${FILE} -o ${PFOCR}/PFOCR_${1}_entrezgene.gmt -s -L 
+	#NOTE: every species is given the HUMAN PFOCR file, which is then saved as
+	# PFOCR_<species>_entrezgene.gmt. This is the behaviour the Mouse build has
+	# always had (data.wikipathways.org does have a separate, much smaller,
+	# Mus_musculus file). Whether Mouse should keep using the human file is still
+	# to be decided - see GitHub issue #25. To use each species' own file instead,
+	# change PFOCR_SOURCE_SPECIES to ${1}.
+	PFOCR_SOURCE_SPECIES="Homo_sapiens"
+	FILE=`curl -s "${URL}" |  grep -o -E ">(.*${PFOCR_SOURCE_SPECIES}.gmt)<" | grep -o -P "(?<=\">).*(?=<)" | grep -v chemical`
+	if ! check_scraped_filename "$FILE" "PFOCR" "${PFOCR_SOURCE_SPECIES}" ; then
+		return 1
+	fi
+	download_file ${URL}/${FILE} ${PFOCR}/PFOCR_${1}_entrezgene.gmt "PFOCR"
 	get_webfile_version ${URL}/${FILE} "PFOCR"
 }
 	
@@ -116,7 +164,7 @@ function download_pfocr_data {
 #argument 2 - directory to put the file
 function download_biocyc_data {
 	echo "[Downloading current BioCyc data - for species $1]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current BioCyc data - for species $1"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current BioCyc data - for species $1"'"}' `cat ${TOOLDIR}/slack_webhook`
 	#URL="http://bioinformatics.ai.sri.com/ecocyc/dist/flatfiles-52983746/"
 	#URL="https://bioinformatics.ai.sri.com/ecocyc/dist/flatfiles-52983746/"
 
@@ -128,9 +176,9 @@ function download_biocyc_data {
 	#URL="https://brg-files.ai.sri.com/public/dist"
 
 	echo "${URL}/tier1-tier2-biopax.tar.gz" >> ${VERSIONS}/${1}cyc.txt
-	curl ${URL}/tier1-tier2-biopax.tar.gz -u biocyc-flatfiles:data-20541 -I | grep "Last-Modified" >> ${VERSIONS}/${1}cyc.txt
+	curl ${URL}/tier1-tier2-biopax.tar.gz -u "$(cat ${TOOLDIR}/biocyc_login)" -I | grep "Last-Modified" >> ${VERSIONS}/${1}cyc.txt
 	echo "curl ${URL}/tier1-tier2-biopax.tar.gz -o ${2}/${1}.tar.gz "  
-	curl ${URL}/tier1-tier2-biopax.tar.gz -o ${2}/${1}.tar.gz -u biocyc-flatfiles:data-20541
+	curl -sSfL ${URL}/tier1-tier2-biopax.tar.gz -o ${2}/${1}.tar.gz -u "$(cat ${TOOLDIR}/biocyc_login)" || echo "ERROR: BioCyc download failed"
 
 	# unfortunately the latest biopax file seems to be missing all the genes
 	# associated with the pathways.  - wait on hearing back from them before
@@ -150,19 +198,19 @@ function download_biocyc_data {
 # Go human data comes directly from ebi as they are the primary curators of human GO annotations
 function download_GOhuman_data {
 	echo "[Downloading current Go Human EBI data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Go Human EBI data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current Go Human EBI data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	URL="ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/HUMAN/"
 
 	#June 2016 - looks like they changed the name of the go files !!!
-	curl ${URL}/goa_human.gaf.gz -o ${GOSRC}/gene_association.goa_human.gz -s 
+	download_file ${URL}/goa_human.gaf.gz ${GOSRC}/gene_association.goa_human.gz "GO Human"
 	get_webfile_version ${URL}/goa_human.gaf.gz "GO_Human"
 
 	#get the obo file from the gene ontology website
 	echo "[Downloading current GO OBO file]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Go OBO data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current Go OBO data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	#Feb 27,2026 - updated to https from http
 	URL="https://current.geneontology.org/ontology"
-	curl ${URL}/go.obo -o ${GOSRC}/go.obo -s 
+	download_file ${URL}/go.obo ${GOSRC}/go.obo "GO OBO"
 	get_webfile_version ${URL}/go.obo "GO_OBO_FILE"
 
 
@@ -171,11 +219,11 @@ function download_GOhuman_data {
 #Mouse data is downloaded from the Gene ontology website and comes from MGI
 function download_GOmouse_data {
 	echo "[Downloading current Go Mouse MGI  data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Go Mouse MGI data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current Go Mouse MGI data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	#URL="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.mgi.gz?rev=HEAD"
 	#URL="http://www.informatics.jax.org/downloads/reports/gene_association.mgi.gz"
 	URL="ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/MOUSE/goa_mouse.gaf.gz"
-	curl $URL -o ${GOSRC}/gene_association.mgi.gz -s 
+	download_file ${URL} ${GOSRC}/gene_association.mgi.gz "GO Mouse"
 	get_webfile_version ${URL} "GO_Mouse"
 }
 
@@ -183,18 +231,18 @@ function download_GOmouse_data {
 function download_HPO_data {
 	#file no longer exists.  Use latest version from June 16, 2013
 	echo "[Downloading current Human Phenotype data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Human Phenotypes data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current Human Phenotypes data"'"}' `cat ${TOOLDIR}/slack_webhook`
         #URL="http://compbio.charite.de/hudson/job/hpo.annotations.monthly/lastStableBuild/artifact/annotation/ALL_SOURCES_ALL_FREQUENCIES_genes_to_phenotype.txt"
 	#URL="http://purl.obolibrary.org/obo/hp/hpoa/genes_to_phenotype.txt"
 	#URL="https://ci.monarchinitiative.org/view/hpo/job/hpo.annotations/lastSuccessfulBuild/artifact/rare-diseases/util/annotation/genes_to_phenotype.txt"
 	#URL="http://purl.obolibrary.org/obo/hp/hpoa/genes_to_phenotype.txt"
 	URL="https://github.com/obophenotype/human-phenotype-ontology/releases/latest/download/genes_to_phenotype.txt"
-	curl -L ${URL} -o ${DISEASESRC}/genes_to_phenotype.txt -s
+	download_file ${URL} ${DISEASESRC}/genes_to_phenotype.txt "Human Phenotype"
 	get_webfile_version ${URL} "Human_Phenotype"
 
 	#get the obo file
 	echo "[Downloading current Phenotype OBO file]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Phenotypes OBO data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current Phenotypes OBO data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	#URL="http://compbio.charite.de/svn/hpo/trunk/src/ontology/"
 	#curl ${URL}/human-phenotype-ontology.obo -o ${DISEASESRC}/human-phenotype-ontology.obo -s  -w "HPO (obo) : HTTP code - %{http_code};time:%{time_total} millisec; size:%{size_download} Bytes\n"
         #URL="http://compbio.charite.de/jenkins/job/hpo/lastStableBuild/artifact/hp"
@@ -202,7 +250,7 @@ function download_HPO_data {
 	#URL="https://raw.githubusercontent.com/obophenotype/human-phenotype-ontology/master/hp.obo"
 	#URL="http://purl.obolibrary.org/obo/hp.obo"
 	URL="https://raw.githubusercontent.com/obophenotype/human-phenotype-ontology/master/hp.obo"
-	curl ${URL} -o ${DISEASESRC}/human-phenotype-ontology.obo -s 
+	download_file ${URL} ${DISEASESRC}/human-phenotype-ontology.obo "Human Phenotype OBO"
 	get_webfile_version ${URL} "Human_phenotype_OBO_FILE"
 
 }
@@ -214,9 +262,9 @@ function download_drugbank_data {
 	# needed to create an account and URL changed
 
 	echo "[Downloading current Drugbank data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current DrugBank data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current DrugBank data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	URL="http://www.drugbank.ca/system/downloads/current"
-        curl -Lf -o drugbank.xml.zip -u ruth.isserlin@gmail.com:emililab https://go.drugbank.com/releases/latest/downloads/all-full-database -s	
+        curl -sSLf -o drugbank.xml.zip -u "$(cat ${TOOLDIR}/drugbank_login)" https://go.drugbank.com/releases/latest/downloads/all-full-database || echo "ERROR: DrugBank download failed"
         #curl ${URL}/drugbank.xml.zip -o ${DRUGSSRC}/drugbank.xml.zip -s -w "Drugbank : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
 	#get_webfile_version ${URL}/drugbank.xml.zip "DrugBank"
 
@@ -225,6 +273,20 @@ function download_drugbank_data {
 	#curl ${URL}/all_target_ids_all.csv.zip -o ${DRUGSSRC}/target_links.csv.zip -s -w "Drugbank(external links) : HTTP code - %{http_code};time:%{time_total} millisec;size:%{size_download} Bytes\n"
 	#get_webfile_version ${URL}/all_target_ids_all.csv.zip "DrugBank_external_links"
 
+}
+
+#ticket #209 - get rid of forward slashes in a gmt file made from biopax.
+# Only touches the file if the java step actually made a non-empty gmt, so a
+# failed conversion doesn't leave behind an empty gmt that later steps use.
+# argument 1 - gmt file name
+# argument 2 - biopax file it was made from (for the error message)
+function remove_slashes_from_gmt {
+	if [ -s "$1" ]; then
+		sed 's/\// /g' "$1" > temp.txt
+		mv temp.txt "$1"
+	else
+		echo "ERROR: no gmt made from $2 (see biopax_process.err)"
+	fi
 }
 
 #this function will validate, autofix and create gmt files from biopax files.
@@ -255,8 +317,7 @@ function process_biopax {
 	#ticket #209
         #get rid of forward slashes in the resutls gmt file (occurs in NCI, Reactome, and Humancyc) and causes
 	#GSEA to produce error when creating a details file.
-	sed 's/\// /g' ${1}_${2//[[:space:]]}.gmt > temp.txt
-	mv temp.txt ${1}_${2//[[:space:]]}.gmt
+	remove_slashes_from_gmt ${1}_${2//[[:space:]]}.gmt $1
 }
 
 #this function create gmt files from biopax files without validation and auto-fix.
@@ -274,8 +335,7 @@ function process_biopax_novalidation {
 	#ticket #209
         #get rid of forward slashes in the resutls gmt file (occurs in NCI, Reactome, and Humancyc) and causes
 	#GSEA to produce error when creating a details file.
-	sed 's/\// /g' ${1}_${2//[[:space:]]}.gmt > temp.txt
-	mv temp.txt ${1}_${2//[[:space:]]}.gmt
+	remove_slashes_from_gmt ${1}_${2//[[:space:]]}.gmt $1
 
 }
 
@@ -294,8 +354,7 @@ function process_biopax_novalidation_nospeciescheck {
 	#ticket #209
         #get rid of forward slashes in the resutls gmt file (occurs in NCI, Reactome, and Humancyc) and causes
 	#GSEA to produce error when creating a details file.
-	sed 's/\// /g' ${1}_${2//[[:space:]]}.gmt > temp.txt
-	mv temp.txt ${1}_${2//[[:space:]]}.gmt
+	remove_slashes_from_gmt ${1}_${2//[[:space:]]}.gmt $1
 
 }
 
@@ -344,6 +403,18 @@ function translate_gmt_woodchuck {
 
 
 
+#translate one gmt file to one new identifier with the uniprot web service.
+# GenesetTools exits with an error if the web service fails, so report it in the build log.
+# argument 1 - gmt file name
+# argument 2 - taxonomy id
+# argument 3 - id found in gmt file
+# argument 4 - id to translate to
+function translate_uniprot_rest {
+	if ! java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "$4" 2>> translate_process.err 1>> translate_output.txt ; then
+		echo "ERROR: translating $1 from $3 to $4 failed (see translate_process.err)"
+	fi
+}
+
 # argument 1 - gmt file name
 # argument 2 - taxonomy id
 # argument 3 - id found in gmt file
@@ -352,39 +423,39 @@ function translate_gmt_UniProt {
 
 	if [[ $3 == "UniProt" ]] ; then
 		
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "symbol" 2>> translate_process.err 1>> translate_output.txt 
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "entrezgene" 2>> translate_process.err 1>> translate_output.txt 
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "ensembl" 2>> translate_process.err 1>> translate_output.txt 
+		translate_uniprot_rest $1 $2 $3 "symbol"
+		translate_uniprot_rest $1 $2 $3 "entrezgene"
+		translate_uniprot_rest $1 $2 $3 "ensembl"
 	fi
 
 	if [[ $3 == "entrezgene" ]] ; then
 	
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "symbol" 2>> translate_process.err 1>> translate_output.txt 
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "UniProt" 2>> translate_process.err 1>> translate_output.txt 
+		translate_uniprot_rest $1 $2 $3 "symbol"
+		translate_uniprot_rest $1 $2 $3 "UniProt"
 	
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "ensembl" 2>> translate_process.err 1>> translate_output.txt 
+		translate_uniprot_rest $1 $2 $3 "ensembl"
 	fi
 
 
 	if [[ $3 == "symbol" ]] ; then
 	
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "UniProt" 2>> translate_process.err 1>> translate_output.txt 
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "entrezgene" 2>> translate_process.err 1>> translate_output.txt 
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "ensembl" 2>> translate_process.err 1>> translate_output.txt 
+		translate_uniprot_rest $1 $2 $3 "UniProt"
+		translate_uniprot_rest $1 $2 $3 "entrezgene"
+		translate_uniprot_rest $1 $2 $3 "ensembl"
 	fi
 
 	if [[ $3 == "MGI" ]] ; then
 	
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "symbol" 2>> translate_process.err 1>> translate_output.txt 
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "UniProt" 2>> translate_process.err 1>> translate_output.txt 
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "entrezgene" 2>> translate_process.err 1>> translate_output.txt 
+		translate_uniprot_rest $1 $2 $3 "symbol"
+		translate_uniprot_rest $1 $2 $3 "UniProt"
+		translate_uniprot_rest $1 $2 $3 "entrezgene"
 	fi
 
 	if [[ $3 == "RGD" ]] ; then
 	
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "symbol" 2>> translate_process.err 1>> translate_output.txt 
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "UniProt" 2>> translate_process.err 1>> translate_output.txt 
-		java -Xmx2G -jar ${TOOLDIR}/GenesetTools.jar translate --gmt $1 --organism $2 --oldID $3 --newID "entrezgene" 2>> translate_process.err 1>> translate_output.txt 
+		translate_uniprot_rest $1 $2 $3 "symbol"
+		translate_uniprot_rest $1 $2 $3 "UniProt"
+		translate_uniprot_rest $1 $2 $3 "entrezgene"
 	fi
 }
 
@@ -658,6 +729,32 @@ function getstats {
 	mv ${1}/Build_summary_stats_${2}.log ${OUTPUTDIR}
 }
 
+#check that every species has non-empty combined (AllPathways) files before publishing
+#argument 1 - release directory
+#remaining arguments - species to check
+#returns 1 (and prints every problem) if anything is missing or empty
+function check_release_outputs {
+	local release_dir=$1
+	shift
+	local status=0
+	for sp in "$@"; do
+		local found=0
+		for f in ${release_dir}/${sp}/entrezgene/*AllPathways*.gmt; do
+			if [ ! -s "$f" ]; then
+				echo "ERROR: $f is missing or empty"
+				status=1
+			else
+				found=1
+			fi
+		done
+		if [ $found == 0 ]; then
+			echo "ERROR: no AllPathways files were created for ${sp}"
+			status=1
+		fi
+	done
+	return $status
+}
+
 #source all configuration parameters we need (contains paths to output directories and the like)
 
 #make sure we are using Java 6
@@ -675,6 +772,8 @@ VALIDATORDIR=${TOOLDIR}/biopax-validator-5.0.0-SNAPSHOT
 STATICDIR=${TOOLDIR}/staticSrcFiles
 WORKINGDIR=`pwd`
 CUR_RELEASE=${WORKINGDIR}/${dir_name}
+#where finished releases are published (can be overridden for testing)
+PUBLISH_DIR=${PUBLISH_DIR:-/mnt/build/EM_Genesets}
 
 
 ##########################################################
@@ -744,6 +843,8 @@ mkdir ${HUMANCYC}
 cd ${HUMANCYC}
 
 cp ${STATICDIR}/biocyc/human*.gz ./
+#copy the version note along with the static data so it ends up in the versions file
+cp ${STATICDIR}/biocyc/humancyc.txt ${VERSIONS}
 
 #unzip and untar human.tar.gz file
 tar --wildcards -xvzf human.tar.gz humancyc/*level3.owl
@@ -823,6 +924,8 @@ cd ${NCI}
 #download_nci_data
 
 cp ${STATICDIR}/NCI/*.gz ./
+#copy the version note along with the static data so it ends up in the versions file
+cp ${STATICDIR}/NCI/NCI_Nature.txt ${VERSIONS}
 gunzip *.gz
 #modify gmt file so the gmt conforms to our standard with name and description
 for file in *.owl; do
@@ -871,6 +974,8 @@ mkdir ${NETPATH}
 cd ${NETPATH}
 
 cp ${STATICDIR}/NetPath/NetPath_modified/*.owl ./
+#copy the version note along with the static data so it ends up in the versions file
+cp ${STATICDIR}/NetPath/NetPath.txt ${VERSIONS}
 
 #process each file in the NetPath directory.
 for file in *.owl; do
@@ -1318,7 +1423,7 @@ createDivisionDirs ${SYMBOL}
 
 #for some reason the validated and fixed Reactome file hangs.
 #for file in *.owl; do
-#	process_biopax_novalidation $file "UniProt" "Reactome"
+#	process_biopax_novalidation $file "UniProt" "Reactome" "10090"
 #done
 #for file in *.gmt; do
 #	translate_gmt_UniProt $file "10090" "UniProt"
@@ -1559,11 +1664,11 @@ done
 
 cat *.gmt > ../Mouse_AllPathways_withPFOCR_${dir_name}_symbol.gmt
 cd ${SYMBOL}/${GO}
-cat ../Mouse_AllPathways_withPFOCR${dir_name}_symbol.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_symbol.gmt
-cat ../Mouse_AllPathways_withPFOCR_${dir_name}_symbol.gmt Mouse_GOALL_${NOIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_withPFOCR${NOIEA}_${dir_name}_symbol.gmt
+cat ../Mouse_AllPathways_withPFOCR_${dir_name}_symbol.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_symbol.gmt
+cat ../Mouse_AllPathways_withPFOCR_${dir_name}_symbol.gmt Mouse_GOALL_${NOIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_withPFOCR_${NOIEA}_${dir_name}_symbol.gmt
 
-cat ../Mouse_AllPathways_noPFOCR${dir_name}_symbol.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_noPFOCR_${WITHIEA}_${dir_name}_symbol.gmt
-cat ../Mouse_AllPathways_noPFOCR_${dir_name}_symbol.gmt Mouse_GOALL_${NOIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_noPFOCR${NOIEA}_${dir_name}_symbol.gmt
+cat ../Mouse_AllPathways_noPFOCR_${dir_name}_symbol.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_noPFOCR_${WITHIEA}_${dir_name}_symbol.gmt
+cat ../Mouse_AllPathways_noPFOCR_${dir_name}_symbol.gmt Mouse_GOALL_${NOIEA}_${dir_name}_symbol.gmt > ../Mouse_GO_AllPathways_noPFOCR_${NOIEA}_${dir_name}_symbol.gmt
 
 #create two new all pathways files with GOBP included
 cat ../Mouse_AllPathways_withPFOCR_${dir_name}_symbol.gmt MOUSE_GO_bp_${WITHIEA}*_symbol.gmt > ../Mouse_GOBP_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_symbol.gmt
@@ -1584,11 +1689,11 @@ done
 
 cat *.gmt > ../Mouse_AllPathways_withPFOCR_${dir_name}_ensembl.gmt
 cd ${ENSEMBL}/${GO}
-cat ../Mouse_AllPathways_withPFOCR${dir_name}_ensembl.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_ensembl.gmt > ../Mouse_GO_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_ensembl.gmt
-cat ../Mouse_AllPathways_withPFOCR_${dir_name}_ensembl.gmt Mouse_GOALL_${NOIEA}_${dir_name}_ensembl.gmt > ../Mouse_GO_AllPathways_withPFOCR${NOIEA}_${dir_name}_ensembl.gmt
+cat ../Mouse_AllPathways_withPFOCR_${dir_name}_ensembl.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_ensembl.gmt > ../Mouse_GO_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_ensembl.gmt
+cat ../Mouse_AllPathways_withPFOCR_${dir_name}_ensembl.gmt Mouse_GOALL_${NOIEA}_${dir_name}_ensembl.gmt > ../Mouse_GO_AllPathways_withPFOCR_${NOIEA}_${dir_name}_ensembl.gmt
 
-cat ../Mouse_AllPathways_noPFOCR${dir_name}_ensembl.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_ensembl.gmt > ../Mouse_GO_AllPathways_noPFOCR_${WITHIEA}_${dir_name}_ensembl.gmt
-cat ../Mouse_AllPathways_noPFOCR_${dir_name}_ensembl.gmt Mouse_GOALL_${NOIEA}_${dir_name}_ensembl.gmt > ../Mouse_GO_AllPathways_noPFOCR${NOIEA}_${dir_name}_ensembl.gmt
+cat ../Mouse_AllPathways_noPFOCR_${dir_name}_ensembl.gmt Mouse_GOALL_${WITHIEA}_${dir_name}_ensembl.gmt > ../Mouse_GO_AllPathways_noPFOCR_${WITHIEA}_${dir_name}_ensembl.gmt
+cat ../Mouse_AllPathways_noPFOCR_${dir_name}_ensembl.gmt Mouse_GOALL_${NOIEA}_${dir_name}_ensembl.gmt > ../Mouse_GO_AllPathways_noPFOCR_${NOIEA}_${dir_name}_ensembl.gmt
 
 #create two new all pathways files with GOBP included
 cat ../Mouse_AllPathways_withPFOCR_${dir_name}_ensembl.gmt MOUSE_GO_bp_${WITHIEA}*_ensembl.gmt > ../Mouse_GOBP_AllPathways_withPFOCR_${WITHIEA}_${dir_name}_ensembl.gmt
@@ -1630,25 +1735,25 @@ mergesummaries ${UNIPROT} UniProt
 getstats ${EG} "entrezgene" ${MOUSESOURCE}
 getstats ${UNIPROT} "UniProt" ${MOUSESOURCE}
 getstats ${SYMBOL} "symbol" ${MOUSESOURCE}
-getstats ${ENSMBL} "ensembl" ${MOUSESOURCE}
+getstats ${ENSEMBL} "ensembl" ${MOUSESOURCE}
 
 
 #Rat data is downloaded from the Gene ontology website and comes from RGD
 function download_GORat_data {
 	echo "[Downloading current Go Rat  data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Go Rat data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current Go Rat data"'"}' `cat ${TOOLDIR}/slack_webhook`
 	#URL="http://cvsweb.geneontology.org/cgi-bin/cvsweb.cgi/go/gene-associations/gene_association.rgd.gz?rev=HEAD"
 	#URL="http://current.geneontology.org/annotations/rgd.gaf.gz"
 	URL="ftp://ftp.ebi.ac.uk/pub/databases/GO/goa/RAT/goa_rat.gaf.gz"
-	curl $URL -o ${GOSRC}/gene_association.rgd.gz -s 
+	download_file ${URL} ${GOSRC}/gene_association.rgd.gz "GO Rat"
 	get_webfile_version ${URL} "GO_Rat"
 
 	#get the obo file from the gene ontology website
 	echo "[Downloading current GO OBO file]"
 	
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Downloading current Go Rat OBO"'"}' `cat ${TOOLDIR}/slack_webhook`
-	URL="http://current.geneontology.org/ontology"
-	curl ${URL}/go.obo -o ${GOSRC}/go.obo -s 
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Downloading current Go Rat OBO"'"}' `cat ${TOOLDIR}/slack_webhook`
+	URL="https://current.geneontology.org/ontology"
+	download_file ${URL}/go.obo ${GOSRC}/go.obo "GO OBO"
 	get_webfile_version ${URL}/go.obo "GO_OBO_FILE"
 
 }
@@ -1711,7 +1816,7 @@ unzip biopax.zip Rattus_norvegicus.owl
 
 #for some reason the validated and fixed Reactome file hangs.
 for file in *.owl; do
-	process_biopax_novalidation $file "UniProt" "Reactome"
+	process_biopax_novalidation $file "UniProt" "Reactome" "10116"
 done
 for file in *.gmt; do
 	translate_gmt_UniProt $file "10116" "UniProt"
@@ -1720,7 +1825,7 @@ copy2release Reactome Rat ${PATHWAYS}
 
 
 #download the WikiPathways gmt files
-WIKIPATHWAYS=${RATSOURCE}/WikiPathways
+WIKIPATHWAYS=${RatSOURCE}/WikiPathways
 mkdir ${WIKIPATHWAYS}
 download_wikipathways_data Rattus_norvegicus
 cd ${WIKIPATHWAYS}
@@ -1733,7 +1838,7 @@ copy2release WikiPathways Rat ${PATHWAYS}
 
 
 #download the PFOCR gmt files - there is no release for rat yet
-#PFOCR=${RATSOURCE}/PFOCR
+#PFOCR=${RatSOURCE}/PFOCR
 #mkdir ${PFOCR}
 #download_pfocr_data Rattus_norvegicus
 #cd ${PFOCR}
@@ -1974,7 +2079,7 @@ mkdir ${GOSRC}
 cd ${GOSRC}
 
 echo "[Processing Woodchuck   data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Processing Woodchuck data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Processing Woodchuck data"'"}' `cat ${TOOLDIR}/slack_webhook`
 
 
 #create a directory will all the gmt from human we want to convert to mouse
@@ -2012,7 +2117,7 @@ cp ${HUMANVERSIONS}/WikiPathways.txt ${VERSIONS}
 cp ${HUMANVERSIONS}/GO_Human.txt ${VERSIONS}
 
 echo "[Converting Woodchuck data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Converting Woodchuck data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Converting Woodchuck data"'"}' `cat ${TOOLDIR}/slack_webhook`
 
 #go through each of the gmt file and convert to mouse entrez genes
 for file in Human*.gmt ; do
@@ -2040,7 +2145,7 @@ cp Woodchuck*_Entrezgene.gmt ${EG}/${PATHWAYS}/
 cp Woodchuck*_symbol.gmt ${SYMBOL}/${PATHWAYS}/
 
 #concatenate all the translation summaries	
-files=$(ls *10090_conversion.log 2> /dev/null | wc -l)
+files=$(ls *9995_conversion.log 2> /dev/null | wc -l)
 if [ $files != 0 ] ; then
 	cat *9995_conversion.log > Woodchuck_translatedPathways_entrezgene_translation_summary.log
 	cp Woodchuck_translatedPathways_entrezgene_translation_summary.log ${EG}/${PATHWAYS}/Woodchuck_translatedPathways_Entrezgene_translation_summary.log
@@ -2110,8 +2215,8 @@ cd ${SYMBOL}/${GO}
 cat ../Woodchuck_AllPathways_${dir_name}_symbol.gmt Woodchuck_Human_GOALL_${WITHIEA}_${dir_name}_symbol.gmt > ../Woodchuck_Human_GO_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
 cat ../Woodchuck_AllPathways_${dir_name}_symbol.gmt Woodchuck_Human_GOALL_${NOIEA}_${dir_name}_symbol.gmt > ../Woodchuck_Human_GO_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
 
-create two new all pathways files with GOBP included
-cat ../Woodchuck_AllPathways_${dir_name}_symbol.gmt Woodchuck_Human_GO_bp_${WITHIEA}_symbol.gmt > ../Woodchuck_Huamn_GOBP_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
+#create two new all pathways files with GOBP included
+cat ../Woodchuck_AllPathways_${dir_name}_symbol.gmt Woodchuck_Human_GO_bp_${WITHIEA}_symbol.gmt > ../Woodchuck_Human_GOBP_AllPathways_${WITHIEA}_${dir_name}_symbol.gmt
 cat ../Woodchuck_AllPathways_${dir_name}_symbol.gmt Woodchuck_Human_GO_bp_${NOIEA}_symbol.gmt > ../Woodchuck_Human_GOBP_AllPathways_${NOIEA}_${dir_name}_symbol.gmt
 
 
@@ -2138,21 +2243,35 @@ getstats ${EG} "entrezgene" ${WOODCHUCKSOURCE}
 getstats ${SYMBOL} "symbol" ${WOODCHUCKSOURCE}
 
 echo "[Finished Woodchuck  data]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[Finished woodchuck data"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[Finished woodchuck data"'"}' `cat ${TOOLDIR}/slack_webhook`
+
+#don't publish if any species is missing its combined files.
+# The build has no other error handling (set -e isn't usable because several
+# harmless cp commands fail every month), so this is the last chance to stop a
+# broken release from replacing current_release.
+if ! check_release_outputs ${CUR_RELEASE} Human Mouse Rat Woodchuck ; then
+	echo "ERROR: release ${dir_name} is incomplete - not publishing it. current_release was not changed."
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[ERROR: release ${dir_name} is incomplete - not published]"'"}' `cat ${TOOLDIR}/slack_webhook`
+	exit 1
+fi
 
 #copy the files over the webserver
-mkdir /mnt/build/EM_Genesets/$dir_name
-cp -R ${CUR_RELEASE}/Human /mnt/build/EM_Genesets/$dir_name/
-cp -R ${CUR_RELEASE}/Mouse /mnt/build/EM_Genesets/$dir_name/
-cp -R ${CUR_RELEASE}/Rat /mnt/build/EM_Genesets/$dir_name/
-cp -R ${CUR_RELEASE}/Woodchuck /mnt/build/EM_Genesets/$dir_name/
+mkdir -p ${PUBLISH_DIR}/$dir_name
+for sp in Human Mouse Rat Woodchuck; do
+	if ! cp -R ${CUR_RELEASE}/${sp} ${PUBLISH_DIR}/$dir_name/ ; then
+		echo "ERROR: could not copy ${sp} to ${PUBLISH_DIR}/$dir_name - not updating current_release"
+		exit 1
+	fi
+done
 
 #create a symbolic link to the latest download indicating it as current_release
-rm /mnt/build/EM_Genesets/current_release
-cd /mnt/build/EM_Genesets
-ln -sf $dir_name/ current_release
+#(-n replaces the old link itself instead of creating a link inside the old release)
+cd ${PUBLISH_DIR}
+ln -sfn $dir_name/ current_release
 
 #rm -rf ${CUR_RELEASE}
 
 echo "[data build complete]"
-	curl -X POST -H 'Content-type: plication/json' --data '{"text":"'"[data build complete"'"}' `cat ${TOOLDIR}/slack_webhook`
+	curl -X POST -H 'Content-type: application/json' --data '{"text":"'"[data build complete"'"}' `cat ${TOOLDIR}/slack_webhook`
+
+exit 0

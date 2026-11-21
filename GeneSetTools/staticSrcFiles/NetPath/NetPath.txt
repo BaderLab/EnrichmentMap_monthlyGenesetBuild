@@ -1,0 +1,4 @@
+NetPath
+NetPath pathways come from a static copy of the NetPath BioPAX files (NetPath_modified),
+used since February 2024 when www.netpath.org stopped serving them.
+=====================

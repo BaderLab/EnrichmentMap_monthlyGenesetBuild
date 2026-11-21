@@ -137,6 +137,10 @@ public class GeneSetTranslator_UniprotREST {
         //setup 
         setup();
 
+        //the GMT reader only logs a warning for a missing file and carries on
+        // with no gene sets, so check the input file first
+        GenesetTools.exitIfUnreadable(gmt_filename, "GMT");
+
         //parse gmt
         //Load in the GMT file
         try{
@@ -146,11 +150,11 @@ public class GeneSetTranslator_UniprotREST {
             gmtFile.run();
 
         } catch (OutOfMemoryError e) {
-            System.out.println("Out of Memory. Please increase memory allotement for cytoscape.");
-            return;
+            System.err.println("Out of Memory. Please increase memory allotement for cytoscape.");
+            System.exit(1);
         }  catch(Exception e){
-            System.out.println("unable to load GMT file");
-            return;
+            System.err.println("unable to load GMT file " + gmt_filename + ": " + e);
+            System.exit(1);
         }
 
         HashMap<String, HashSet<String>> unfoundIds = new HashMap<String, HashSet<String>>();
@@ -576,9 +580,11 @@ public HashMap<String, Set<String>> convertUniprotWebservice(Set GeneQuerySet,St
 			unfoundIds.addAll(queryset);
 
 		} catch (Exception e){
-			System.out.println("Something is wrong with the uniprot web service");
-			System.out.println(e.getMessage());
-			System.out.println(e.toString());
+			//don't carry on and write a gmt from partial (or no) results - stop with an
+			// error so the build log and exit status show that the translation failed
+			System.err.println("Something is wrong with the uniprot web service: " + e.toString());
+			System.out.println("Something is wrong with the uniprot web service: " + e.toString());
+			System.exit(1);
 		}
 
 	return new_genes;

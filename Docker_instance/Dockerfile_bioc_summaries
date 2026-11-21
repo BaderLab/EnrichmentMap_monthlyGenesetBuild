@@ -1,6 +1,15 @@
 FROM risserlin/bcb420-base-image:winter2022
 #FROM bioconductor/bioconductor_docker:RELEASE_3_16 
 
+# Keep the CA certificates current so the summary report can verify
+# download.baderlab.org's SSL certificate (Geneset_tracking.Rmd no longer
+# turns certificate checks off).
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates \
+    && update-ca-certificates \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
 #RUN install2.r \
 #   -d TRUE \
 #   -r "https://cran.rstudio.com" \

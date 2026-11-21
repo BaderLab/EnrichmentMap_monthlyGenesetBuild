@@ -47,7 +47,7 @@ public class GenesetTools {
             System.err.println(e.getMessage());
             help();
             parser.printUsage(System.err);
-            return;
+            System.exit(1);
         }
         comparator.compare();
 
@@ -72,7 +72,7 @@ public class GenesetTools {
                 System.err.println(e.getMessage());
                 help();
                 parser.printUsage(System.err);
-                return;
+                System.exit(1);
             }
             comparator.compare();
 
@@ -88,7 +88,7 @@ public class GenesetTools {
                 System.err.println(e.getMessage());
                 help();
                 parser.printUsage(System.err);
-                return;
+                System.exit(1);
             }
             ecoli.create();
     }
@@ -110,7 +110,7 @@ public class GenesetTools {
             System.err.println(e.getMessage());
             help();
             parser.printUsage(System.err);
-            return;
+            System.exit(1);
         }
         translator.translate();
     }
@@ -130,7 +130,7 @@ public class GenesetTools {
             System.err.println(e.getMessage());
             help();
             parser.printUsage(System.err);
-            return;
+            System.exit(1);
         }
         translator.translate();
     }
@@ -153,7 +153,7 @@ public class GenesetTools {
             System.err.println(e.getMessage());
             help();
             parser.printUsage(System.err);
-            return;
+            System.exit(1);
         }
 
         converter.toGSEA();
@@ -171,7 +171,7 @@ public class GenesetTools {
                 System.err.println(e.getMessage());
                 help();
                 parser.printUsage(System.err);
-                return;
+                System.exit(1);
             }
 
             converter.bulk();
@@ -199,7 +199,7 @@ public class GenesetTools {
             System.err.println(e.getMessage());
             help();
             parser.printUsage(System.err);
-            return;
+            System.exit(1);
         }
 
         if(maker.isInfile())
@@ -220,7 +220,7 @@ public class GenesetTools {
             System.err.println(e.getMessage());
             help();
             parser.printUsage(System.err);
-            return;
+            System.exit(1);
         }
 
 
@@ -240,7 +240,7 @@ public class GenesetTools {
             System.err.println(e.getMessage());
             help();
             parser.printUsage(System.err);
-            return;
+            System.exit(1);
         }
 
         converter.taxidconverter();
@@ -257,7 +257,7 @@ public class GenesetTools {
                     System.err.println(e.getMessage());
                     help();
                     parser.printUsage(System.err);
-                    return;
+                    System.exit(1);
                 }
 
         overlaps.overlaps();
@@ -300,6 +300,18 @@ public class GenesetTools {
         }
 
         public abstract void run(String[] argv) throws IOException,SQLException;
+    }
+
+    /**
+     * Stop with exit status 1 if a required input file is missing or can't be read.
+     * (cytoscape's TextFileReader only logs a warning for a missing file, so
+     * without this the tools carry on with no data and exit 0.)
+     */
+    static void exitIfUnreadable(String filename, String description) {
+        if (filename == null || !new File(filename).canRead()) {
+            System.err.println("unable to load " + description + " file " + filename + ": file does not exist or can't be read");
+            System.exit(1);
+        }
     }
 
     static void help() {

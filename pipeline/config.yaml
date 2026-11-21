@@ -1,0 +1,32 @@
+# GO releases to rebuild for the attrition analysis (Aim 2.2), folder names on release.geneontology.org.
+# Every January 2021-2026, the months around the archive gap / first duplicates (Oct 2021),
+# the NOT-filter fix (Sept 2024), and the newest release.
+go_releases:
+  - 2021-01-01
+  - 2021-05-01
+  - 2021-09-01
+  - 2021-10-26
+  - 2022-01-13
+  - 2022-07-01
+  - 2023-01-01
+  - 2023-07-27
+  - 2024-01-17
+  - 2024-06-17
+  - 2024-11-03
+  - 2025-02-06
+  - 2025-07-22
+  - 2026-01-23
+  - 2026-03-25
+  - 2026-05-19
+  - 2026-08-05
+
+# Ensembl release used for the mapping / orthology benchmark (downloadable files; BioMart was down)
+ensembl_release: 116
+
+# HGNC monthly snapshots used for static-source identifier decay (Aim 2.3)
+decay_months: [2021-03-01, 2021-07-01, 2022-01-01, 2022-07-01, 2023-01-01, 2023-07-01,
+               2024-01-01, 2024-07-01, 2025-01-01, 2025-07-01, 2026-01-01, 2026-07-01, 2026-11-01]
+
+# Bader Lab download server: it asks for downloads between 9 pm and 8 am Eastern only.
+baderlab_archive: https://download.baderlab.org/EM_Genesets/
+baderlab_window_et: [21, 8]

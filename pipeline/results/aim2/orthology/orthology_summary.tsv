@@ -1,0 +1,8 @@
+species	method	universe	coverage_pct	one_to_one_pct	dead_target_pct	agree_pct	only_homologene	only_compara	stale_human_ids_pct
+mouse	HomoloGene (legacy)	19298	85.61	97.85	0.7				
+mouse	Ensembl Compara	19298	90.79	95.39	0.09				
+mouse	agreement (both map)	16075				98.73	446.0	1446.0	
+rat	HomoloGene (legacy)	19298	78.4	98.7	1.92				
+rat	Ensembl Compara	19298	88.49	94.84	0.04				
+rat	agreement (both map)	14401				97.28	728.0	2676.0	
+woodchuck	2021 homology table (legacy)	19298	90.47						0.46
